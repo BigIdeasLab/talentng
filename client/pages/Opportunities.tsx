@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { DashboardHeader } from "@/components/DashboardHeader";
+import { JobCard } from "@/components/JobCard";
 
 export default function Opportunities() {
   const [searchQuery, setSearchQuery] = useState("");
