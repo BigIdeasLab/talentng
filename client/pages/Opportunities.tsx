@@ -38,13 +38,14 @@ export default function Opportunities() {
   };
 
   // Mock job data based on the Figma design
-  const jobListings = [
+  const allJobListings = [
     {
       id: 1,
       company: "ConnectNigeria",
       logo: "https://api.builder.io/api/v1/image/assets/TEMP/3acc0fa377039f5a419a459da563621ed9ec35b1?width=64",
       title: "Senior- Staff Product Engineer",
       location: "Full-time, Lagos, Nigeria 🇳🇬",
+      type: "engineering",
       talent: {
         name: "Promise Olaifa",
         avatar: "https://api.builder.io/api/v1/image/assets/TEMP/b7a14a0aa489cb96b364bfa56de3bb04acfc0e08?width=64",
@@ -57,6 +58,7 @@ export default function Opportunities() {
       logo: "https://api.builder.io/api/v1/image/assets/TEMP/b77895e271e6e3c18732c723ced620aefd9347f5?width=64",
       title: "Senior- Staff Product Engineer",
       location: "Full-time, Lagos, Nigeria 🇳🇬",
+      type: "engineering",
       talent: {
         name: "Desmond Awere",
         avatar: "https://api.builder.io/api/v1/image/assets/TEMP/0764040b7d3fa40fc56c1df4358f3de87596efe6?width=64",
@@ -69,13 +71,92 @@ export default function Opportunities() {
       logo: "https://api.builder.io/api/v1/image/assets/TEMP/2b5a993e6b90f30bb7b3eda09a7ef3daa36d1d08?width=64",
       title: "Senior- Staff Product Engineer",
       location: "Full-time, Lagos, Nigeria 🇳🇬",
+      type: "engineering",
       talent: {
         name: "Zeenie Ejike",
         avatar: "https://api.builder.io/api/v1/image/assets/TEMP/8c82ca4b3d3616469ab02084bfa2fd4e1e2c0980?width=64",
         verified: true
       }
     },
+    {
+      id: 4,
+      company: "TechStart",
+      logo: "https://api.builder.io/api/v1/image/assets/TEMP/3acc0fa377039f5a419a459da563621ed9ec35b1?width=64",
+      title: "UX Designer",
+      location: "Full-time, Abuja, Nigeria 🇳🇬",
+      type: "design",
+      talent: {
+        name: "Sarah Johnson",
+        avatar: "https://api.builder.io/api/v1/image/assets/TEMP/b7a14a0aa489cb96b364bfa56de3bb04acfc0e08?width=64",
+        verified: true
+      }
+    },
+    {
+      id: 5,
+      company: "DesignCo",
+      logo: "https://api.builder.io/api/v1/image/assets/TEMP/b77895e271e6e3c18732c723ced620aefd9347f5?width=64",
+      title: "Design System Lead",
+      location: "Remote, Nigeria 🇳🇬",
+      type: "design-system",
+      talent: {
+        name: "Michael Chen",
+        avatar: "https://api.builder.io/api/v1/image/assets/TEMP/0764040b7d3fa40fc56c1df4358f3de87596efe6?width=64",
+        verified: true
+      }
+    },
+    {
+      id: 6,
+      company: "Innovation Hub",
+      logo: "https://api.builder.io/api/v1/image/assets/TEMP/2b5a993e6b90f30bb7b3eda09a7ef3daa36d1d08?width=64",
+      title: "Frontend Developer",
+      location: "Full-time, Port Harcourt, Nigeria 🇳🇬",
+      type: "engineering",
+      talent: {
+        name: "Ada Williams",
+        avatar: "https://api.builder.io/api/v1/image/assets/TEMP/8c82ca4b3d3616469ab02084bfa2fd4e1e2c0980?width=64",
+        verified: true
+      }
+    },
   ];
+
+  // Filter logic
+  const filteredJobListings = allJobListings.filter((job) => {
+    // Search filter
+    const searchTerm = searchQuery.toLowerCase();
+    const matchesSearch = !searchQuery ||
+      job.title.toLowerCase().includes(searchTerm) ||
+      job.company.toLowerCase().includes(searchTerm) ||
+      job.location.toLowerCase().includes(searchTerm);
+
+    // Type filters
+    const hasActiveFilters = selectedFilters.jobs || selectedFilters.designSystem || selectedFilters.location;
+
+    if (!hasActiveFilters) {
+      // If no filters are active, show all jobs that match search
+      return matchesSearch;
+    }
+
+    // Apply active filters
+    let matchesFilters = false;
+
+    if (selectedFilters.jobs && (job.type === "engineering" || job.type === "other")) {
+      matchesFilters = true;
+    }
+
+    if (selectedFilters.designSystem && (job.type === "design" || job.type === "design-system")) {
+      matchesFilters = true;
+    }
+
+    if (selectedFilters.location) {
+      // For location filter, you could add more specific location-based filtering
+      // For now, we'll just include all jobs when location filter is active
+      matchesFilters = true;
+    }
+
+    return matchesSearch && matchesFilters;
+  });
+
+  const jobListings = filteredJobListings;
 
   return (
     <div className="flex min-h-screen bg-white">
