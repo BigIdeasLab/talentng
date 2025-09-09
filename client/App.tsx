@@ -13,6 +13,7 @@ import Signup from "./pages/Signup";
 import CompleteProfile from "./pages/CompleteProfile";
 import MyProfile from "./pages/MyProfile";
 import Opportunities from "./pages/Opportunities";
+import JobDetail from "./pages/JobDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
