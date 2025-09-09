@@ -22,6 +22,7 @@ export const JobCard: React.FC<JobCardProps> = ({
   logo,
   title,
   location,
+  type,
   talent,
   onShare,
   onApply,
