@@ -307,19 +307,34 @@ export default function Opportunities() {
 
               {/* Job Cards Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-9">
-                {jobListings.map((job) => (
-                  <JobCard
-                    key={job.id}
-                    id={job.id}
-                    company={job.company}
-                    logo={job.logo}
-                    title={job.title}
-                    location={job.location}
-                    talent={job.talent}
-                    onShare={handleShare}
-                    onApply={handleApply}
-                  />
-                ))}
+                {jobListings.length === 0 ? (
+                  <div className="col-span-full text-center py-12">
+                    <p className="text-lg text-gray-500 font-geist">
+                      No opportunities match your search criteria.
+                    </p>
+                    <button
+                      onClick={handleReset}
+                      className="mt-4 px-6 py-2 bg-black text-white rounded-3xl font-geist text-sm font-medium hover:bg-gray-900 transition-colors"
+                    >
+                      Clear filters
+                    </button>
+                  </div>
+                ) : (
+                  jobListings.map((job) => (
+                    <JobCard
+                      key={job.id}
+                      id={job.id}
+                      company={job.company}
+                      logo={job.logo}
+                      title={job.title}
+                      location={job.location}
+                      type={job.type}
+                      talent={job.talent}
+                      onShare={handleShare}
+                      onApply={handleApply}
+                    />
+                  ))
+                )}
               </div>
             </div>
           </div>
