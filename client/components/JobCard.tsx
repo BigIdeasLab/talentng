@@ -6,6 +6,7 @@ interface JobCardProps {
   logo: string;
   title: string;
   location: string;
+  type?: string;
   talent: {
     name: string;
     avatar: string;
