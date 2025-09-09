@@ -27,6 +27,16 @@ export default function Opportunities() {
     setSearchQuery("");
   };
 
+  const handleShare = (jobId: number) => {
+    // TODO: Implement share functionality
+    console.log("Sharing job:", jobId);
+  };
+
+  const handleApply = (jobId: number) => {
+    // TODO: Implement apply functionality or navigation to application
+    console.log("Applying to job:", jobId);
+  };
+
   // Mock job data based on the Figma design
   const jobListings = [
     {
