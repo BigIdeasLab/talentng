@@ -292,11 +292,16 @@ export default function Opportunities() {
                 </h3>
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-500 font-geist">
-                    Standout talents making waves around the web
+                    {jobListings.length === 0
+                      ? "No jobs found matching your criteria"
+                      : `${jobListings.length} job${jobListings.length !== 1 ? 's' : ''} found - Standout talents making waves around the web`
+                    }
                   </p>
-                  <button className="text-base font-medium text-gray-600 font-geist underline hover:text-gray-800 transition-colors">
-                    View more
-                  </button>
+                  {jobListings.length > 0 && (
+                    <button className="text-base font-medium text-gray-600 font-geist underline hover:text-gray-800 transition-colors">
+                      View more
+                    </button>
+                  )}
                 </div>
               </div>
 
