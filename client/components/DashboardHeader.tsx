@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import NotificationPanel from "@/components/NotificationPanel";
 
 export function DashboardHeader() {
   const { pathname } = useLocation();
