@@ -17,7 +17,11 @@ export default function NotificationPanel({ open, onClose }: NotificationPanelPr
       />
 
       {/* Notification panel sliding from right */}
-      <div className="absolute right-0 top-0 h-full w-[370px] bg-white shadow-lg">
+      <div
+        className={`absolute right-0 top-0 h-full w-[370px] bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+          open ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-100">
