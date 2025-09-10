@@ -41,9 +41,11 @@ export function DashboardHeader() {
                 />
               </svg>
             </button>
-            <h2 className="text-xl sm:text-2xl font-medium text-black font-geist">
-              {title}
-            </h2>
+            {title ? (
+              <h2 className="text-xl sm:text-2xl font-medium text-black font-geist">
+                {title}
+              </h2>
+            ) : null}
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4">
