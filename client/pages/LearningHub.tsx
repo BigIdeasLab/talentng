@@ -15,7 +15,9 @@ export default function LearningHub() {
             {/* Main Learning Hub Section */}
             <div className="flex flex-col gap-8">
               <div className="flex justify-between items-center">
-                <h1 className="text-xl font-bold text-black font-geist">Learning Hub</h1>
+                <h1 className="text-xl font-bold text-black font-geist">
+                  Learning Hub
+                </h1>
               </div>
 
               {/* Recommended Learning Paths Section */}
@@ -26,7 +28,8 @@ export default function LearningHub() {
                   </h2>
                   <div className="flex justify-between items-center">
                     <p className="text-base text-[#667085] font-geist">
-                      Reach your learning goals with hand picked sequential classes
+                      Reach your learning goals with hand picked sequential
+                      classes
                     </p>
                     <button className="text-base text-[#373F51] font-geist underline hover:no-underline">
                       View more
