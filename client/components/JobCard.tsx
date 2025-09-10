@@ -28,6 +28,7 @@ export const JobCard: React.FC<JobCardProps> = ({
   onShare,
   onApply,
 }) => {
+  const navigate = useNavigate();
   return (
     <div className="space-y-4">
       {/* Job Card */}
