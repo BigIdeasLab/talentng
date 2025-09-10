@@ -164,6 +164,12 @@ export function DashboardHeader() {
         {/* Divider */}
         <div className="border-b border-gray-100"></div>
       </div>
+
+      {/* Notification Panel */}
+      <NotificationPanel
+        open={isNotificationOpen}
+        onClose={() => setIsNotificationOpen(false)}
+      />
     </header>
   );
 }
