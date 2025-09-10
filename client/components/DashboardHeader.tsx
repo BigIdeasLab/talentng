@@ -89,7 +89,10 @@ export function DashboardHeader() {
 
           <div className="flex items-center gap-3 sm:gap-4">
             {/* Notification */}
-            <div className="p-2.5 bg-gray-100 rounded-3xl">
+            <button
+              className="p-2.5 bg-gray-100 rounded-3xl hover:bg-gray-200 transition-colors"
+              onClick={() => setIsNotificationOpen(true)}
+            >
               <svg
                 width="24"
                 height="24"
@@ -111,7 +114,7 @@ export function DashboardHeader() {
                   </clipPath>
                 </defs>
               </svg>
-            </div>
+            </button>
 
             {/* User Avatar */}
             <div className="relative">
