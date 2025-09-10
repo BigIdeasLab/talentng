@@ -6,10 +6,8 @@ interface NotificationPanelProps {
 }
 
 export default function NotificationPanel({ open, onClose }: NotificationPanelProps) {
-  if (!open) return null;
-
   return (
-    <div className={`fixed inset-0 z-50 ${open ? 'visible' : 'invisible'}`}>
+    <div className={`fixed inset-0 z-50 transition-opacity duration-300 ${open ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
       {/* Backdrop with blur */}
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
