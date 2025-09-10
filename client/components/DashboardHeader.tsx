@@ -8,7 +8,7 @@ export function DashboardHeader() {
   const isOpportunitiesDetail = pathname.startsWith("/opportunities/") && pathname !== "/opportunities";
 
   const title = isOpportunitiesList
-    ? ""
+    ? "Opportunities"
     : isOpportunitiesDetail
     ? "Opportunities"
     : pathname.startsWith("/complete-profile")
