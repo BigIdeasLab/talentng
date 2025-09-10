@@ -1,9 +1,15 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export function DashboardHeader() {
   const { pathname } = useLocation();
-  // Do not render a title for the /opportunities route (we use an in-page title there)
-  const title = pathname.startsWith("/opportunities")
+  const navigate = useNavigate();
+
+  const isOpportunitiesList = pathname === "/opportunities";
+  const isOpportunitiesDetail = pathname.startsWith("/opportunities/") && pathname !== "/opportunities";
+
+  const title = isOpportunitiesList
+    ? ""
+    : isOpportunitiesDetail
     ? "Opportunities"
     : pathname.startsWith("/complete-profile")
     ? "Complete Profile"
