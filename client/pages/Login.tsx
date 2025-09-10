@@ -78,6 +78,16 @@ const Login = () => {
                   </button>
                 </div>
 
+                {/* Forgot Password Link */}
+                <div className="text-right">
+                  <Link
+                    to="/forgot-password"
+                    className="text-gray-500 font-geist text-sm font-medium hover:text-gray-700 transition-colors underline"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+
                 <Link
                   to="/dashboard"
                   className="flex items-center justify-center gap-2.5 px-[14px] py-[14px] rounded-3xl bg-black text-white font-geist text-base font-medium hover:bg-gray-800 transition-colors"
