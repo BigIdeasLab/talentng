@@ -15,6 +15,7 @@ import MyProfile from "./pages/MyProfile";
 import Opportunities from "./pages/Opportunities";
 import LearningHub from "./pages/LearningHub";
 import Mentorship from "./pages/Mentorship";
+import MentorDetail from "./pages/MentorDetail";
 import JobDetail from "./pages/JobDetail";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/opportunities" element={<Opportunities />} />
           <Route path="/learning-hub" element={<LearningHub />} />
           <Route path="/mentorship" element={<Mentorship />} />
+          <Route path="/mentorship/:id" element={<MentorDetail />} />
           <Route path="/opportunities/:id" element={<JobDetail />} />
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
