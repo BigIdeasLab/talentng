@@ -4,7 +4,7 @@ export function DashboardHeader() {
   const { pathname } = useLocation();
   // Do not render a title for the /opportunities route (we use an in-page title there)
   const title = pathname.startsWith("/opportunities")
-    ? ""
+    ? "Opportunities"
     : pathname.startsWith("/complete-profile")
     ? "Complete Profile"
     : pathname.startsWith("/my-profile") || pathname.startsWith("/profile")
