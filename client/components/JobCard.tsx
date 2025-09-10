@@ -42,12 +42,14 @@ export const JobCard: React.FC<JobCardProps> = ({
           <div className="flex-1 space-y-4">
             <div className="space-y-2">
               <div className="space-y-2">
-                <h4 className="text-base font-geist text-black">
-                  {company}
-                </h4>
-                <h5 className="text-lg font-bold text-black font-geist">
-                  {title}
-                </h5>
+                <button onClick={() => navigate(`/opportunities/${id}`)} className="text-left">
+                  <h4 className="text-base font-geist text-black underline decoration-transparent hover:decoration-black">
+                    {company}
+                  </h4>
+                  <h5 className="text-lg font-bold text-black font-geist">
+                    {title}
+                  </h5>
+                </button>
               </div>
               <p className="text-base text-black font-geist">
                 {location}
