@@ -15,7 +15,11 @@ interface BookingModalProps {
   mentor: Mentor;
 }
 
-export default function BookingModal({ open, onClose, mentor }: BookingModalProps) {
+export default function BookingModal({
+  open,
+  onClose,
+  mentor,
+}: BookingModalProps) {
   const [step, setStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -44,7 +48,9 @@ export default function BookingModal({ open, onClose, mentor }: BookingModalProp
         <div className="flex items-center justify-between p-4 border-b">
           <div>
             <div className="text-lg font-semibold">Mentorship Session</div>
-            <div className="text-sm text-gray-600">{mentor.name} • {mentor.title} at {mentor.company}</div>
+            <div className="text-sm text-gray-600">
+              {mentor.name} • {mentor.title} at {mentor.company}
+            </div>
           </div>
           <button
             onClick={onClose}
@@ -61,7 +67,9 @@ export default function BookingModal({ open, onClose, mentor }: BookingModalProp
           {step === 1 && (
             <div className="space-y-4">
               <h3 className="text-xl font-semibold">Select date and time</h3>
-              <p className="text-sm text-gray-600">In your local timezone (auto-detected)</p>
+              <p className="text-sm text-gray-600">
+                In your local timezone (auto-detected)
+              </p>
 
               <div className="mt-4">
                 {/* Simple calendar illustration using grid of dates */}
@@ -76,7 +84,7 @@ export default function BookingModal({ open, onClose, mentor }: BookingModalProp
                         <button
                           key={key}
                           onClick={() => setSelectedDate(String(day))}
-                          className={`py-2 px-1 text-sm rounded-md ${active ? 'bg-black text-white' : 'bg-transparent text-black'}`}
+                          className={`py-2 px-1 text-sm rounded-md ${active ? "bg-black text-white" : "bg-transparent text-black"}`}
                         >
                           {day}
                         </button>
@@ -90,7 +98,7 @@ export default function BookingModal({ open, onClose, mentor }: BookingModalProp
                 <button
                   onClick={() => setStep(2)}
                   disabled={!selectedDate}
-                  className={`px-8 py-3 rounded-full ${selectedDate ? 'bg-black text-white' : 'bg-gray-200 text-gray-400'}`}
+                  className={`px-8 py-3 rounded-full ${selectedDate ? "bg-black text-white" : "bg-gray-200 text-gray-400"}`}
                 >
                   Continue
                 </button>
@@ -101,14 +109,31 @@ export default function BookingModal({ open, onClose, mentor }: BookingModalProp
           {step === 2 && (
             <div className="space-y-4">
               <h3 className="text-xl font-semibold">Select time</h3>
-              <p className="text-sm text-gray-600">Date: {selectedDate ?? '—'}. <button className="text-orange-500 underline" onClick={() => setStep(1)}>Change</button></p>
+              <p className="text-sm text-gray-600">
+                Date: {selectedDate ?? "—"}.{" "}
+                <button
+                  className="text-orange-500 underline"
+                  onClick={() => setStep(1)}
+                >
+                  Change
+                </button>
+              </p>
 
               <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {['12:15 am','1:30 am','2:45 am','3:00 am','3:15 am','4:00 am','4:15 am','4:45 am'].map((t) => (
+                {[
+                  "12:15 am",
+                  "1:30 am",
+                  "2:45 am",
+                  "3:00 am",
+                  "3:15 am",
+                  "4:00 am",
+                  "4:15 am",
+                  "4:45 am",
+                ].map((t) => (
                   <button
                     key={t}
                     onClick={() => setSelectedTime(t)}
-                    className={`px-4 py-3 rounded-full border ${selectedTime === t ? 'bg-black text-white' : 'bg-white text-black'}`}
+                    className={`px-4 py-3 rounded-full border ${selectedTime === t ? "bg-black text-white" : "bg-white text-black"}`}
                   >
                     {t}
                   </button>
@@ -119,7 +144,7 @@ export default function BookingModal({ open, onClose, mentor }: BookingModalProp
                 <button
                   onClick={() => setStep(3)}
                   disabled={!selectedTime}
-                  className={`px-8 py-3 rounded-full ${selectedTime ? 'bg-black text-white' : 'bg-gray-200 text-gray-400'}`}
+                  className={`px-8 py-3 rounded-full ${selectedTime ? "bg-black text-white" : "bg-gray-200 text-gray-400"}`}
                 >
                   Continue
                 </button>
@@ -130,7 +155,15 @@ export default function BookingModal({ open, onClose, mentor }: BookingModalProp
           {step === 3 && (
             <div className="space-y-4">
               <h3 className="text-xl font-semibold">Confirm Booking</h3>
-              <p className="text-sm text-gray-600">Date: {selectedDate ?? '—'} . {selectedTime ?? '—'} <button className="text-orange-500 underline" onClick={() => setStep(1)}>Change</button></p>
+              <p className="text-sm text-gray-600">
+                Date: {selectedDate ?? "—"} . {selectedTime ?? "—"}{" "}
+                <button
+                  className="text-orange-500 underline"
+                  onClick={() => setStep(1)}
+                >
+                  Change
+                </button>
+              </p>
 
               <div className="mt-4 space-y-3">
                 <div className="border rounded-2xl p-4">
@@ -156,7 +189,9 @@ export default function BookingModal({ open, onClose, mentor }: BookingModalProp
                 <button
                   onClick={() => {
                     // pretend submit
-                    alert(`Booking confirmed with ${mentor.name} on ${selectedDate} at ${selectedTime}`);
+                    alert(
+                      `Booking confirmed with ${mentor.name} on ${selectedDate} at ${selectedTime}`,
+                    );
                     onClose();
                   }}
                   className="px-8 py-3 rounded-full bg-black text-white"

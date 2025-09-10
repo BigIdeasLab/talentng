@@ -68,7 +68,9 @@ export default function MentorDetail() {
           <div className="max-w-4xl mx-auto space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-semibold font-geist">Mentorship</h1>
+                <h1 className="text-2xl font-semibold font-geist">
+                  Mentorship
+                </h1>
                 <div className="text-sm text-gray-500 mt-1">
                   <button
                     onClick={() => navigate(-1)}
@@ -90,7 +92,9 @@ export default function MentorDetail() {
 
                 <div className="flex-1">
                   <div className="flex items-center gap-3">
-                    <h2 className="text-2xl font-bold font-geist">{mentor.name}</h2>
+                    <h2 className="text-2xl font-bold font-geist">
+                      {mentor.name}
+                    </h2>
                     {mentor.verified && (
                       <span className="text-sm text-blue-500">✔️</span>
                     )}
@@ -99,7 +103,9 @@ export default function MentorDetail() {
                   <div className="text-sm text-gray-700 mt-1">
                     {mentor.title}, {mentor.company}
                   </div>
-                  <div className="text-sm text-gray-600 mt-1">{mentor.location}</div>
+                  <div className="text-sm text-gray-600 mt-1">
+                    {mentor.location}
+                  </div>
 
                   <p className="text-sm text-gray-500 mt-4 leading-7">
                     {mentor.description}
@@ -117,7 +123,9 @@ export default function MentorDetail() {
                         </div>
                       ))}
                       {mentor.availableFor.length > 3 && (
-                        <div className="px-3 py-2 border rounded-full text-sm text-gray-800">+{mentor.availableFor.length - 3}</div>
+                        <div className="px-3 py-2 border rounded-full text-sm text-gray-800">
+                          +{mentor.availableFor.length - 3}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -137,12 +145,20 @@ export default function MentorDetail() {
               <div className="mt-6 border-t pt-6">
                 <h3 className="text-lg font-semibold">Resume</h3>
                 <div className="mt-4">
-                  <div className="text-sm text-gray-700 font-medium">Aug 2022 - Present</div>
-                  <div className="text-sm text-gray-900 font-semibold">Product Designer, ConnectNigeria</div>
+                  <div className="text-sm text-gray-700 font-medium">
+                    Aug 2022 - Present
+                  </div>
+                  <div className="text-sm text-gray-900 font-semibold">
+                    Product Designer, ConnectNigeria
+                  </div>
                 </div>
                 <div className="mt-4">
-                  <div className="text-sm text-gray-700 font-medium">Aug 2021 - Sept 2021</div>
-                  <div className="text-sm text-gray-900 font-semibold">Product Designer, Eonsfleet</div>
+                  <div className="text-sm text-gray-700 font-medium">
+                    Aug 2021 - Sept 2021
+                  </div>
+                  <div className="text-sm text-gray-900 font-semibold">
+                    Product Designer, Eonsfleet
+                  </div>
                 </div>
               </div>
             </div>
@@ -150,7 +166,11 @@ export default function MentorDetail() {
         </main>
       </div>
 
-      <BookingModal open={isBookingOpen} onClose={() => setIsBookingOpen(false)} mentor={mentor} />
+      <BookingModal
+        open={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+        mentor={mentor}
+      />
     </div>
   );
 }
