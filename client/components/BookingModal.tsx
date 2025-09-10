@@ -41,7 +41,7 @@ export default function BookingModal({ open, onClose, mentor }: BookingModalProp
       />
 
       <div className="relative z-10 w-[90%] max-w-lg mx-auto bg-white rounded-3xl shadow-lg overflow-hidden">
-        <div className="flex items-center justify-between p-6 border-b">
+        <div className="flex items-center justify-between p-4 border-b">
           <div>
             <div className="text-lg font-semibold">Mentorship Session</div>
             <div className="text-sm text-gray-600">{mentor.name} • {mentor.title} at {mentor.company}</div>
@@ -55,7 +55,7 @@ export default function BookingModal({ open, onClose, mentor }: BookingModalProp
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-4">
           <div className="text-sm text-gray-500 mb-4">STEP {step} of 3</div>
 
           {step === 1 && (
@@ -65,9 +65,9 @@ export default function BookingModal({ open, onClose, mentor }: BookingModalProp
 
               <div className="mt-4">
                 {/* Simple calendar illustration using grid of dates */}
-                <div className="bg-white border rounded-xl p-4">
+                <div className="bg-white border rounded-xl p-3">
                   <div className="text-2xl font-bold mb-4">January 2025</div>
-                  <div className="grid grid-cols-7 gap-4 text-center">
+                  <div className="grid grid-cols-7 gap-2 text-center">
                     {Array.from({ length: 31 }).map((_, i) => {
                       const day = i + 1;
                       const key = `d-${day}`;
@@ -76,7 +76,7 @@ export default function BookingModal({ open, onClose, mentor }: BookingModalProp
                         <button
                           key={key}
                           onClick={() => setSelectedDate(String(day))}
-                          className={`py-4 rounded-md ${active ? 'bg-black text-white' : 'bg-transparent text-black'}`}
+                          className={`py-2 px-1 text-sm rounded-md ${active ? 'bg-black text-white' : 'bg-transparent text-black'}`}
                         >
                           {day}
                         </button>
