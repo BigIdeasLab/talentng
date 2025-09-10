@@ -13,6 +13,7 @@ import Signup from "./pages/Signup";
 import CompleteProfile from "./pages/CompleteProfile";
 import MyProfile from "./pages/MyProfile";
 import Opportunities from "./pages/Opportunities";
+import Mentorship from "./pages/Mentorship";
 import JobDetail from "./pages/JobDetail";
 import NotFound from "./pages/NotFound";
 
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/complete-profile" element={<CompleteProfile />} />
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/opportunities" element={<Opportunities />} />
+          <Route path="/mentorship" element={<Mentorship />} />
           <Route path="/opportunities/:id" element={<JobDetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
