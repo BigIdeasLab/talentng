@@ -4,12 +4,37 @@ import { DashboardHeader } from "@/components/DashboardHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { Settings as SettingsIcon, User, Bell, Shield, HelpCircle, Edit } from "lucide-react";
+import {
+  Settings as SettingsIcon,
+  User,
+  Bell,
+  Shield,
+  HelpCircle,
+  Edit,
+} from "lucide-react";
 
-type SettingsTab = "account" | "profile" | "notifications" | "security" | "help";
+type SettingsTab =
+  | "account"
+  | "profile"
+  | "notifications"
+  | "security"
+  | "help";
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("account");
@@ -22,7 +47,7 @@ export default function Settings() {
     },
     {
       id: "profile" as const,
-      label: "Profile & Preferences", 
+      label: "Profile & Preferences",
       icon: <User className="w-4.5 h-4.5" />,
     },
     {
@@ -47,7 +72,7 @@ export default function Settings() {
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
         <DashboardHeader />
-        
+
         <div className="flex-1 p-8 max-w-7xl mx-auto w-full">
           {/* Settings Navigation */}
           <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-3xl border border-gray-100 mb-8">
@@ -59,7 +84,7 @@ export default function Settings() {
                   "flex items-center gap-1.5 px-2 py-2 rounded-xl text-sm font-medium transition-colors",
                   activeTab === tab.id
                     ? "bg-white text-black shadow-sm"
-                    : "text-gray-600 hover:text-black"
+                    : "text-gray-600 hover:text-black",
                 )}
               >
                 {tab.icon}
@@ -135,10 +160,13 @@ function AccountSettings() {
 
       {/* Delete Account */}
       <div className="pt-6 space-y-6">
-        <Button variant="outline" className="text-red-500 border-gray-100 rounded-2xl">
+        <Button
+          variant="outline"
+          className="text-red-500 border-gray-100 rounded-2xl"
+        >
           Delete account
         </Button>
-        
+
         <Button className="w-full max-w-lg rounded-3xl bg-black text-white hover:bg-gray-800">
           Save Changes
         </Button>
@@ -155,7 +183,9 @@ function ProfilePreferences() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-medium text-black mb-2">Profile Preferences</h2>
+          <h2 className="text-2xl font-medium text-black mb-2">
+            Profile Preferences
+          </h2>
           <p className="text-gray-500">Setup your profile for this workspace</p>
         </div>
         <Button variant="outline" className="rounded-3xl border-gray-200">
@@ -166,8 +196,13 @@ function ProfilePreferences() {
       {/* Profile Visibility */}
       <div className="max-w-lg space-y-6">
         <div className="flex items-center justify-between">
-          <span className="text-xl font-medium text-black">Profile Visibility</span>
-          <Switch checked={profileVisibility} onCheckedChange={setProfileVisibility} />
+          <span className="text-xl font-medium text-black">
+            Profile Visibility
+          </span>
+          <Switch
+            checked={profileVisibility}
+            onCheckedChange={setProfileVisibility}
+          />
         </div>
 
         {/* Form Fields */}
@@ -176,7 +211,7 @@ function ProfilePreferences() {
             placeholder="Location (for job suggestions)"
             className="h-12 rounded-3xl border-gray-300 text-gray-600"
           />
-          
+
           <Select>
             <SelectTrigger className="h-12 rounded-3xl border-gray-300 text-gray-600">
               <SelectValue placeholder="Preferred Role" />
@@ -227,18 +262,33 @@ function NotificationSettings() {
       {/* Notification Options */}
       <div className="max-w-lg space-y-6">
         <div className="flex items-center justify-between">
-          <span className="text-xl font-medium text-black">Email Notifications</span>
-          <Switch checked={emailNotifications} onCheckedChange={setEmailNotifications} />
+          <span className="text-xl font-medium text-black">
+            Email Notifications
+          </span>
+          <Switch
+            checked={emailNotifications}
+            onCheckedChange={setEmailNotifications}
+          />
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-xl font-medium text-black">In-App Notifications</span>
-          <Switch checked={inAppNotifications} onCheckedChange={setInAppNotifications} />
+          <span className="text-xl font-medium text-black">
+            In-App Notifications
+          </span>
+          <Switch
+            checked={inAppNotifications}
+            onCheckedChange={setInAppNotifications}
+          />
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-xl font-medium text-black">Push Notifications</span>
-          <Switch checked={pushNotifications} onCheckedChange={setPushNotifications} />
+          <span className="text-xl font-medium text-black">
+            Push Notifications
+          </span>
+          <Switch
+            checked={pushNotifications}
+            onCheckedChange={setPushNotifications}
+          />
         </div>
       </div>
     </div>
@@ -257,7 +307,7 @@ function PrivacySecurity() {
     },
     {
       signedIn: "2 hours ago",
-      platform: "Mobile", 
+      platform: "Mobile",
       ipAddress: "185.44.77.69",
       action: "Sign out",
     },
@@ -267,14 +317,18 @@ function PrivacySecurity() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-medium text-black mb-2">Privacy & Security</h2>
+        <h2 className="text-2xl font-medium text-black mb-2">
+          Privacy & Security
+        </h2>
         <p className="text-gray-500">Setup your profile for this workspace</p>
       </div>
 
       {/* Two-Factor Authentication */}
       <div className="max-w-lg">
         <div className="flex items-center justify-between">
-          <span className="text-xl font-medium text-black">Two-Factor Authentication</span>
+          <span className="text-xl font-medium text-black">
+            Two-Factor Authentication
+          </span>
           <Switch checked={twoFactorAuth} onCheckedChange={setTwoFactorAuth} />
         </div>
       </div>
@@ -282,26 +336,47 @@ function PrivacySecurity() {
       {/* Login Activity */}
       <div className="space-y-4">
         <div>
-          <h3 className="text-2xl font-medium text-black mb-2">Login Activity</h3>
-          <p className="text-gray-500">These sessions are currently signed in to your account</p>
+          <h3 className="text-2xl font-medium text-black mb-2">
+            Login Activity
+          </h3>
+          <p className="text-gray-500">
+            These sessions are currently signed in to your account
+          </p>
         </div>
 
         <div className="rounded-3xl border border-gray-200 overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow className="bg-white border-gray-200">
-                <TableHead className="text-gray-600 font-medium">Signed In</TableHead>
-                <TableHead className="text-gray-600 font-medium">Platform</TableHead>
-                <TableHead className="text-gray-600 font-medium">IP Address</TableHead>
-                <TableHead className="text-gray-600 font-medium">Action</TableHead>
+                <TableHead className="text-gray-600 font-medium">
+                  Signed In
+                </TableHead>
+                <TableHead className="text-gray-600 font-medium">
+                  Platform
+                </TableHead>
+                <TableHead className="text-gray-600 font-medium">
+                  IP Address
+                </TableHead>
+                <TableHead className="text-gray-600 font-medium">
+                  Action
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {loginActivity.map((session, index) => (
-                <TableRow key={index} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                  <TableCell className="text-gray-600">{session.signedIn}</TableCell>
-                  <TableCell className="text-gray-600">{session.platform}</TableCell>
-                  <TableCell className="text-gray-600">{session.ipAddress}</TableCell>
+                <TableRow
+                  key={index}
+                  className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
+                >
+                  <TableCell className="text-gray-600">
+                    {session.signedIn}
+                  </TableCell>
+                  <TableCell className="text-gray-600">
+                    {session.platform}
+                  </TableCell>
+                  <TableCell className="text-gray-600">
+                    {session.ipAddress}
+                  </TableCell>
                   <TableCell>
                     <button className="text-green-600 underline hover:no-underline">
                       {session.action}
@@ -322,14 +397,19 @@ function HelpSupport() {
     <div className="space-y-8">
       <div>
         <h2 className="text-2xl font-medium text-black mb-2">Help & Support</h2>
-        <p className="text-gray-500">Get help with your account and platform usage</p>
+        <p className="text-gray-500">
+          Get help with your account and platform usage
+        </p>
       </div>
 
       <div className="space-y-4">
         <div className="p-6 border border-gray-200 rounded-2xl">
-          <h3 className="text-lg font-medium text-black mb-2">Contact Support</h3>
+          <h3 className="text-lg font-medium text-black mb-2">
+            Contact Support
+          </h3>
           <p className="text-gray-600 mb-4">
-            Need help? Our support team is here to assist you with any questions or issues.
+            Need help? Our support team is here to assist you with any questions
+            or issues.
           </p>
           <Button className="rounded-xl bg-black text-white hover:bg-gray-800">
             Contact Support
@@ -339,7 +419,8 @@ function HelpSupport() {
         <div className="p-6 border border-gray-200 rounded-2xl">
           <h3 className="text-lg font-medium text-black mb-2">Documentation</h3>
           <p className="text-gray-600 mb-4">
-            Browse our comprehensive documentation to learn how to make the most of the platform.
+            Browse our comprehensive documentation to learn how to make the most
+            of the platform.
           </p>
           <Button variant="outline" className="rounded-xl border-gray-200">
             View Documentation
