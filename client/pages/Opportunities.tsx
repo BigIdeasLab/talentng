@@ -171,19 +171,10 @@ export default function Opportunities() {
         {/* Content */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 xl:p-10">
           <div className="max-w-7xl mx-auto space-y-8">
-            {/* Page Title */}
-            <div className="space-y-5">
-              <h1 className="text-xl sm:text-2xl font-medium text-black font-geist">
-                Opportunities
-              </h1>
-              <div className="w-full h-px bg-gray-100"></div>
-            </div>
+            {/* Page Title removed per request */}
 
             {/* Search and Filters Section */}
             <div className="space-y-8">
-              <h2 className="text-lg sm:text-xl font-bold text-black font-geist">
-                Opportunities
-              </h2>
 
               {/* Search Bar */}
               <div className="relative">
