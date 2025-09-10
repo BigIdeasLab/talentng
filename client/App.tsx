@@ -16,6 +16,7 @@ import Opportunities from "./pages/Opportunities";
 import LearningHub from "./pages/LearningHub";
 import Mentorship from "./pages/Mentorship";
 import JobDetail from "./pages/JobDetail";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
