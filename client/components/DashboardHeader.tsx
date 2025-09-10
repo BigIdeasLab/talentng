@@ -6,6 +6,8 @@ export function DashboardHeader() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
   const isOpportunitiesList = pathname === "/opportunities";
   const isOpportunitiesDetail =
     pathname.startsWith("/opportunities/") && pathname !== "/opportunities";
