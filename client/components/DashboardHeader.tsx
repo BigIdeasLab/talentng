@@ -19,13 +19,15 @@ export function DashboardHeader() {
         ? "Mentorship"
         : pathname.startsWith("/learning-hub")
           ? "Learning Hub"
-          : pathname.startsWith("/dashboard")
-            ? "Dashboard"
-            : pathname.startsWith("/login")
-              ? "Login"
-              : pathname.startsWith("/signup")
-                ? "Sign Up"
-                : "Dashboard";
+          : pathname.startsWith("/settings")
+            ? "Settings"
+            : pathname.startsWith("/dashboard")
+              ? "Dashboard"
+              : pathname.startsWith("/login")
+                ? "Login"
+                : pathname.startsWith("/signup")
+                  ? "Sign Up"
+                  : "Dashboard";
 
   return (
     <header className="bg-white border-b border-gray-100 px-4 sm:px-6 lg:px-8 xl:px-10 py-4 sm:py-6 lg:py-8">
