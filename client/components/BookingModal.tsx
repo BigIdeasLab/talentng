@@ -40,7 +40,7 @@ export default function BookingModal({ open, onClose, mentor }: BookingModalProp
         onClick={onClose}
       />
 
-      <div className="relative z-10 w-[95%] max-w-2xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
+      <div className="relative z-10 w-[90%] max-w-lg mx-auto bg-white rounded-3xl shadow-lg overflow-hidden">
         <div className="flex items-center justify-between p-6 border-b">
           <div>
             <div className="text-lg font-semibold">Mentorship Session</div>
