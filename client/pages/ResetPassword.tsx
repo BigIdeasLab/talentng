@@ -14,9 +14,8 @@ const ResetPassword = () => {
     }
   };
 
-  const isPasswordValid = password.length >= 8 && 
-    /[A-Z]/.test(password) && 
-    /[0-9]/.test(password);
+  const isPasswordValid =
+    password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password);
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4 py-14">
@@ -35,13 +34,17 @@ const ResetPassword = () => {
                 />
                 <div className="flex flex-col items-center gap-4">
                   <p className="text-[#667085] font-geist text-base font-medium leading-[120%] text-center w-[320px]">
-                    We can help you reset your password using the email address linked to your account.
+                    We can help you reset your password using the email address
+                    linked to your account.
                   </p>
                 </div>
               </div>
 
               {/* Form Section */}
-              <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-6 w-full"
+              >
                 {/* Password Input Section */}
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center justify-between px-[14px] py-[14px] rounded-3xl border border-[#D0D5DD] bg-white">
@@ -82,7 +85,8 @@ const ResetPassword = () => {
 
                   {/* Password Requirements */}
                   <p className="text-black font-geist text-[13px] font-normal leading-[120%] text-center w-[320px]">
-                    8 characters minimum, at least 1 uppercase letter and 1 number
+                    8 characters minimum, at least 1 uppercase letter and 1
+                    number
                   </p>
                 </div>
 

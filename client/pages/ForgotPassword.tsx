@@ -30,13 +30,17 @@ const ForgotPassword = () => {
                 />
                 <div className="flex flex-col items-center gap-4">
                   <p className="text-[#667085] font-geist text-base font-medium leading-[120%] text-center w-[320px]">
-                    We can help you reset your password using the email address linked to your account.
+                    We can help you reset your password using the email address
+                    linked to your account.
                   </p>
                 </div>
               </div>
 
               {/* Form Section */}
-              <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-6 w-full"
+              >
                 {/* Email Input */}
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center gap-2.5 px-[14px] py-[14px] rounded-3xl border border-[#D0D5DD] bg-white">

@@ -24,7 +24,8 @@ const ForgotPasswordConfirmation = () => {
                   <p className="text-[#667085] font-geist text-base font-semibold leading-[120%] text-center w-[320px]">
                     If the email{" "}
                     <span className="text-[#101828] font-bold">{email}</span>{" "}
-                    exists, you will receive a password recovery link within a few minutes.
+                    exists, you will receive a password recovery link within a
+                    few minutes.
                   </p>
                 </div>
               </div>
