@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { DashboardLayout } from "@/components/layouts/DashboardLayout";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { BasicInfoStep } from "@/components/CompleteProfile/BasicInfoStep";
 import { SkillsExperienceStep } from "@/components/CompleteProfile/SkillsExperienceStep";
 import { AvailabilityLocationStep } from "@/components/CompleteProfile/AvailabilityLocationStep";

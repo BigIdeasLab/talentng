@@ -1,4 +1,4 @@
-// File: C:\Users\hecan\Documents\talentng-frontend\app\my-profile\page.tsx
+// File: c:\Users\hecan\Documents\talentng-frontend\app\my-profile\page.tsx
 import * as entry from '../../../../app/my-profile/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

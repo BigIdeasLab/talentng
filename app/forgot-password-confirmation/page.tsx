@@ -1,12 +1,25 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
-const ForgotPasswordConfirmation = () => {
+// Inner component that uses the hook
+const ConfirmationContent = () => {
   const searchParams = useSearchParams();
   const email = searchParams.get('email') || "your email";
 
+  return (
+    <p className="text-[#667085] font-geist text-base font-semibold leading-[120%] text-center w-[320px]">
+      If the email{" "}
+      <span className="text-[#101828] font-bold">{email}</span>{" "}
+      exists, you will receive a password recovery link within a
+      few minutes.
+    </p>
+  );
+};
+
+// Main page component
+const ForgotPasswordConfirmation = () => {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-[320px] flex flex-col gap-16">
@@ -23,12 +36,9 @@ const ForgotPasswordConfirmation = () => {
                   className="w-[84px] h-[64px]"
                 />
                 <div className="flex flex-col items-center gap-4">
-                  <p className="text-[#667085] font-geist text-base font-semibold leading-[120%] text-center w-[320px]">
-                    If the email{" "}
-                    <span className="text-[#101828] font-bold">{email}</span>{" "}
-                    exists, you will receive a password recovery link within a
-                    few minutes.
-                  </p>
+                  <Suspense fallback={<p className="text-[#667085] font-geist text-base font-semibold leading-[120%] text-center w-[320px]">Loading...</p>}>
+                    <ConfirmationContent />
+                  </Suspense>
                 </div>
               </div>
 

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useParams } from "next/navigation";
-import { DashboardLayout } from "@/components/layouts/DashboardLayout";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 export default function JobDetail() {
   const { id } = useParams<{ id: string }>();

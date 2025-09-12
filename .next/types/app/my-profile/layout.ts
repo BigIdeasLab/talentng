@@ -1,4 +1,4 @@
-// File: C:\Users\hecan\Documents\talentng-frontend\app\my-profile\layout.tsx
+// File: c:\Users\hecan\Documents\talentng-frontend\app\my-profile\layout.tsx
 import * as entry from '../../../../app/my-profile/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
