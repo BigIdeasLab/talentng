@@ -36,7 +36,7 @@ const HeroSection = () => {
         {/* Main Content */}
         <div className="flex flex-col items-center gap-6 md:gap-8 w-full">
           <div className="flex flex-col items-center gap-4 w-full">
-            <h1 className="text-black text-center font-geist text-3xl md:text-4xl lg:text-[58px] font-medium leading-[120%] max-w-full">
+            <h1 className="text-black text-center font-geist text-3xl md:text-4xl lg:text-[54px] font-medium leading-[120%] max-w-full">
               Unlock Your Potential with Talent.ng
             </h1>
             <p className="text-gray-500 text-center font-geist text-lg md:text-xl font-light leading-[160%] tracking-[0.2px] max-w-full">
