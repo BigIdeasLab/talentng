@@ -1,7 +1,9 @@
 {
-  "/learning-hub/page": "app/learning-hub/page.js",
-  "/mentorship/page": "app/mentorship/page.js",
-  "/opportunities/page": "app/opportunities/page.js",
+  "/page": "app/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/my-profile/page": "app/my-profile/page.js"
+  "/my-profile/page": "app/my-profile/page.js",
+  "/opportunities/page": "app/opportunities/page.js",
+  "/settings/page": "app/settings/page.js",
+  "/mentorship/page": "app/mentorship/page.js",
+  "/learning-hub/page": "app/learning-hub/page.js"
 }
