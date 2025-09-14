@@ -1,8 +1,6 @@
 import React from "react";
 import Header from "../components/Header";
-import HeroSection from "../components/HeroSection";
-import TalentShowcase from "../components/TalentShowcase";
-import CallToAction from "../components/CallToAction";
+import { HeroSection, TalentShowcase, CallToAction } from "@/components/landing-page";
 import Footer from "../components/Footer";
 
 export default function Index() {

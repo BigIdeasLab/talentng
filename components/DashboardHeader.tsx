@@ -16,7 +16,7 @@ export function DashboardHeader({ toggleSidebar }: { toggleSidebar: () => void }
     ? "Opportunities"
     : isOpportunitiesDetail
       ? "Opportunities"
-      : pathname.startsWith("/complete-profile")
+      : pathname.startsWith("/dashboard/complete-profile")
         ? "Complete Profile"
         : pathname.startsWith("/my-profile") || pathname.startsWith("/profile")
           ? "My Profile"
