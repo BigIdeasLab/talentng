@@ -1,18 +1,17 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+'use client';
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
-import apiClient from "@/lib/api";
-import { useDebounce } from "@/hooks/use-debounce";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import apiClient from '@/lib/api';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Form,
   FormControl,
@@ -20,82 +19,45 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 
-import { signUpSchema } from "@/lib/validations/auth";
+const signUpSchema = z.object({
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
+  password: z.string().min(8, 'Password must be at least 8 characters.'),
+});
 
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 
 const Signup = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [step, setStep] = useState(1); // 1 = email only, 2 = username + password
-
-  // State for username availability check
-  const [usernameInput, setUsernameInput] = useState("");
-  const debouncedUsername = useDebounce(usernameInput, 500);
-  const [usernameStatus, setUsernameStatus] = useState<
-    "idle" | "checking" | "available" | "taken"
-  >("idle");
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      username: "testuser",
-      email: "test@example.com",
-      password: "password123",
+      email: '',
+      password: '',
     },
   });
-
-  // Watch for username changes for availability check
-  useEffect(() => {
-    const checkUsername = async () => {
-      if (step === 2 && debouncedUsername.length >= 2) {
-        setUsernameStatus("checking");
-        try {
-          const isTaken = await apiClient<boolean>(
-            `/users/username-taken/${debouncedUsername}`,
-          );
-          setUsernameStatus(isTaken ? "taken" : "available");
-        } catch (error) {
-          setUsernameStatus("idle"); // Or handle error state
-        }
-      } else {
-        setUsernameStatus("idle");
-      }
-    };
-
-    checkUsername();
-  }, [debouncedUsername, step]);
 
   const mutation = useMutation({
     mutationFn: (data: SignUpFormValues) => {
-      return apiClient("/auth/register", {
-        method: "POST",
+      return apiClient('/auth/register', {
+        method: 'POST',
         body: data,
       });
     },
-    onSuccess: () => {
-      toast.success("Account created successfully!");
-      router.push("/login");
+    onSuccess: (data: any) => {
+      toast.success('Account created successfully!');
+      const { accessToken, userId } = data;
+      router.push(`/onboarding?userId=${userId}&accessToken=${accessToken}`);
     },
     onError: (error) => {
-      toast.error(error.message || "An error occurred. Please try again.");
+      toast.error(error.message || 'An error occurred. Please try again.');
     },
   });
 
-  const handleContinueWithEmail = async () => {
-    const isValid = await form.trigger("email");
-    if (isValid) {
-      setStep(2);
-    }
-  };
-
   const onSubmit = (data: SignUpFormValues) => {
-    if (usernameStatus !== "available") {
-      toast.error("Please choose an available username.");
-      return;
-    }
     mutation.mutate(data);
   };
 
@@ -130,118 +92,60 @@ const Signup = () => {
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="flex flex-col gap-4 w-full"
                 >
-                  {step === 1 && (
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            placeholder="Enter email"
+                            {...field}
+                            className="h-12 rounded-3xl border-gray-300 text-gray-600"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="relative">
                             <Input
-                              type="email"
-                              placeholder="Enter email"
+                              type={showPassword ? 'text' : 'password'}
+                              placeholder="Create a password"
                               {...field}
-                              className="h-12 rounded-3xl border-gray-300 text-gray-600"
+                              className="h-12 rounded-3xl border-gray-300 text-gray-600 pr-10"
                             />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
-
-                  {step === 2 && (
-                    <>
-                      <FormField
-                        control={form.control}
-                        name="username"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input
-                                placeholder="Enter username"
-                                {...field}
-                                onChange={(e) => {
-                                  field.onChange(e);
-                                  setUsernameInput(e.target.value);
-                                }}
-                                className="h-12 rounded-3xl border-gray-300 text-gray-600"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                            {usernameStatus === "checking" && (
-                              <p className="text-xs text-gray-500 flex items-center gap-1">
-                                <Loader2 className="h-3 w-3 animate-spin" />
-                                Checking...
-                              </p>
-                            )}
-                            {usernameStatus === "taken" && (
-                              <p className="text-xs text-red-500">
-                                Username is already taken.
-                              </p>
-                            )}
-                            {usernameStatus === "available" && (
-                              <p className="text-xs text-green-500">
-                                Username is available.
-                              </p>
-                            )}
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <div className="relative">
-                                <Input
-                                  type={showPassword ? "text" : "password"}
-                                  placeholder="Create a password"
-                                  {...field}
-                                  className="h-12 rounded-3xl border-gray-300 text-gray-600 pr-10"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => setShowPassword(!showPassword)}
-                                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500"
-                                >
-                                  {showPassword ? (
-                                    <EyeOff size={18} />
-                                  ) : (
-                                    <Eye size={18} />
-                                  )}
-                                </button>
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </>
-                  )}
-
-                  {step === 1 && (
-                    <Button
-                      type="button"
-                      onClick={handleContinueWithEmail}
-                      className="w-full rounded-3xl"
-                    >
-                      Continue with Email
-                    </Button>
-                  )}
-
-                  {step === 2 && (
-                    <Button
-                      type="submit"
-                      disabled={
-                        mutation.isPending || usernameStatus !== "available"
-                      }
-                      className="w-full rounded-3xl"
-                    >
-                      {mutation.isPending ? "Signing up..." : "Sign up"}
-                    </Button>
-                  )}
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword(!showPassword)}
+                              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500"
+                            >
+                              {showPassword ? (
+                                <EyeOff size={18} />
+                              ) : (
+                                <Eye size={18} />
+                              )}
+                            </button>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="submit"
+                    disabled={mutation.isPending}
+                    className="w-full rounded-3xl"
+                  >
+                    {mutation.isPending ? 'Signing up...' : 'Sign up'}
+                  </Button>
                 </form>
               </Form>
 
@@ -285,7 +189,7 @@ const Signup = () => {
           {/* Sign In Link */}
           <div className="text-center w-full">
             <span className="text-gray-500 font-geist text-base font-normal">
-              Already have an account?{" "}
+              Already have an account?{' '}
             </span>
             <Link
               href="/login"
@@ -299,7 +203,7 @@ const Signup = () => {
         {/* Terms */}
         <div className="text-center w-full">
           <span className="text-gray-600 font-geist text-sm font-normal">
-            By creating an account, you agree to our{" "}
+            By creating an account, you agree to our{' '}
           </span>
           <span className="text-gray-950 font-geist text-sm font-semibold">
             Terms and Conditions.

@@ -1,26 +1,26 @@
-"use client";
-import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "@/hooks/use-auth";
-import api from "@/lib/api";
-import { TalentProfile } from "@/lib/types/profile";
-import { useToast } from "@/components/ui/use-toast";
-import { Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { profileSchema, ProfileFormValues } from "@/lib/validations/profile";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+'use client';
+import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/hooks/use-auth';
+import api from '@/lib/api';
+import { TalentProfile } from '@/lib/types/profile';
+import { useToast } from '@/components/ui/use-toast';
+import { Loader2 } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { profileSchema, ProfileFormValues } from '@/lib/validations/profile';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   FormItem,
   FormLabel,
   FormControl,
   FormMessage,
   FormField,
-} from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+} from '@/components/ui/form';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
-type ProfileData = Omit<Partial<TalentProfile>, "skills"> & { skills?: string };
+type ProfileData = Omit<Partial<TalentProfile>, 'skills'> & { skills?: string };
 
 export default function MyProfilePage() {
   const { user, loading: authLoading } = useAuth();
@@ -29,8 +29,8 @@ export default function MyProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
 
   const { data: profile, isLoading } = useQuery<TalentProfile>({
-    queryKey: ["talent-profile", user?.id],
-    queryFn: () => api("/talent-profiles/me"),
+    queryKey: ['talent-profile', user?.id],
+    queryFn: () => api('/talent-profiles/me'),
     enabled: !!user,
   });
 
@@ -40,7 +40,7 @@ export default function MyProfilePage() {
     if (profile) {
       setProfileData({
         ...profile,
-        skills: Array.isArray(profile.skills) ? profile.skills.join(", ") : "",
+        skills: Array.isArray(profile.skills) ? profile.skills.join(', ') : '',
       });
     }
   }, [profile]);
@@ -50,29 +50,29 @@ export default function MyProfilePage() {
       const payload = {
         ...updatedProfile,
         skills:
-          typeof updatedProfile.skills === "string"
-            ? updatedProfile.skills.split(",").map((s) => s.trim())
+          typeof updatedProfile.skills === 'string'
+            ? updatedProfile.skills.split(',').map((s) => s.trim())
             : profile?.skills,
       };
-      return api("/talent-profiles/me", {
-        method: "PATCH",
+      return api('/talent-profiles/me', {
+        method: 'PATCH',
         body: payload,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["talent-profile", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['talent-profile', user?.id] });
       toast({
-        title: "Profile Updated",
-        description: "Your profile has been successfully updated.",
+        title: 'Profile Updated',
+        description: 'Your profile has been successfully updated.',
       });
       setIsEditing(false);
     },
     onError: (error) => {
-      console.error("Error updating profile:", error);
+      console.error('Error updating profile:', error);
       toast({
-        title: "Error",
-        description: "Failed to update profile. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update profile. Please try again.',
+        variant: 'destructive',
       });
     },
   });
@@ -95,7 +95,7 @@ export default function MyProfilePage() {
   };
 
   const handleAvailabilityChange = (
-    value: "full_time" | "part_time" | "freelance",
+    value: 'full_time' | 'part_time' | 'freelance',
   ) => {
     if (isEditing) {
       setProfileData((prev) => ({ ...prev, availability: value }));
@@ -104,7 +104,30 @@ export default function MyProfilePage() {
 
   const handleSaveChanges = (e: React.FormEvent) => {
     e.preventDefault();
-    mutation.mutate(profileData);
+
+    const filteredProfileData = Object.entries(profileData).reduce((acc, [key, value]) => {
+      if (value !== '') {
+        (acc as any)[key] = value;
+      }
+      return acc;
+    }, {} as ProfileData);
+
+    if (filteredProfileData.links) {
+      const filteredLinks = Object.entries(filteredProfileData.links).reduce((acc, [key, value]) => {
+        if (value !== '') {
+          (acc as any)[key] = value;
+        }
+        return acc;
+      }, {} as { [key: string]: string });
+
+      if (Object.keys(filteredLinks).length > 0) {
+        filteredProfileData.links = filteredLinks;
+      } else {
+        delete filteredProfileData.links;
+      }
+    }
+
+    mutation.mutate(filteredProfileData);
   };
 
   if (authLoading || isLoading) {
@@ -130,14 +153,14 @@ export default function MyProfilePage() {
                 disabled={!isEditing || mutation.isPending}
                 className="px-3.5 py-3.5 border border-gray-200 rounded-3xl bg-white text-black font-geist text-base font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
-                {mutation.isPending ? "Saving..." : "Save Changes"}
+                {mutation.isPending ? 'Saving...' : 'Save Changes'}
               </button>
               <button
                 type="button"
                 onClick={() => setIsEditing(!isEditing)}
                 className="flex items-center gap-2.5 px-3.5 py-3.5 rounded-3xl bg-black text-white font-geist text-base font-medium hover:bg-gray-900 transition-colors"
               >
-                {isEditing ? "Cancel" : "Edit"}
+                {isEditing ? 'Cancel' : 'Edit'}
                 {!isEditing && (
                   <svg
                     width="16"
@@ -208,7 +231,7 @@ export default function MyProfilePage() {
               id="fullname"
               type="text"
               placeholder="Full Name"
-              value={profileData.fullname || ""}
+              value={profileData.fullname || ''}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -219,7 +242,7 @@ export default function MyProfilePage() {
               id="talent"
               type="text"
               placeholder="Talent"
-              value={profileData.talent || ""}
+              value={profileData.talent || ''}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -229,7 +252,7 @@ export default function MyProfilePage() {
             <textarea
               id="bio"
               placeholder="Short Bio"
-              value={profileData.bio || ""}
+              value={profileData.bio || ''}
               onChange={handleInputChange}
               disabled={!isEditing}
               rows={4}
@@ -253,7 +276,7 @@ export default function MyProfilePage() {
               id="skills"
               type="text"
               placeholder="Skills (comma-separated)"
-              value={profileData.skills || ""}
+              value={profileData.skills || ''}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -264,7 +287,7 @@ export default function MyProfilePage() {
               id="headline"
               type="text"
               placeholder="Job Title / Headline"
-              value={profileData.headline || ""}
+              value={profileData.headline || ''}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -275,7 +298,7 @@ export default function MyProfilePage() {
               id="company"
               type="text"
               placeholder="Company"
-              value={profileData.company || ""}
+              value={profileData.company || ''}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -286,7 +309,7 @@ export default function MyProfilePage() {
               id="duration"
               type="text"
               placeholder="Duration (e.g., 2023 - Present)"
-              value={profileData.duration || ""}
+              value={profileData.duration || ''}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -296,7 +319,7 @@ export default function MyProfilePage() {
             <div className="relative">
               <select
                 id="workExperience"
-                value={profileData.workExperience || ""}
+                value={profileData.workExperience || ''}
                 onChange={handleInputChange}
                 disabled={!isEditing}
                 className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent appearance-none disabled:opacity-50"
@@ -314,7 +337,7 @@ export default function MyProfilePage() {
             <textarea
               id="description"
               placeholder="Description of your experience"
-              value={profileData.description || ""}
+              value={profileData.description || ''}
               onChange={handleInputChange}
               disabled={!isEditing}
               rows={4}
@@ -326,7 +349,7 @@ export default function MyProfilePage() {
               id="resumeUrl"
               type="text"
               placeholder="Portfolio/Resume URL"
-              value={profileData.resumeUrl || ""}
+              value={profileData.resumeUrl || ''}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -349,7 +372,7 @@ export default function MyProfilePage() {
               id="location"
               type="text"
               placeholder="Location (e.g., Lagos, Nigeria)"
-              value={profileData.location || ""}
+              value={profileData.location || ''}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -360,7 +383,7 @@ export default function MyProfilePage() {
               id="github"
               type="text"
               placeholder="GitHub URL"
-              value={profileData.links?.github || ""}
+              value={profileData.links?.github || ''}
               onChange={handleLinksChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -371,7 +394,7 @@ export default function MyProfilePage() {
               id="linkedin"
               type="text"
               placeholder="LinkedIn URL"
-              value={profileData.links?.linkedin || ""}
+              value={profileData.links?.linkedin || ''}
               onChange={handleLinksChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -386,17 +409,17 @@ export default function MyProfilePage() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => handleAvailabilityChange("full_time")}
+                    onClick={() => handleAvailabilityChange('full_time')}
                     disabled={!isEditing}
                     className="w-4.5 h-4.5 rounded-full border border-gray-500 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-black disabled:opacity-50"
                   >
-                    {profileData.availability === "full_time" && (
+                    {profileData.availability === 'full_time' && (
                       <div className="w-2.5 h-2.5 bg-gray-500 rounded-full"></div>
                     )}
                   </button>
                   <label
-                    onClick={() => handleAvailabilityChange("full_time")}
-                    className={`text-base font-medium text-gray-500 font-geist ${isEditing ? "cursor-pointer" : "cursor-default"}`}
+                    onClick={() => handleAvailabilityChange('full_time')}
+                    className={`text-base font-medium text-gray-500 font-geist ${isEditing ? 'cursor-pointer' : 'cursor-default'}`}
                   >
                     Full Time
                   </label>
@@ -404,17 +427,17 @@ export default function MyProfilePage() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => handleAvailabilityChange("part_time")}
+                    onClick={() => handleAvailabilityChange('part_time')}
                     disabled={!isEditing}
                     className="w-4.5 h-4.5 rounded-full border border-gray-500 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-black disabled:opacity-50"
                   >
-                    {profileData.availability === "part_time" && (
+                    {profileData.availability === 'part_time' && (
                       <div className="w-2.5 h-2.5 bg-gray-500 rounded-full"></div>
                     )}
                   </button>
                   <label
-                    onClick={() => handleAvailabilityChange("part_time")}
-                    className={`text-base font-medium text-gray-500 font-geist ${isEditing ? "cursor-pointer" : "cursor-default"}`}
+                    onClick={() => handleAvailabilityChange('part_time')}
+                    className={`text-base font-medium text-gray-500 font-geist ${isEditing ? 'cursor-pointer' : 'cursor-default'}`}
                   >
                     Part Time
                   </label>
@@ -422,17 +445,17 @@ export default function MyProfilePage() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => handleAvailabilityChange("freelance")}
+                    onClick={() => handleAvailabilityChange('freelance')}
                     disabled={!isEditing}
                     className="w-4.5 h-4.5 rounded-full border border-gray-500 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-black disabled:opacity-50"
                   >
-                    {profileData.availability === "freelance" && (
+                    {profileData.availability === 'freelance' && (
                       <div className="w-2.5 h-2.5 bg-gray-500 rounded-full"></div>
                     )}
                   </button>
                   <label
-                    onClick={() => handleAvailabilityChange("freelance")}
-                    className={`text-base font-medium text-gray-500 font-geist ${isEditing ? "cursor-pointer" : "cursor-default"}`}
+                    onClick={() => handleAvailabilityChange('freelance')}
+                    className={`text-base font-medium text-gray-500 font-geist ${isEditing ? 'cursor-pointer' : 'cursor-default'}`}
                   >
                     Contract
                   </label>
@@ -449,7 +472,7 @@ export default function MyProfilePage() {
             disabled={!isEditing || mutation.isPending}
             className="w-full py-3.5 bg-black text-white rounded-3xl font-geist text-base font-medium hover:bg-gray-900 transition-colors disabled:opacity-50"
           >
-            {mutation.isPending ? "Saving..." : "Save Changes"}
+            {mutation.isPending ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </form>

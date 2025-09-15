@@ -11,13 +11,25 @@ export default function JobDetail() {
     company: "ConnectNigeria",
     logo: "https://api.builder.io/api/v1/image/assets/TEMP/7dfd984246e9d925bd7d844d3a2bafcb1d24e1da?width=64",
     title: "Senior- Staff Product Engineer",
-    details: "Engineering, Full-time, Lagos, Nigeria 🇳🇬",
+    location: "Engineering, Full-time, Lagos, Nigeria 🇳🇬",
     postedDate: "Posted Sep 10, 2025",
-    budget: "₦ 800,000/m",
+    compensation: "₦ 800,000/m",
     tags: ["UI Designer", "UX Researcher", "Product Manager"],
-    jobDescription: `We are seeking enthusiastic and reliable Dispatch Riders to join our team.\n\nIn this role, you will be responsible for delivering packages or other items to customers in a timely and efficient manner.\n\nYou will play a crucial role in ensuring customer satisfaction and representing our brand positively.`,
-    keyResponsibilities: `Safely operate a motorcycle or other vehicle to deliver items to customers.\n\nDelivery of items to customers/clients\n\nNavigate through city streets efficiently to meet delivery deadlines.\n\nEnsure the accuracy of deliveries by double-checking items before departure.`,
-    jobQualifications: `Must possess a valid motorcycle license and have experience riding in urban environments.\n\nStrong time management skills and the ability to multitask under pressure are essential.`,
+    description: `We are seeking enthusiastic and reliable Dispatch Riders to join our team.
+
+In this role, you will be responsible for delivering packages or other items to customers in a timely and efficient manner.
+
+You will play a crucial role in ensuring customer satisfaction and representing our brand positively.`,
+    keyResponsibilities: `Safely operate a motorcycle or other vehicle to deliver items to customers.
+
+Delivery of items to customers/clients
+
+Navigate through city streets efficiently to meet delivery deadlines.
+
+Ensure the accuracy of deliveries by double-checking items before departure.`,
+    requirements: `Must possess a valid motorcycle license and have experience riding in urban environments.
+
+Strong time management skills and the ability to multitask under pressure are essential.`,
   };
 
   return (
@@ -42,7 +54,7 @@ export default function JobDetail() {
             </div>
 
             <h1 className="text-2xl font-bold text-black">{jobData.title}</h1>
-            <p className="text-base text-gray-700">{jobData.details}</p>
+            <p className="text-base text-gray-700">{jobData.location}</p>
 
             <div className="flex items-center gap-3">
               <button className="px-3 py-2 border rounded-full text-sm bg-white">
@@ -57,7 +69,7 @@ export default function JobDetail() {
           <section className="mt-6 p-6 border border-gray-200 rounded-2xl bg-white space-y-4">
             <h2 className="text-xl font-semibold">Description</h2>
             <div className="text-sm text-gray-700 whitespace-pre-line">
-              {jobData.jobDescription}
+              {jobData.description}
             </div>
 
             <h3 className="text-lg font-semibold mt-4">Key Responsibilities</h3>
@@ -65,17 +77,17 @@ export default function JobDetail() {
               {jobData.keyResponsibilities}
             </div>
 
-            <h3 className="text-lg font-semibold mt-4">Job Qualifications</h3>
+            <h3 className="text-lg font-semibold mt-4">Requirements</h3>
             <div className="text-sm text-gray-700 whitespace-pre-line">
-              {jobData.jobQualifications}
+              {jobData.requirements}
             </div>
           </section>
         </div>
 
         <aside className="w-full lg:w-80 space-y-4">
           <div className="p-6 border border-gray-200 rounded-2xl bg-white">
-            <h4 className="text-sm text-gray-500">Budget</h4>
-            <div className="text-xl font-bold">{jobData.budget}</div>
+            <h4 className="text-sm text-gray-500">Compensation</h4>
+            <div className="text-xl font-bold">{jobData.compensation}</div>
           </div>
 
           <div className="p-6 border border-gray-200 rounded-2xl bg-white">
