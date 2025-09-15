@@ -202,7 +202,7 @@ const Login = () => {
             {/* Google Sign In */}
             <button
               onClick={() => {
-                window.location.href = `${process.env.TALENTNG_API_URL}/auth/google`;
+                window.location.href = `${process.env.NEXT_PUBLIC_TALENTNG_API_URL}/auth/google`;
               }}
               className="flex items-center justify-center gap-2.5 px-[14px] py-[14px] rounded-3xl border border-gray-300 bg-white hover:bg-gray-50 transition-colors w-full"
             >
