@@ -1,12 +1,10 @@
 "use client";
 import React from "react";
-import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Bell, Briefcase, Share } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useParams } from "next/navigation";
+import { Briefcase, Share } from "lucide-react";
 
 export default function JobDetail() {
   const { id } = useParams<{ id: string }>();
-  const router = useRouter();
 
   const jobData = {
     id: parseInt(id || "1"),
@@ -35,39 +33,7 @@ export default function JobDetail() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
       <div className="flex flex-col px-4 sm:px-8 lg:px-10 py-8 max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-5">
-          <div className="flex items-center gap-2">
-            <button 
-              onClick={() => router.back()}
-              className="p-0 bg-transparent border-none cursor-pointer"
-            >
-              <ArrowLeft className="w-6 h-6 text-gray-900" />
-            </button>
-            <h1 className="text-2xl font-medium text-black font-geist">Opportunities</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="p-2.5 bg-gray-100 rounded-full">
-              <Bell className="w-6 h-6 text-gray-900" />
-            </div>
-            <div className="relative">
-              <div className="w-11 h-11 bg-gray-200 rounded-full flex items-center justify-center">
-                <span className="text-xl font-semibold text-black">P</span>
-              </div>
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gray-25 border border-gray-50 rounded-full flex items-center justify-center">
-                <svg className="w-2.5 h-2.5" viewBox="0 0 16 16" fill="none">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M5.64343 6.86148C5.76845 6.7365 5.93799 6.66629 6.11477 6.66629C6.29154 6.66629 6.46108 6.7365 6.5861 6.86148L8.0001 8.27548L9.4141 6.86148C9.53911 6.73639 9.70868 6.66608 9.88553 6.66602C10.0624 6.66595 10.232 6.73614 10.3571 6.86115C10.4822 6.98616 10.5525 7.15573 10.5526 7.33258C10.5526 7.50943 10.4824 7.67906 10.3574 7.80415L8.47143 9.69015C8.34641 9.81513 8.17688 9.88534 8.0001 9.88534C7.82332 9.88534 7.65379 9.81513 7.52877 9.69015L5.64343 7.80415C5.51845 7.67913 5.44824 7.50959 5.44824 7.33282C5.44824 7.15604 5.51845 6.9865 5.64343 6.86148Z" fill="#09244B"/>
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Divider */}
-        <div className="w-full h-px bg-gray-100 mb-8"></div>
-
-        {/* Main Content */}
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           {/* Job Card */}
           <div className="flex-none">
