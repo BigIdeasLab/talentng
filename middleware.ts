@@ -49,7 +49,9 @@ export async function middleware(request: NextRequest) {
   const jwtSecret = process.env.JWT_SECRET;
 
   if (!jwtSecret) {
-    console.error("JWT_SECRET is not set. Authentication checks will be skipped.");
+    console.error(
+      "JWT_SECRET is not set. Authentication checks will be skipped.",
+    );
     return NextResponse.next();
   }
 

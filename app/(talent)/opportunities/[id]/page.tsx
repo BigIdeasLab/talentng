@@ -72,11 +72,15 @@ export default function JobDetail() {
                 {/* Action Buttons */}
                 <div className="flex items-center gap-4">
                   <button className="flex items-center gap-1 px-3.5 py-3.5 border border-gray-200 bg-white rounded-full">
-                    <span className="text-sm font-medium text-black font-geist">Share with friends</span>
+                    <span className="text-sm font-medium text-black font-geist">
+                      Share with friends
+                    </span>
                     <Share className="w-4 h-4 text-gray-900" />
                   </button>
                   <button className="flex items-center gap-1 px-3.5 py-3.5 bg-black rounded-full">
-                    <span className="text-sm font-medium text-white font-geist">Apply</span>
+                    <span className="text-sm font-medium text-white font-geist">
+                      Apply
+                    </span>
                     <Briefcase className="w-4 h-4 text-white" />
                   </button>
                 </div>
@@ -84,7 +88,9 @@ export default function JobDetail() {
                 {/* Budget */}
                 <div className="pt-6">
                   <div className="mb-3">
-                    <span className="text-sm text-black font-geist">Budget</span>
+                    <span className="text-sm text-black font-geist">
+                      Budget
+                    </span>
                   </div>
                   <div className="text-xl font-bold text-black font-geist">
                     {jobData.budget}
@@ -113,11 +119,15 @@ export default function JobDetail() {
 
           {/* Description Section */}
           <div className="flex-1 max-w-[649px] space-y-10">
-            <h2 className="text-2xl font-semibold text-black font-geist">Description</h2>
-            
+            <h2 className="text-2xl font-semibold text-black font-geist">
+              Description
+            </h2>
+
             {/* Job Description */}
             <div className="space-y-4">
-              <h3 className="text-xl text-black font-geist">Job Description:</h3>
+              <h3 className="text-xl text-black font-geist">
+                Job Description:
+              </h3>
               <div className="text-base text-black font-geist leading-[25.6px] whitespace-pre-line">
                 {jobData.jobDescription}
               </div>
@@ -125,7 +135,9 @@ export default function JobDetail() {
 
             {/* Key Responsibilities */}
             <div className="space-y-4">
-              <h3 className="text-xl text-black font-geist">Key Responsibilities:</h3>
+              <h3 className="text-xl text-black font-geist">
+                Key Responsibilities:
+              </h3>
               <div className="text-base text-black font-geist leading-[25.6px] whitespace-pre-line">
                 {jobData.keyResponsibilities}
               </div>
@@ -133,7 +145,9 @@ export default function JobDetail() {
 
             {/* Job Qualifications */}
             <div className="space-y-4">
-              <h3 className="text-xl text-black font-geist">Job Qualifications:</h3>
+              <h3 className="text-xl text-black font-geist">
+                Job Qualifications:
+              </h3>
               <div className="text-base text-black font-geist leading-[25.6px] whitespace-pre-line">
                 {jobData.jobQualifications}
               </div>
