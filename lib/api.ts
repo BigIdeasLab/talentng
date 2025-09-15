@@ -1,4 +1,5 @@
 import { getCookie } from "@/lib/utils";
+import { Opportunity } from "./types/opportunity";
 
 const baseUrl = process.env.NEXT_PUBLIC_TALENTNG_API_URL;
 
@@ -57,3 +58,37 @@ const apiClient = async <T>(
 };
 
 export default apiClient;
+
+interface GetOpportunitiesParams {
+  q?: string;
+  type?: string;
+  title?: string;
+  location?: string;
+  tags?: string;
+  status?: string;
+  orgId?: string;
+  postedById?: string;
+  isFeatured?: boolean;
+}
+
+export const getOpportunities = async (
+  params?: GetOpportunitiesParams,
+): Promise<Opportunity[]> => {
+  const query = new URLSearchParams();
+  if (params) {
+    for (const key in params) {
+      const value = params[key as keyof GetOpportunitiesParams];
+      if (value !== undefined && value !== null) {
+        query.append(key, String(value));
+      }
+    }
+  }
+  const queryString = query.toString();
+  const endpoint = `/opportunities${queryString ? `?${queryString}` : ""}`;
+  return apiClient<Opportunity[]>(endpoint);
+};
+
+export const getOpportunityById = async (id: string): Promise<Opportunity> => {
+  const endpoint = `/opportunities/${id}`;
+  return apiClient<Opportunity>(endpoint);
+};

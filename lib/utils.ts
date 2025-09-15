@@ -40,6 +40,13 @@ export function getCookie(name: string): string | null {
   return null;
 }
 
+export function deleteCookie(name: string) {
+  if (typeof document === 'undefined') {
+    return;
+  }
+  document.cookie = `${name}=; Max-Age=0; path=/`;
+}
+
 export function formatDateForDisplay(dateString: string): string {
   const date = new Date(dateString);
   const options: Intl.DateTimeFormatOptions = {

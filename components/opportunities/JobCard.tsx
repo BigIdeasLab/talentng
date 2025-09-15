@@ -2,21 +2,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 
-interface JobCardProps {
-  id: number;
-  company: string;
-  logo: string;
-  title: string;
-  location: string;
-  type?: string;
-  talent: {
-    name: string;
-    avatar: string;
-    verified: boolean;
-  };
-  onShare?: (jobId: number) => void;
-  onApply?: (jobId: number) => void;
-}
+import { JobCardProps } from "@/lib/types/opportunity";
 
 export const JobCard: React.FC<JobCardProps> = ({
   id,

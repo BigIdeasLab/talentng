@@ -1,10 +1,34 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Briefcase, Share } from "lucide-react";
+import { getOpportunityById } from "@/lib/api";
+import { Opportunity } from "@/lib/types/opportunity";
 
 export default function JobDetail() {
   const { id } = useParams<{ id: string }>();
+  const [jobData, setJobData] = useState<Opportunity | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchJob = async () => {
+      if (!id) return;
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await getOpportunityById(id);
+        setJobData(data);
+      } catch (err) {
+        setError("Failed to fetch job details.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJob();
+  }, [id]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -16,33 +40,17 @@ export default function JobDetail() {
     return `Posted ${date.toLocaleDateString("en-US", options)}`;
   };
 
-  const jobData = {
-    id: "9a966d06-60ed-4e54-8d06-4e3a2b4987a1",
-    company: "ConnectNigeria",
-    logo: "https://api.builder.io/api/v1/image/assets/TEMP/7dfd984246e9d925bd7d844d3a2bafcb1d24e1da?width=64",
-    title: "Senior- Staff Product Engineer",
-    location: "Lagos, Nigeria 🇳🇬",
-    type: "job",
-    employmentType: "Full-time",
-    createdAt: "2025-09-15T21:37:47.375Z",
-    compensation: "₦ 800,000/m",
-    tags: ["UI Designer", "UX Researcher", "Product Manager"],
-    description: `We are seeking enthusiastic and reliable Dispatch Riders to join our team.
-• In this role, you will be responsible for delivering packages or other items to customers in a timely and efficient manner.
-• You will play a crucial role in ensuring customer satisfaction and representing our brand positively.`,
-    keyResponsibilities: `Safely operate a motorcycle or other vehicle to deliver items to customers.
-• Delivery of items to customers/clients
-• Navigate through city streets efficiently to meet delivery deadlines.
-• Ensure the accuracy of deliveries by double-checking items before departure.
-• Maintain a professional demeanor and provide excellent customer service during interactions.
-• Follow safety regulations and traffic laws at all times.
-• Keep the delivery vehicle clean and in good working condition.
-• Handle cash or digital payment transactions as required.
-• Report any issues or delays to management promptly.`,
-    requirements: `• Must possess a valid motorcycle license and have experience riding in urban environments.
-• Strong time management skills and the ability to multitask under pressure are essential.`,
-    status: "active",
-  };
+  if (loading) {
+    return <div className="min-h-screen bg-white p-4">Loading job details...</div>;
+  }
+
+  if (error) {
+    return <div className="min-h-screen bg-white p-4 text-red-500">Error: {error}</div>;
+  }
+
+  if (!jobData) {
+    return <div className="min-h-screen bg-white p-4">Job not found.</div>;
+  }
 
   return (
     <div className="min-h-screen bg-white">
