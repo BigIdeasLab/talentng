@@ -1,9 +1,9 @@
 import { getCookie } from "@/lib/utils";
 
-const baseUrl = process.env.TALENTNG_API_URL;
+const baseUrl = process.env.NEXT_PUBLIC_TALENTNG_API_URL;
 
 if (!baseUrl) {
-  throw new Error("Missing TALENTNG_API_URL environment variable");
+  throw new Error("Missing NEXT_PUBLIC_TALENTNG_API_URL environment variable");
 }
 
 type ApiOptions = {
