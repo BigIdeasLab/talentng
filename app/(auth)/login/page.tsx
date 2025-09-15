@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
@@ -59,7 +59,7 @@ const Login = () => {
 
         const decodedToken = decodeJwt(accessToken);
         if (decodedToken) {
-          if (!user.username) { 
+          if (!user.username) {
             router.push("/set-username");
           } else if (decodedToken.role === "general") {
             router.push("/select-role");
@@ -110,7 +110,10 @@ const Login = () => {
 
               {/* Form Fields */}
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 w-full">
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="flex flex-col gap-4 w-full"
+                >
                   <FormField
                     control={form.control}
                     name="email"
@@ -147,7 +150,11 @@ const Login = () => {
                               onClick={() => setShowPassword(!showPassword)}
                               className="ml-2 text-gray-500"
                             >
-                              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                              {showPassword ? (
+                                <EyeOff size={18} />
+                              ) : (
+                                <Eye size={18} />
+                              )}
                             </button>
                           </div>
                         </FormControl>
@@ -195,7 +202,7 @@ const Login = () => {
             {/* Google Sign In */}
             <button
               onClick={() => {
-                window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
+                window.location.href = `${process.env.TALENTNG_API_URL}/auth/google`;
               }}
               className="flex items-center justify-center gap-2.5 px-[14px] py-[14px] rounded-3xl border border-gray-300 bg-white hover:bg-gray-50 transition-colors w-full"
             >

@@ -1,31 +1,35 @@
 import { getCookie } from "@/lib/utils";
 
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const baseUrl = process.env.TALENTNG_API_URL;
 
 if (!baseUrl) {
-  throw new Error("Missing NEXT_PUBLIC_API_BASE_URL environment variable");
+  throw new Error("Missing TALENTNG_API_URL environment variable");
 }
 
 type ApiOptions = {
   headers?: Record<string, string>;
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: any;
 };
 
-const apiClient = async <T>(endpoint: string, options: ApiOptions = {}): Promise<T> => {
-  const { headers = {}, method = 'GET', body } = options;
-  const token = getCookie('accessToken');
+const apiClient = async <T>(
+  endpoint: string,
+  options: ApiOptions = {},
+): Promise<T> => {
+  const { headers = {}, method = "GET", body } = options;
+  const token = getCookie("accessToken");
 
   const config: RequestInit = {
     method,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...headers,
     },
   };
 
   if (token) {
-    (config.headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
+    (config.headers as Record<string, string>)["Authorization"] =
+      `Bearer ${token}`;
   }
 
   if (body) {
@@ -35,8 +39,12 @@ const apiClient = async <T>(endpoint: string, options: ApiOptions = {}): Promise
   const response = await fetch(`${baseUrl}${endpoint}`, config);
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ message: response.statusText }));
-    throw new Error(errorData.message || 'An error occurred during the API request.');
+    const errorData = await response
+      .json()
+      .catch(() => ({ message: response.statusText }));
+    throw new Error(
+      errorData.message || "An error occurred during the API request.",
+    );
   }
 
   // Handle cases where the response body might be empty

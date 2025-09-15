@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -261,7 +261,7 @@ const Signup = () => {
             {/* Google Sign Up */}
             <button
               onClick={() => {
-                window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
+                window.location.href = `${process.env.TALENTNG_API_URL}/auth/google`;
               }}
               className="flex items-center justify-center gap-2.5 px-[14px] py-[14px] rounded-3xl border border-gray-300 bg-white hover:bg-gray-50 transition-colors w-full"
             >
