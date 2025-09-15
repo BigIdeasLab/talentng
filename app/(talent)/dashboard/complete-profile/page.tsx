@@ -1,6 +1,8 @@
 "use client";
+
 import React, { useState } from "react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { FormProvider } from "react-hook-form";
 import { BasicInfoStep } from "@/components/CompleteProfile/BasicInfoStep";
 import { SkillsExperienceStep } from "@/components/CompleteProfile/SkillsExperienceStep";
 import { AvailabilityLocationStep } from "@/components/CompleteProfile/AvailabilityLocationStep";
@@ -38,9 +40,22 @@ export default function CompleteProfile() {
     if (currentStep === 1) {
       isValid = await form.trigger(["fullname", "bio"]);
     } else if (currentStep === 2) {
-      isValid = await form.trigger(["skills", "workExperience", "company", "duration", "description"]);
+      isValid = await form.trigger([
+        "skills",
+        "workExperience",
+        "company",
+        "duration",
+        "description",
+      ]);
     } else if (currentStep === 3) {
-      isValid = await form.trigger(["availability", "location", "links", "portfolioItems", "resumeUrl", "visibility"]);
+      isValid = await form.trigger([
+        "availability",
+        "location",
+        "links",
+        "portfolioItems",
+        "resumeUrl",
+        "visibility",
+      ]);
     }
 
     if (isValid && currentStep < 3) {
@@ -77,28 +92,21 @@ export default function CompleteProfile() {
           </p>
         </div>
 
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          {currentStep === 1 && (
-            <BasicInfoStep
-              form={form}
-              onNext={handleNext}
-            />
-          )}
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            {currentStep === 1 && (
+              <BasicInfoStep form={form} onNext={handleNext} />
+            )}
 
-          {currentStep === 2 && (
-            <SkillsExperienceStep
-              form={form}
-              onNext={handleNext}
-            />
-          )}
+            {currentStep === 2 && (
+              <SkillsExperienceStep form={form} onNext={handleNext} />
+            )}
 
-          {currentStep === 3 && (
-            <AvailabilityLocationStep
-              form={form}
-              onNext={handleNext}
-            />
-          )}
-        </form>
+            {currentStep === 3 && (
+              <AvailabilityLocationStep form={form} onNext={handleNext} />
+            )}
+          </form>
+        </FormProvider>
       </div>
     </div>
   );

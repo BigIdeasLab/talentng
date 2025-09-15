@@ -1,115 +1,113 @@
 import React from "react";
-import { useRouter } from "next/navigation";
+import { UseFormReturn } from "react-hook-form";
+import { ProfileFormValues } from "@/lib/validations/profile";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface AvailabilityLocationStepProps {
-  formData: any;
-  updateFormData: (field: string, value: any) => void;
-  onSubmit: () => void;
+  form: UseFormReturn<ProfileFormValues>;
+  onNext: () => void;
 }
 
-export function AvailabilityLocationStep({ formData, updateFormData, onSubmit }: AvailabilityLocationStepProps) {
-  const router = useRouter();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit();
-    // Navigate back to dashboard after successful submission
-    router.push("/dashboard");
-  };
-
-  const handleAvailabilityChange = (value: "full-time" | "part-time" | "freelance") => {
-    updateFormData("availability", value);
-  };
+export function AvailabilityLocationStep({ form, onNext }: AvailabilityLocationStepProps) {
+  const { handleSubmit, control } = form;
 
   return (
     <div className="space-y-8">
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit(onNext)} className="space-y-6">
         {/* Location Input */}
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Location"
-            value={formData.location}
-            onChange={(e) => updateFormData("location", e.target.value)}
-            className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-          />
-        </div>
+        <FormField
+          control={control}
+          name="location"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Location</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Location"
+                  {...field}
+                  className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         {/* Contact Info Input */}
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Contact Info (email, phone, social links like LinkedIn, Behance, GitHub)"
-            value={formData.contactInfo}
-            onChange={(e) => updateFormData("contactInfo", e.target.value)}
-            className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-          />
-        </div>
+        <FormField
+          control={control}
+          name="links"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Contact Info</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Contact Info (email, phone, social links like LinkedIn, Behance, GitHub)"
+                  {...field}
+                  className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         {/* Availability Section */}
-        <div className="space-y-4">
-          <h3 className="text-base font-semibold text-gray-950 font-geist">Availability</h3>
-          
-          <div className="space-y-4">
-            {/* Full Time Option */}
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => handleAvailabilityChange("full-time")}
-                className="w-4.5 h-4.5 rounded-full border border-gray-500 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-black"
-              >
-                {formData.availability === "full-time" && (
-                  <div className="w-2.5 h-2.5 bg-gray-500 rounded-full"></div>
-                )}
-              </button>
-              <label 
-                onClick={() => handleAvailabilityChange("full-time")}
-                className="text-base font-medium text-gray-500 font-geist cursor-pointer"
-              >
-                Full Time
-              </label>
-            </div>
-
-            {/* Part Time Option */}
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => handleAvailabilityChange("part-time")}
-                className="w-4.5 h-4.5 rounded-full border border-gray-500 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-black"
-              >
-                {formData.availability === "part-time" && (
-                  <div className="w-2.5 h-2.5 bg-gray-500 rounded-full"></div>
-                )}
-              </button>
-              <label 
-                onClick={() => handleAvailabilityChange("part-time")}
-                className="text-base font-medium text-gray-500 font-geist cursor-pointer"
-              >
-                Part Time
-              </label>
-            </div>
-
-            {/* Freelance Option */}
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => handleAvailabilityChange("freelance")}
-                className="w-4.5 h-4.5 rounded-full border border-gray-500 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-black"
-              >
-                {formData.availability === "freelance" && (
-                  <div className="w-2.5 h-2.5 bg-gray-500 rounded-full"></div>
-                )}
-              </button>
-              <label 
-                onClick={() => handleAvailabilityChange("freelance")}
-                className="text-base font-medium text-gray-500 font-geist cursor-pointer"
-              >
-                Freelance
-              </label>
-            </div>
-          </div>
-        </div>
+        {/*
+        <FormField
+          control={control}
+          name="availability"
+          render={({ field }) => (
+            <FormItem className="space-y-4">
+              <FormLabel className="text-base font-semibold text-gray-950 font-geist">Availability</FormLabel>
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="flex flex-col space-y-4"
+                >
+                  <FormItem className="flex items-center space-x-2 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="full-time" />
+                    </FormControl>
+                    <FormLabel className="text-base font-medium text-gray-500 font-geist cursor-pointer">
+                      Full Time
+                    </FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-2 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="part-time" />
+                    </FormControl>
+                    <FormLabel className="text-base font-medium text-gray-500 font-geist cursor-pointer">
+                      Part Time
+                    </FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-2 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="freelance" />
+                    </FormControl>
+                    <FormLabel className="text-base font-medium text-gray-500 font-geist cursor-pointer">
+                      Freelance
+                    </FormLabel>
+                  </FormItem>
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        */}
 
         {/* Submit Button */}
         <div className="pt-2">

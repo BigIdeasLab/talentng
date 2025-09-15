@@ -1,22 +1,30 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { BasicInfoStep } from "@/components/CompleteProfile/BasicInfoStep";
 import { useMutation } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { profileSchema, ProfileFormValues } from "@/lib/validations/profile";
+import { Form } from "@/components/ui/form";
 
 export default function CreateProfile() {
   const router = useRouter();
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    fullname: "",
-    talent: "",
-    bio: "",
+
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      fullname: "",
+      talent: "",
+      bio: "",
+    },
   });
 
   const mutation = useMutation({
-    mutationFn: (newProfile: typeof formData) => {
+    mutationFn: (newProfile: ProfileFormValues) => {
       return api("/talent-profiles/me", {
         method: "POST",
         body: newProfile,
@@ -39,44 +47,9 @@ export default function CreateProfile() {
     },
   });
 
-  const handleSubmit = () => {
-    console.log("Submitting form data:", formData);
-
-    // Validate fullname
-    if (!formData.fullname || formData.fullname.length < 2 || formData.fullname.length > 100) {
-      toast({
-        title: "Validation Error",
-        description: "Full name must be between 2 and 100 characters.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validate bio
-    if (formData.bio && (formData.bio.length < 10 || formData.bio.length > 100)) {
-      toast({
-        title: "Validation Error",
-        description: "Bio must be between 10 and 100 characters if provided.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validate talent
-    if (!formData.talent || formData.talent.length < 2 || formData.talent.length > 100) {
-      toast({
-        title: "Validation Error",
-        description: "Talent must be between 2 and 100 characters.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    mutation.mutate(formData);
-  };
-
-  const updateFormData = (field: string, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const onSubmit = (values: ProfileFormValues) => {
+    console.log("Submitting form data:", values);
+    mutation.mutate(values);
   };
 
   return (
@@ -91,12 +64,11 @@ export default function CreateProfile() {
           </p>
         </div>
 
-        <BasicInfoStep
-          formData={formData}
-          updateFormData={updateFormData}
-          onNext={handleSubmit}
-          isLoading={mutation.isPending}
-        />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <BasicInfoStep form={form} onNext={form.handleSubmit(onSubmit)} />
+          </form>
+        </Form>
       </div>
     </div>
   );

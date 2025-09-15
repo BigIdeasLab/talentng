@@ -105,6 +105,7 @@ const SetUsernamePage = () => {
       } else {
         setUsernameStatus("idle");
       }
+    } // Added this closing brace
     };
 
     checkUsername();
