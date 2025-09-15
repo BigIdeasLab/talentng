@@ -9,6 +9,8 @@ import * as z from "zod";
 
 import apiClient from "@/lib/api";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
+import { getCookie } from "@/lib/utils";
 
 const roleSchema = z.object({
   role: z.enum(["talent", "mentor"], {
@@ -21,46 +23,44 @@ type RoleFormValues = z.infer<typeof roleSchema>;
 const SelectRolePage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [userId, setUserId] = useState<string | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [selectedRole, setSelectedRole] = useState<"talent" | "mentor" | null>(null);
+  const { user, loading, refetchUser } = useAuth();
+  const [selectedRole, setSelectedRole] = useState<"talent" | "mentor" | null>(
+    null,
+  );
 
   useEffect(() => {
-    const urlUserId = searchParams.get("userId");
     const urlAccessToken = searchParams.get("accessToken");
-
-    if (urlUserId && urlAccessToken) {
-      setUserId(urlUserId);
-      setAccessToken(urlAccessToken);
-      localStorage.setItem("accessToken", urlAccessToken); // Store access token
-    } else {
-      // If parameters are missing, try to get from localStorage (for direct access or refresh)
-      const storedAccessToken = localStorage.getItem("accessToken");
-      if (storedAccessToken) {
-        setAccessToken(storedAccessToken);
-      } else {
-        toast.error("Missing user information. Please log in again.");
-        router.push("/login");
+    if (urlAccessToken) {
+      const existingToken = getCookie("accessToken");
+      if (urlAccessToken !== existingToken) {
+        document.cookie = `accessToken=${urlAccessToken}; path=/; max-age=604800; samesite=lax`;
+        refetchUser();
+        return;
       }
     }
-  }, [searchParams, router]);
+
+    if (!loading && user && user.role !== "general") {
+      router.push("/dashboard");
+    }
+  }, [user, loading, router, searchParams, refetchUser]);
 
   const setRoleMutation = useMutation({
     mutationFn: (role: "talent" | "mentor") => {
-      if (!accessToken) {
-        throw new Error("Access Token is missing.");
-      }
       return apiClient("/users/me/role", {
         method: "PATCH",
         body: { role },
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
       });
     },
     onSuccess: () => {
       toast.success("Role set successfully!");
-      router.push("/dashboard"); // Redirect to dashboard after setting role
+      refetchUser(); // Refetch user data to update the role in context
+      if (selectedRole === "talent") {
+        router.push("/create-profile");
+      } else if (selectedRole === "mentor") {
+        router.push("/mentor/create-profile"); // Placeholder for mentor profile creation
+      } else {
+        router.push("/dashboard"); // Fallback, though ideally all roles handled
+      }
     },
     onError: (error) => {
       toast.error(error.message || "Failed to set role. Please try again.");
@@ -72,7 +72,7 @@ const SelectRolePage = () => {
     setRoleMutation.mutate(role);
   };
 
-  if (!accessToken) {
+  if (loading || !user) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-gray-500" />

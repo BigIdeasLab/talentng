@@ -76,7 +76,6 @@ const SetUsernamePage = () => {
     if (urlUserId && urlAccessToken) {
       setUserId(urlUserId);
       setAccessToken(urlAccessToken);
-      localStorage.setItem("accessToken", urlAccessToken); // Store access token
     } else {
       // If parameters are missing, redirect to login or an error page
       toast.error("Missing user information. Please try logging in again.");
@@ -88,9 +87,10 @@ const SetUsernamePage = () => {
   useEffect(() => {
     const checkUsername = async () => {
       // Get current validation state from react-hook-form
-      const isValid = await form.trigger("username"); // Manually trigger validation
+      if (debouncedUsername.length > 0) { // Only proceed if usernameInput is not empty
+        const isValid = await form.trigger("username"); // Manually trigger validation
 
-      if (debouncedUsername.length >= 2 && isValid) {
+        if (debouncedUsername.length >= 2 && isValid) {
         // Only proceed if valid
         setUsernameStatus("checking");
         try {
@@ -125,7 +125,7 @@ const SetUsernamePage = () => {
     },
     onSuccess: () => {
       toast.success("Username set successfully!");
-      router.push("/select-role"); // Redirect to select-role page after setting username
+      router.push(`/select-role?accessToken=${accessToken}`); // Redirect to select-role page after setting username
     },
     onError: (error) => {
       toast.error(error.message || "Failed to set username. Please try again.");

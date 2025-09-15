@@ -1,3 +1,5 @@
+import { getCookie } from "@/lib/utils";
+
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 if (!baseUrl) {
@@ -12,6 +14,7 @@ type ApiOptions = {
 
 const apiClient = async <T>(endpoint: string, options: ApiOptions = {}): Promise<T> => {
   const { headers = {}, method = 'GET', body } = options;
+  const token = getCookie('accessToken');
 
   const config: RequestInit = {
     method,
@@ -20,6 +23,10 @@ const apiClient = async <T>(endpoint: string, options: ApiOptions = {}): Promise
       ...headers,
     },
   };
+
+  if (token) {
+    (config.headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
+  }
 
   if (body) {
     config.body = JSON.stringify(body);

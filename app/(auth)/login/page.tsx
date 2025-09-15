@@ -1,12 +1,87 @@
-"use client";
+'use client';
 import React, { useState } from "react";
 import Link from "next/link";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { decodeJwt } from "@/lib/utils";
+
+import apiClient from "@/lib/api";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+
+import { LoginResponse } from "@/lib/types/auth";
+
+const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email address."),
+  password: z.string().min(1, "Password is required."),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 const Login = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const loginMutation = useMutation<LoginResponse, Error, LoginFormValues>({
+    mutationFn: async (data: LoginFormValues) => {
+      const response = await apiClient<LoginResponse>("/auth/login", {
+        method: "POST",
+        body: data,
+      });
+      return response;
+    },
+    onSuccess: (response) => {
+      const { accessToken, user } = response;
+      if (accessToken) {
+        // Set cookie instead of localStorage
+        document.cookie = `accessToken=${accessToken}; path=/; max-age=604800; samesite=lax`; // 7 days
+        toast.success("Login successful!");
+
+        const decodedToken = decodeJwt(accessToken);
+        if (decodedToken) {
+          if (!user.username) { 
+            router.push("/set-username");
+          } else if (decodedToken.role === "general") {
+            router.push("/select-role");
+          } else {
+            router.push("/dashboard");
+          }
+        } else {
+          toast.error("Could not decode token. Please try logging in again.");
+          router.push("/dashboard");
+        }
+      } else {
+        toast.error("Login failed: No access token received.");
+      }
+    },
+    onError: (error) => {
+      toast.error(error.message || "Login failed. Please try again.");
+    },
+  });
+
+  const onSubmit = (data: LoginFormValues) => {
+    loginMutation.mutate(data);
+  };
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
@@ -34,52 +109,76 @@ const Login = () => {
               </div>
 
               {/* Form Fields */}
-              <div className="flex flex-col gap-4 w-full">
-                <div className="flex items-center gap-2.5 px-[14px] py-[14px] rounded-3xl border border-gray-300 bg-white">
-                  <input
-                    type="email"
-                    placeholder="Enter email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="flex-1 text-gray-500 font-geist text-base font-medium bg-transparent border-none outline-none placeholder:text-gray-500"
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 w-full">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            placeholder="Enter email"
+                            {...field}
+                            className="h-12 rounded-3xl border-gray-300 text-gray-600"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
 
-                <div className="flex items-center justify-between px-[14px] py-[14px] rounded-3xl border border-gray-300 bg-white">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="flex-1 text-gray-500 font-geist text-base font-medium bg-transparent border-none outline-none placeholder:text-gray-500"
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex items-center justify-between px-[14px] h-12 rounded-3xl border border-gray-300 bg-white">
+                            <Input
+                              type={showPassword ? "text" : "password"}
+                              placeholder="Enter password"
+                              {...field}
+                              className="flex-1 text-gray-500 font-geist text-base font-medium bg-transparent border-none outline-none placeholder:text-gray-500"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword(!showPassword)}
+                              className="ml-2 text-gray-500"
+                            >
+                              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="ml-2 text-gray-500"
+
+                  {/* Forgot Password Link */}
+                  <div className="text-right">
+                    <Link
+                      href="/forgot-password"
+                      className="text-gray-500 font-geist text-sm font-medium hover:text-gray-700 transition-colors underline"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={loginMutation.isPending}
+                    className="flex items-center justify-center gap-2.5 px-[14px] py-[14px] rounded-3xl bg-black text-white font-geist text-base font-medium hover:bg-gray-800 transition-colors"
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </div>
-
-                {/* Forgot Password Link */}
-                <div className="text-right">
-                  <Link
-                    href="/forgot-password"
-                    className="text-gray-500 font-geist text-sm font-medium hover:text-gray-700 transition-colors underline"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-
-                <Link
-                  href="/dashboard"
-                  className="flex items-center justify-center gap-2.5 px-[14px] py-[14px] rounded-3xl bg-black text-white font-geist text-base font-medium hover:bg-gray-800 transition-colors"
-                >
-                  Sign in
-                </Link>
-              </div>
-
+                    {loginMutation.isPending ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      "Sign in"
+                    )}
+                  </Button>
+                </form>
+              </Form>
               {/* Divider */}
               <svg
                 width="320"
@@ -94,7 +193,12 @@ const Login = () => {
             </div>
 
             {/* Google Sign In */}
-            <button className="flex items-center justify-center gap-2.5 px-[14px] py-[14px] rounded-3xl border border-gray-300 bg-white hover:bg-gray-50 transition-colors w-full">
+            <button
+              onClick={() => {
+                window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
+              }}
+              className="flex items-center justify-center gap-2.5 px-[14px] py-[14px] rounded-3xl border border-gray-300 bg-white hover:bg-gray-50 transition-colors w-full"
+            >
               <div className="flex items-center gap-2">
                 <svg
                   width="20"
