@@ -10,6 +10,7 @@ const protectedRoutes = [
   '/my-profile',
   '/opportunities',
   '/settings',
+  '/set-username',
 ];
 
 const authRoutes = [
@@ -19,7 +20,7 @@ const authRoutes = [
   '/forgot-password-confirmation',
   '/reset-password',
   '/select-role',
-  '/set-username',
+  '/create-profile',
 ];
 
 const isProtectedRoute = (pathname: string) => {
@@ -42,8 +43,25 @@ async function verifyToken(token: string, secret: string) {
 }
 
 export async function middleware(request: NextRequest) {
+  const { pathname, searchParams } = request.nextUrl;
+  const accessToken = searchParams.get('accessToken');
+
+  // If accessToken is in query params, set it as a cookie and redirect
+  if (accessToken) {
+    const url = request.nextUrl.clone();
+    url.searchParams.delete('accessToken');
+    const response = NextResponse.redirect(url);
+    response.cookies.set('accessToken', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    });
+    return response;
+  }
+
+  console.log(request.nextUrl.pathname);
   const token = request.cookies.get('accessToken')?.value;
-  const { pathname } = request.nextUrl;
   const jwtSecret = process.env.JWT_SECRET;
 
   if (isProtectedRoute(pathname)) {

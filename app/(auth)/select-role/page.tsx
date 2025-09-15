@@ -40,7 +40,13 @@ const SelectRolePage = () => {
     }
 
     if (!loading && user && user.role !== "general") {
-      router.push("/dashboard");
+      if (user.role === "talent") {
+        router.push("/create-profile");
+      } else if (user.role === "mentor") {
+        router.push("/mentor/create-profile");
+      } else {
+        router.push("/dashboard");
+      }
     }
   }, [user, loading, router, searchParams, refetchUser]);
 
@@ -53,7 +59,6 @@ const SelectRolePage = () => {
     },
     onSuccess: () => {
       toast.success("Role set successfully!");
-      refetchUser(); // Refetch user data to update the role in context
       if (selectedRole === "talent") {
         router.push("/create-profile");
       } else if (selectedRole === "mentor") {
