@@ -6,16 +6,28 @@ import { Briefcase, Share } from "lucide-react";
 export default function JobDetail() {
   const { id } = useParams<{ id: string }>();
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
+    return `Posted ${date.toLocaleDateString("en-US", options)}`;
+  };
+
   const jobData = {
-    id: parseInt(id || "1"),
+    id: "9a966d06-60ed-4e54-8d06-4e3a2b4987a1",
     company: "ConnectNigeria",
     logo: "https://api.builder.io/api/v1/image/assets/TEMP/7dfd984246e9d925bd7d844d3a2bafcb1d24e1da?width=64",
     title: "Senior- Staff Product Engineer",
-    location: "Engineering, Full-time, Lagos, Nigeria 🇳🇬",
-    postedDate: "Posted Sep 10, 2025",
-    budget: "₦ 800,000/m",
+    location: "Lagos, Nigeria 🇳🇬",
+    type: "job",
+    employmentType: "Full-time",
+    createdAt: "2025-09-15T21:37:47.375Z",
+    compensation: "₦ 800,000/m",
     tags: ["UI Designer", "UX Researcher", "Product Manager"],
-    jobDescription: `We are seeking enthusiastic and reliable Dispatch Riders to join our team.
+    description: `We are seeking enthusiastic and reliable Dispatch Riders to join our team.
 • In this role, you will be responsible for delivering packages or other items to customers in a timely and efficient manner.
 • You will play a crucial role in ensuring customer satisfaction and representing our brand positively.`,
     keyResponsibilities: `Safely operate a motorcycle or other vehicle to deliver items to customers.
@@ -27,13 +39,14 @@ export default function JobDetail() {
 • Keep the delivery vehicle clean and in good working condition.
 • Handle cash or digital payment transactions as required.
 • Report any issues or delays to management promptly.`,
-    jobQualifications: `• Must possess a valid motorcycle license and have experience riding in urban environments.
+    requirements: `• Must possess a valid motorcycle license and have experience riding in urban environments.
 • Strong time management skills and the ability to multitask under pressure are essential.`,
+    status: "active",
   };
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="flex flex-col px-4 sm:px-8 lg:px-10 py-8 max-w-7xl mx-auto">
+      <div className="flex flex-col px-4 sm:px-8 lg:px-10 max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           {/* Job Card */}
           <div className="flex-none">
@@ -55,7 +68,7 @@ export default function JobDetail() {
                     <div className="w-px h-6 bg-gray-300"></div>
                   </div>
                   <span className="text-sm font-medium text-gray-500 font-geist">
-                    {jobData.postedDate}
+                    {formatDate(jobData.createdAt)}
                   </span>
                 </div>
 
@@ -66,7 +79,7 @@ export default function JobDetail() {
 
                 {/* Location */}
                 <p className="text-base text-black font-geist">
-                  {jobData.location}
+                  {jobData.employmentType}, {jobData.type}, {jobData.location},
                 </p>
 
                 {/* Action Buttons */}
@@ -93,7 +106,7 @@ export default function JobDetail() {
                     </span>
                   </div>
                   <div className="text-xl font-bold text-black font-geist">
-                    {jobData.budget}
+                    {jobData.compensation}
                   </div>
                 </div>
 
@@ -129,7 +142,7 @@ export default function JobDetail() {
                 Job Description:
               </h3>
               <div className="text-base text-black font-geist leading-[25.6px] whitespace-pre-line">
-                {jobData.jobDescription}
+                {jobData.description}
               </div>
             </div>
 
@@ -149,7 +162,7 @@ export default function JobDetail() {
                 Job Qualifications:
               </h3>
               <div className="text-base text-black font-geist leading-[25.6px] whitespace-pre-line">
-                {jobData.jobQualifications}
+                {jobData.requirements}
               </div>
             </div>
           </div>

@@ -40,6 +40,13 @@ export function getCookie(name: string): string | null {
   return null;
 }
 
-export function deleteCookie(name: string) {
-  document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+export function formatDateForDisplay(dateString: string): string {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  };
+  const formattedDate = date.toLocaleDateString('en-US', options);
+  return `Posted ${formattedDate}`;
 }
