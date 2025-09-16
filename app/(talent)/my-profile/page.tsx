@@ -1,36 +1,31 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuth } from '@/hooks/use-auth';
-import api from '@/lib/api';
-import { TalentProfile } from '@/lib/types/profile';
-import { useToast } from '@/components/ui/use-toast';
-import { Loader2 } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { profileSchema, ProfileFormValues } from '@/lib/validations/profile';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-  FormField,
-} from '@/components/ui/form';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+"use client";
+import { useState, useEffect, useRef } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/use-auth";
+import api from "@/lib/api";
+import { TalentProfile } from "@/lib/types/profile";
+import { useToast } from "@/components/ui/use-toast";
+import { Loader2, Trash2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
-type ProfileData = Omit<Partial<TalentProfile>, 'skills'> & { skills?: string };
+type ProfileData = Omit<Partial<TalentProfile>, "skills"> & { skills?: string };
 
 export default function MyProfilePage() {
   const { user, loading: authLoading } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const portfolioFileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedPortfolioFile, setSelectedPortfolioFile] =
+    useState<File | null>(null);
 
   const { data: profile, isLoading } = useQuery<TalentProfile>({
-    queryKey: ['talent-profile', user?.id],
-    queryFn: () => api('/talent-profiles/me'),
+    queryKey: ["talent-profile", user?.id],
+    queryFn: () => api("/talent-profiles/me"),
     enabled: !!user,
   });
 
@@ -40,42 +35,149 @@ export default function MyProfilePage() {
     if (profile) {
       setProfileData({
         ...profile,
-        skills: Array.isArray(profile.skills) ? profile.skills.join(', ') : '',
+        skills: Array.isArray(profile.skills) ? profile.skills.join(", ") : "",
       });
     }
   }, [profile]);
 
-  const mutation = useMutation({
+  const profileUpdateMutation = useMutation({
     mutationFn: (updatedProfile: ProfileData) => {
       const payload = {
         ...updatedProfile,
         skills:
-          typeof updatedProfile.skills === 'string'
-            ? updatedProfile.skills.split(',').map((s) => s.trim())
+          typeof updatedProfile.skills === "string"
+            ? updatedProfile.skills.split(",").map((s) => s.trim())
             : profile?.skills,
       };
-      return api('/talent-profiles/me', {
-        method: 'PATCH',
-        body: payload,
+      return api("/talent-profiles/me", {
+        method: "PATCH",
+        body: JSON.stringify(payload),
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['talent-profile', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["talent-profile", user?.id] });
       toast({
-        title: 'Profile Updated',
-        description: 'Your profile has been successfully updated.',
+        title: "Profile Updated",
+        description: "Your profile has been successfully updated.",
       });
       setIsEditing(false);
     },
     onError: (error) => {
-      console.error('Error updating profile:', error);
+      console.error("Error updating profile:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to update profile. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to update profile. Please try again.",
+        variant: "destructive",
       });
     },
   });
+
+  const imageUploadMutation = useMutation({
+    mutationFn: (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      return api("/talent-profiles/me/profile-image", {
+        method: "PATCH",
+        body: formData,
+      });
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(["talent-profile", user?.id], data);
+      toast({
+        title: "Profile Image Updated",
+        description: "Your new profile image is now live.",
+      });
+      setSelectedFile(null);
+      setImagePreview(null);
+    },
+    onError: (error) => {
+      console.error("Error uploading image:", error);
+      toast({
+        title: "Upload Error",
+        description: "Failed to upload profile image. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const portfolioUploadMutation = useMutation({
+    mutationFn: (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      return api("/talent-profiles/me/portfolio", {
+        method: "POST",
+        body: formData,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["talent-profile", user?.id] });
+      toast({
+        title: "Portfolio Item Uploaded",
+        description: "Your new portfolio item has been added.",
+      });
+      setSelectedPortfolioFile(null);
+    },
+    onError: (error) => {
+      console.error("Error uploading portfolio item:", error);
+      toast({
+        title: "Upload Error",
+        description: "Failed to upload portfolio item. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const portfolioDeleteMutation = useMutation({
+    mutationFn: (key: string) => {
+      return api(`/talent-profiles/me/portfolio/${key}`, {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["talent-profile", user?.id] });
+      toast({
+        title: "Portfolio Item Deleted",
+        description: "The portfolio item has been removed.",
+      });
+    },
+    onError: (error) => {
+      console.error("Error deleting portfolio item:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete portfolio item. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleImageUpload = () => {
+    if (selectedFile) {
+      imageUploadMutation.mutate(selectedFile);
+    }
+  };
+
+  const handlePortfolioFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedPortfolioFile(file);
+    }
+  };
+
+  const handlePortfolioUpload = () => {
+    if (selectedPortfolioFile) {
+      portfolioUploadMutation.mutate(selectedPortfolioFile);
+    }
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -95,7 +197,7 @@ export default function MyProfilePage() {
   };
 
   const handleAvailabilityChange = (
-    value: 'full_time' | 'part_time' | 'freelance',
+    value: "full_time" | "part_time" | "freelance",
   ) => {
     if (isEditing) {
       setProfileData((prev) => ({ ...prev, availability: value }));
@@ -105,20 +207,26 @@ export default function MyProfilePage() {
   const handleSaveChanges = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const filteredProfileData = Object.entries(profileData).reduce((acc, [key, value]) => {
-      if (value !== '') {
-        (acc as any)[key] = value;
-      }
-      return acc;
-    }, {} as ProfileData);
-
-    if (filteredProfileData.links) {
-      const filteredLinks = Object.entries(filteredProfileData.links).reduce((acc, [key, value]) => {
-        if (value !== '') {
+    const filteredProfileData = Object.entries(profileData).reduce(
+      (acc, [key, value]) => {
+        if (value !== "") {
           (acc as any)[key] = value;
         }
         return acc;
-      }, {} as { [key: string]: string });
+      },
+      {} as ProfileData,
+    );
+
+    if (filteredProfileData.links) {
+      const filteredLinks = Object.entries(filteredProfileData.links).reduce(
+        (acc, [key, value]) => {
+          if (value !== "") {
+            (acc as any)[key] = value;
+          }
+          return acc;
+        },
+        {} as { [key: string]: string },
+      );
 
       if (Object.keys(filteredLinks).length > 0) {
         filteredProfileData.links = filteredLinks;
@@ -127,7 +235,7 @@ export default function MyProfilePage() {
       }
     }
 
-    mutation.mutate(filteredProfileData);
+    profileUpdateMutation.mutate(filteredProfileData);
   };
 
   if (authLoading || isLoading) {
@@ -150,17 +258,17 @@ export default function MyProfilePage() {
             <div className="flex items-center gap-4">
               <button
                 type="submit"
-                disabled={!isEditing || mutation.isPending}
+                disabled={!isEditing || profileUpdateMutation.isPending}
                 className="px-3.5 py-3.5 border border-gray-200 rounded-3xl bg-white text-black font-geist text-base font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
-                {mutation.isPending ? 'Saving...' : 'Save Changes'}
+                {profileUpdateMutation.isPending ? "Saving..." : "Save Changes"}
               </button>
               <button
                 type="button"
                 onClick={() => setIsEditing(!isEditing)}
                 className="flex items-center gap-2.5 px-3.5 py-3.5 rounded-3xl bg-black text-white font-geist text-base font-medium hover:bg-gray-900 transition-colors"
               >
-                {isEditing ? 'Cancel' : 'Edit'}
+                {isEditing ? "Cancel" : "Edit"}
                 {!isEditing && (
                   <svg
                     width="16"
@@ -199,10 +307,16 @@ export default function MyProfilePage() {
 
           <div className="max-w-2xl space-y-6">
             {/* Profile Image */}
-            <div className="relative">
+            <div className="flex items-center gap-4">
               <div className="relative w-16 h-16">
                 <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
-                  {profileData.profileImageUrl ? (
+                  {imagePreview ? (
+                    <img
+                      src={imagePreview}
+                      alt="Profile Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : profileData.profileImageUrl ? (
                     <img
                       src={profileData.profileImageUrl}
                       alt="Profile"
@@ -223,7 +337,47 @@ export default function MyProfilePage() {
                     </svg>
                   )}
                 </div>
+                {isEditing && (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute bottom-0 right-0 bg-gray-700 p-1 rounded-full text-white hover:bg-gray-800 transition-colors"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                    </svg>
+                  </button>
+                )}
               </div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                accept="image/*"
+                className="hidden"
+              />
+              {isEditing && selectedFile && (
+                <button
+                  type="button"
+                  onClick={handleImageUpload}
+                  disabled={imageUploadMutation.isPending}
+                  className="px-4 py-2 border border-gray-300 rounded-lg bg-white text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
+                >
+                  {imageUploadMutation.isPending
+                    ? "Uploading..."
+                    : "Upload Photo"}
+                </button>
+              )}
             </div>
 
             {/* Full Name */}
@@ -231,7 +385,7 @@ export default function MyProfilePage() {
               id="fullname"
               type="text"
               placeholder="Full Name"
-              value={profileData.fullname || ''}
+              value={profileData.fullname || ""}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -242,7 +396,7 @@ export default function MyProfilePage() {
               id="talent"
               type="text"
               placeholder="Talent"
-              value={profileData.talent || ''}
+              value={profileData.talent || ""}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -252,7 +406,7 @@ export default function MyProfilePage() {
             <textarea
               id="bio"
               placeholder="Short Bio"
-              value={profileData.bio || ''}
+              value={profileData.bio || ""}
               onChange={handleInputChange}
               disabled={!isEditing}
               rows={4}
@@ -276,7 +430,7 @@ export default function MyProfilePage() {
               id="skills"
               type="text"
               placeholder="Skills (comma-separated)"
-              value={profileData.skills || ''}
+              value={profileData.skills || ""}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -287,7 +441,7 @@ export default function MyProfilePage() {
               id="headline"
               type="text"
               placeholder="Job Title / Headline"
-              value={profileData.headline || ''}
+              value={profileData.headline || ""}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -298,7 +452,7 @@ export default function MyProfilePage() {
               id="company"
               type="text"
               placeholder="Company"
-              value={profileData.company || ''}
+              value={profileData.company || ""}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -309,7 +463,7 @@ export default function MyProfilePage() {
               id="duration"
               type="text"
               placeholder="Duration (e.g., 2023 - Present)"
-              value={profileData.duration || ''}
+              value={profileData.duration || ""}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -319,7 +473,7 @@ export default function MyProfilePage() {
             <div className="relative">
               <select
                 id="workExperience"
-                value={profileData.workExperience || ''}
+                value={profileData.workExperience || ""}
                 onChange={handleInputChange}
                 disabled={!isEditing}
                 className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent appearance-none disabled:opacity-50"
@@ -337,23 +491,122 @@ export default function MyProfilePage() {
             <textarea
               id="description"
               placeholder="Description of your experience"
-              value={profileData.description || ''}
+              value={profileData.description || ""}
               onChange={handleInputChange}
               disabled={!isEditing}
               rows={4}
               className="w-full p-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium resize-none focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
             />
+          </div>
+        </div>
 
-            {/* Portfolio Upload */}
-            <input
-              id="resumeUrl"
-              type="text"
-              placeholder="Portfolio/Resume URL"
-              value={profileData.resumeUrl || ''}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
-            />
+        {/* Portfolio Section */}
+        <div className="space-y-6 mt-8">
+          <h2 className="text-2xl font-medium text-black font-geist">
+            Portfolio
+          </h2>
+          <p className="text-base font-medium text-gray-500 font-geist">
+            Manage your portfolio items.
+          </p>
+
+          <div className="max-w-2xl space-y-4">
+            {profile?.portfolioItems && profile.portfolioItems.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium">Uploaded Items:</h3>
+                <ul className="list-disc list-inside space-y-2">
+                  {profile.portfolioItems.map((item) => (
+                    <li
+                      key={item.key}
+                      className="flex items-center justify-between"
+                    >
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        {item.key.split("/").pop()}
+                      </a>
+                      {isEditing && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            portfolioDeleteMutation.mutate(item.key)
+                          }
+                          disabled={portfolioDeleteMutation.isPending}
+                          className="text-red-500 hover:text-red-700 disabled:opacity-50"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {isEditing && (
+              <div className="space-y-4">
+                <div className="relative">
+                  <input
+                    type="file"
+                    ref={portfolioFileInputRef}
+                    onChange={handlePortfolioFileChange}
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => portfolioFileInputRef.current?.click()}
+                    className="w-full flex items-center justify-center py-4 border-2 border-dashed border-black rounded-full bg-gray-50 hover:bg-gray-100 transition-colors"
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 25"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g clipPath="url(#clip0_upload_portfolio)">
+                          <path
+                            d="M20 3.5C20.5304 3.5 21.0392 3.71071 21.4142 4.08579C21.7893 4.46086 22 4.96957 22 5.5V19.5C22 20.0304 21.7893 20.5391 21.4142 20.9142C21.0392 21.2893 20.5304 21.5 20 21.5H4.00001C3.46958 21.5 2.96087 21.2893 2.5858 20.9142C2.21073 20.5391 2.00001 20.0304 2.00001 19.5V13.5C2.00001 13.2348 2.10537 12.9804 2.29291 12.7929C2.48044 12.6054 2.7348 12.5 3.00001 12.5C3.26523 12.5 3.51958 12.6054 3.70712 12.7929C3.89466 12.9804 4.00001 13.2348 4.00001 13.5V15.6L8.99501 10.606C9.11109 10.4899 9.2489 10.3978 9.40058 10.335C9.55226 10.2721 9.71483 10.2398 9.87901 10.2398C10.0432 10.2398 10.2058 10.2721 10.3574 10.335C10.5091 10.3978 10.6469 10.4899 10.763 10.606L14.828 14.672L16.066 13.434C16.1821 13.3179 16.3199 13.2258 16.4716 13.1629C16.6233 13.1001 16.7858 13.0678 16.95 13.0678C17.1142 13.0678 17.2768 13.1001 17.4284 13.1629C17.5801 13.2258 17.7179 13.3179 17.834 13.434L20 15.601V5.5H12C11.7348 5.5 11.4804 5.39464 11.2929 5.20711C11.1054 5.01957 11 4.76522 11 4.5C11 4.23478 11.1054 3.98043 11.2929 3.79289C11.4804 3.60536 11.7348 3.5 12 3.5H20Z"
+                            fill="black"
+                          />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_upload_portfolio">
+                            <rect
+                              width="24"
+                              height="24"
+                              fill="white"
+                              transform="translate(0 0.5)"
+                            />
+                          </clipPath>
+                        </defs>
+                      </svg>
+                      <span className="text-sm font-medium text-black font-geist">
+                        {selectedPortfolioFile
+                          ? selectedPortfolioFile.name
+                          : "Click to upload Portfolio"}
+                      </span>
+                    </div>
+                  </button>
+                </div>
+                {selectedPortfolioFile && (
+                  <button
+                    type="button"
+                    onClick={handlePortfolioUpload}
+                    disabled={portfolioUploadMutation.isPending}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    {portfolioUploadMutation.isPending
+                      ? "Uploading..."
+                      : "Upload Portfolio Item"}
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -372,7 +625,7 @@ export default function MyProfilePage() {
               id="location"
               type="text"
               placeholder="Location (e.g., Lagos, Nigeria)"
-              value={profileData.location || ''}
+              value={profileData.location || ""}
               onChange={handleInputChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -383,7 +636,7 @@ export default function MyProfilePage() {
               id="github"
               type="text"
               placeholder="GitHub URL"
-              value={profileData.links?.github || ''}
+              value={profileData.links?.github || ""}
               onChange={handleLinksChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -394,7 +647,7 @@ export default function MyProfilePage() {
               id="linkedin"
               type="text"
               placeholder="LinkedIn URL"
-              value={profileData.links?.linkedin || ''}
+              value={profileData.links?.linkedin || ""}
               onChange={handleLinksChange}
               disabled={!isEditing}
               className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
@@ -409,17 +662,17 @@ export default function MyProfilePage() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => handleAvailabilityChange('full_time')}
+                    onClick={() => handleAvailabilityChange("full_time")}
                     disabled={!isEditing}
                     className="w-4.5 h-4.5 rounded-full border border-gray-500 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-black disabled:opacity-50"
                   >
-                    {profileData.availability === 'full_time' && (
+                    {profileData.availability === "full_time" && (
                       <div className="w-2.5 h-2.5 bg-gray-500 rounded-full"></div>
                     )}
                   </button>
                   <label
-                    onClick={() => handleAvailabilityChange('full_time')}
-                    className={`text-base font-medium text-gray-500 font-geist ${isEditing ? 'cursor-pointer' : 'cursor-default'}`}
+                    onClick={() => handleAvailabilityChange("full_time")}
+                    className={`text-base font-medium text-gray-500 font-geist ${isEditing ? "cursor-pointer" : "cursor-default"}`}
                   >
                     Full Time
                   </label>
@@ -427,17 +680,17 @@ export default function MyProfilePage() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => handleAvailabilityChange('part_time')}
+                    onClick={() => handleAvailabilityChange("part_time")}
                     disabled={!isEditing}
                     className="w-4.5 h-4.5 rounded-full border border-gray-500 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-black disabled:opacity-50"
                   >
-                    {profileData.availability === 'part_time' && (
+                    {profileData.availability === "part_time" && (
                       <div className="w-2.5 h-2.5 bg-gray-500 rounded-full"></div>
                     )}
                   </button>
                   <label
-                    onClick={() => handleAvailabilityChange('part_time')}
-                    className={`text-base font-medium text-gray-500 font-geist ${isEditing ? 'cursor-pointer' : 'cursor-default'}`}
+                    onClick={() => handleAvailabilityChange("part_time")}
+                    className={`text-base font-medium text-gray-500 font-geist ${isEditing ? "cursor-pointer" : "cursor-default"}`}
                   >
                     Part Time
                   </label>
@@ -445,17 +698,17 @@ export default function MyProfilePage() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => handleAvailabilityChange('freelance')}
+                    onClick={() => handleAvailabilityChange("freelance")}
                     disabled={!isEditing}
                     className="w-4.5 h-4.5 rounded-full border border-gray-500 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-black disabled:opacity-50"
                   >
-                    {profileData.availability === 'freelance' && (
+                    {profileData.availability === "freelance" && (
                       <div className="w-2.5 h-2.5 bg-gray-500 rounded-full"></div>
                     )}
                   </button>
                   <label
-                    onClick={() => handleAvailabilityChange('freelance')}
-                    className={`text-base font-medium text-gray-500 font-geist ${isEditing ? 'cursor-pointer' : 'cursor-default'}`}
+                    onClick={() => handleAvailabilityChange("freelance")}
+                    className={`text-base font-medium text-gray-500 font-geist ${isEditing ? "cursor-pointer" : "cursor-default"}`}
                   >
                     Contract
                   </label>
@@ -469,10 +722,10 @@ export default function MyProfilePage() {
         <div className="max-w-2xl mt-8">
           <button
             type="submit"
-            disabled={!isEditing || mutation.isPending}
+            disabled={!isEditing || profileUpdateMutation.isPending}
             className="w-full py-3.5 bg-black text-white rounded-3xl font-geist text-base font-medium hover:bg-gray-900 transition-colors disabled:opacity-50"
           >
-            {mutation.isPending ? 'Saving...' : 'Save Changes'}
+            {profileUpdateMutation.isPending ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </form>

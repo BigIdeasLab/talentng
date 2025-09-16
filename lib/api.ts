@@ -34,7 +34,15 @@ const apiClient = async <T>(
   }
 
   if (body) {
-    config.body = JSON.stringify(body);
+    if (body instanceof FormData) {
+      // For FormData, let the browser set the Content-Type header
+      // so it can include the boundary.
+      delete (config.headers as Record<string, string>)['Content-Type'];
+      config.body = body;
+    } else {
+      // For other body types, stringify as JSON
+      config.body = JSON.stringify(body);
+    }
   }
 
   const response = await fetch(`${baseUrl}${endpoint}`, config);

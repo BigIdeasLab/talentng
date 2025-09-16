@@ -1,3 +1,11 @@
+export type PortfolioItem = {
+  key: string;
+  url: string;
+  mime: string;
+  createdAt: string;
+  sizeBytes: string;
+};
+
 export type TalentProfile = {
   id: string;
   userId: string;
@@ -26,5 +34,5 @@ export type TalentProfile = {
   username: string;
   coverImageUrl: string | null;
   profileImageUrl: string | null;
-  portfolioItems: any[]; // The user did not specify the type for this
+  portfolioItems: PortfolioItem[];
 };
