@@ -307,7 +307,7 @@ const CreateProfile = ({ onFinish }: { onFinish: () => void }) => {
 
   const mutation = useMutation({
     mutationFn: (newProfile: ProfileFormValues) => {
-      return apiClient("/talent-profiles/me", {
+      return apiClient("/profiles/me", {
         method: "POST",
         body: newProfile,
       });

@@ -25,7 +25,7 @@ export default function MyProfilePage() {
 
   const { data: profile, isLoading } = useQuery<TalentProfile>({
     queryKey: ["talent-profile", user?.id],
-    queryFn: () => api("/talent-profiles/me"),
+    queryFn: () => api("/profiles/me"),
     enabled: !!user,
   });
 
@@ -49,7 +49,7 @@ export default function MyProfilePage() {
             ? updatedProfile.skills.split(",").map((s) => s.trim())
             : profile?.skills,
       };
-      return api("/talent-profiles/me", {
+      return api("/profiles/me", {
         method: "PATCH",
         body: JSON.stringify(payload),
       });
@@ -76,7 +76,7 @@ export default function MyProfilePage() {
     mutationFn: (file: File) => {
       const formData = new FormData();
       formData.append("file", file);
-      return api("/talent-profiles/me/profile-image", {
+      return api("/profiles/me/profile-image", {
         method: "PATCH",
         body: formData,
       });
@@ -104,7 +104,7 @@ export default function MyProfilePage() {
     mutationFn: (file: File) => {
       const formData = new FormData();
       formData.append("file", file);
-      return api("/talent-profiles/me/portfolio", {
+      return api("/profiles/me/portfolio", {
         method: "POST",
         body: formData,
       });
@@ -129,7 +129,7 @@ export default function MyProfilePage() {
 
   const portfolioDeleteMutation = useMutation({
     mutationFn: (key: string) => {
-      return api(`/talent-profiles/me/portfolio/${key}`, {
+      return api(`/profiles/me/portfolio/${key}`, {
         method: "DELETE",
       });
     },
