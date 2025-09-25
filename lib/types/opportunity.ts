@@ -3,10 +3,10 @@ export interface Opportunity {
   type: string;
   title: string;
   description: string;
-  requirements: string;
+  requirements: string[];
   company: string;
   logo: string;
-  keyResponsibilities: string;
+  keyResponsibilities: string[];
   employmentType: string | null;
   location: string;
   compensation: string;
@@ -19,12 +19,11 @@ export interface Opportunity {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-}
-
-export interface Talent {
-  name: string;
-  avatar: string;
-  verified: boolean;
+  talent: {
+    name: string;
+    avatar: string;
+    verified: boolean;
+  };
 }
 
 export interface JobCardProps {
@@ -34,7 +33,12 @@ export interface JobCardProps {
   title: string;
   location: string;
   type?: string;
-  talent: Talent;
+  employmentType: string | null;
+  talent: {
+    name: string;
+    avatar: string;
+    verified: boolean;
+  };
   onShare?: (jobId: string) => void;
   onApply?: (jobId: string) => void;
 }

@@ -2,7 +2,7 @@
 import { useEffect, Suspense } from "react"; // Import useEffect and Suspense
 import { useSearchParams } from "next/navigation"; // Import useSearchParams
 import { StatsSection } from "@/components/dashboard/StatsSection";
-import { OutstandingTalents } from "@/components/dashboard/OutstandingTalents";
+import { OpportunitiesList } from "@/components/opportunities/OpportunitiesList";
 import { OutstandingMentors } from "@/components/dashboard/OutstandingMentors";
 import { RecommendedLearningPaths } from "@/components/dashboard/RecommendedLearningPaths";
 
@@ -29,7 +29,22 @@ function DashboardContent() {
         <StatsSection />
         
         {/* Outstanding Talents */}
-        <OutstandingTalents />
+        <div className="space-y-6">
+        <div className="space-y-2.5">
+          <h2 className="text-2xl font-medium text-gray-800 font-geist">
+            Outstanding Talents
+          </h2>
+          <div className="flex items-center justify-between">
+            <p className="text-base text-gray-500 font-geist">
+              Standout talents making waves around the web
+            </p>
+            <a href="/opportunities" className="text-base text-gray-600 underline font-geist hover:text-gray-800 transition-colors">
+              View more
+            </a>
+          </div>
+        </div>
+        <OpportunitiesList limit={3} />
+      </div>
         
         {/* Outstanding Mentors */}
         <OutstandingMentors />

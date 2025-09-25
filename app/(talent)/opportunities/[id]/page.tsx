@@ -41,11 +41,17 @@ export default function JobDetail() {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-white p-4">Loading job details...</div>;
+    return (
+      <div className="min-h-screen bg-white p-4">Loading job details...</div>
+    );
   }
 
   if (error) {
-    return <div className="min-h-screen bg-white p-4 text-red-500">Error: {error}</div>;
+    return (
+      <div className="min-h-screen bg-white p-4 text-red-500">
+        Error: {error}
+      </div>
+    );
   }
 
   if (!jobData) {
@@ -87,7 +93,7 @@ export default function JobDetail() {
 
                 {/* Location */}
                 <p className="text-base text-black font-geist">
-                  {jobData.employmentType}, {jobData.type}, {jobData.location},
+                  {jobData.type}, {jobData.employmentType}, {jobData.location},
                 </p>
 
                 {/* Action Buttons */}
@@ -159,9 +165,11 @@ export default function JobDetail() {
               <h3 className="text-xl text-black font-geist">
                 Key Responsibilities:
               </h3>
-              <div className="text-base text-black font-geist leading-[25.6px] whitespace-pre-line">
-                {jobData.keyResponsibilities}
-              </div>
+              <ul className="list-disc pl-5 text-base text-black font-geist leading-[25.6px] whitespace-pre-line">
+                {jobData.keyResponsibilities.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
             </div>
 
             {/* Job Qualifications */}
@@ -169,9 +177,11 @@ export default function JobDetail() {
               <h3 className="text-xl text-black font-geist">
                 Job Qualifications:
               </h3>
-              <div className="text-base text-black font-geist leading-[25.6px] whitespace-pre-line">
-                {jobData.requirements}
-              </div>
+              <ul className="list-disc pl-5 text-base text-black font-geist leading-[25.6px] whitespace-pre-line">
+                {jobData.requirements.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>

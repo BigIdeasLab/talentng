@@ -125,6 +125,7 @@ const Login = () => {
                             placeholder="Enter email"
                             {...field}
                             className="h-12 rounded-3xl border-gray-300 text-gray-600"
+                            suppressHydrationWarning
                           />
                         </FormControl>
                         <FormMessage />
@@ -144,6 +145,7 @@ const Login = () => {
                               placeholder="Enter password"
                               {...field}
                               className="flex-1 text-gray-500 font-geist text-base font-medium bg-transparent border-none outline-none placeholder:text-gray-500"
+                              suppressHydrationWarning
                             />
                             <button
                               type="button"

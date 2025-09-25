@@ -1,8 +1,6 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { JobCard } from "@/components/opportunities/JobCard";
-import { getOpportunities } from "@/lib/api";
-import { Opportunity, Talent } from "@/lib/types/opportunity";
+import React, { useState } from "react";
+import { OpportunitiesList } from "@/components/opportunities/OpportunitiesList";
 
 export default function Opportunities() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -11,56 +9,6 @@ export default function Opportunities() {
     internships: false,
     location: false,
   });
-  const [jobListings, setJobListings] = useState<Opportunity[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const dummyTalent: Talent = {
-    name: "Michael Chen",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/0764040b7d3fa40fc56c1df4358f3de87596efe6?width=64",
-    verified: true,
-  };
-
-  useEffect(() => {
-    const fetchOpportunities = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const params: {
-          q?: string;
-          type?: string;
-          location?: string;
-        } = {};
-
-        if (searchQuery) {
-          params.q = searchQuery;
-        }
-
-        if (selectedFilters.jobs && !selectedFilters.internships) {
-          params.type = "job";
-        } else if (selectedFilters.internships && !selectedFilters.jobs) {
-          params.type = "internship";
-        }
-        // If both are selected, or neither, don't filter by type
-
-        if (selectedFilters.location) {
-          // For now, we'll just include all jobs when location filter is active
-          // In a real scenario, you'd pass a specific location query
-          // params.location = "Remote"; // Example
-        }
-
-        const data = await getOpportunities(params);
-        setJobListings(data);
-      } catch (err) {
-        setError("Failed to fetch opportunities.");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOpportunities();
-  }, [searchQuery, selectedFilters]);
 
   const handleFilterChange = (filter: keyof typeof selectedFilters) => {
     setSelectedFilters((prev) => ({
@@ -77,24 +25,6 @@ export default function Opportunities() {
     });
     setSearchQuery("");
   };
-
-  const handleShare = (jobId: string) => {
-    // TODO: Implement share functionality
-    console.log("Sharing job:", jobId);
-  };
-
-  const handleApply = (jobId: string) => {
-    // TODO: Implement apply functionality or navigation to application
-    console.log("Applying to job:", jobId);
-  };
-
-  if (loading) {
-    return <div className="max-w-7xl mx-auto space-y-8">Loading opportunities...</div>;
-  }
-
-  if (error) {
-    return <div className="max-w-7xl mx-auto space-y-8 text-red-500">Error: {error}</div>;
-  }
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
@@ -206,44 +136,12 @@ export default function Opportunities() {
             Outstanding Talents
           </h3>
           <p className="text-sm text-gray-500 font-geist">
-            {jobListings.length === 0
-              ? "No jobs found matching your criteria"
-              : `${jobListings.length} job${jobListings.length !== 1 ? 's' : ''} found - Standout talents making waves around the web`
-            }
+            Standout talents making waves around the web
           </p>
         </div>
 
         {/* Job Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-9">
-          {jobListings.length === 0 ? (
-            <div className="col-span-full text-center py-12">
-              <p className="text-lg text-gray-500 font-geist">
-                No opportunities match your search criteria.
-              </p>
-              <button
-                onClick={handleReset}
-                className="mt-4 px-6 py-2 bg-black text-white rounded-3xl font-geist text-sm font-medium hover:bg-gray-900 transition-colors"
-              >
-                Clear filters
-              </button>
-            </div>
-          ) : (
-            jobListings.map((job) => (
-              <JobCard
-                key={job.id}
-                id={job.id}
-                company={job.company}
-                logo={job.logo}
-                title={job.title}
-                location={job.location}
-                type={job.type}
-                talent={dummyTalent}
-                onShare={handleShare}
-                onApply={handleApply}
-              />
-            ))
-          )}
-        </div>
+        <OpportunitiesList />
       </div>
     </div>
   );
