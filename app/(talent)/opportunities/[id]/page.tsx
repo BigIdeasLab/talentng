@@ -4,12 +4,14 @@ import { useParams } from "next/navigation";
 import { Briefcase, Share } from "lucide-react";
 import { getOpportunityById } from "@/lib/api";
 import { Opportunity } from "@/lib/types/opportunity";
+import ApplicationModal from "@/components/ApplicationModal";
 
 export default function JobDetail() {
   const { id } = useParams<{ id: string }>();
   const [jobData, setJobData] = useState<Opportunity | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [applicationModalOpen, setApplicationModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -104,7 +106,10 @@ export default function JobDetail() {
                     </span>
                     <Share className="w-4 h-4 text-gray-900" />
                   </button>
-                  <button className="flex items-center gap-1 px-3.5 py-3.5 bg-black rounded-full">
+                  <button
+                    onClick={() => setApplicationModalOpen(true)}
+                    className="flex items-center gap-1 px-3.5 py-3.5 bg-black rounded-full hover:bg-gray-900 transition-colors"
+                  >
                     <span className="text-sm font-medium text-white font-geist">
                       Apply
                     </span>
@@ -186,6 +191,14 @@ export default function JobDetail() {
           </div>
         </div>
       </div>
+
+      {jobData && (
+        <ApplicationModal
+          open={applicationModalOpen}
+          onClose={() => setApplicationModalOpen(false)}
+          opportunity={jobData}
+        />
+      )}
     </div>
   );
 }
