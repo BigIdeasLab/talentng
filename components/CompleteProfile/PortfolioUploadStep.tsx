@@ -7,7 +7,6 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 
 interface PortfolioUploadStepProps {
   form: UseFormReturn<ProfileFormValues>;
@@ -38,13 +37,13 @@ export function PortfolioUploadStep({
   const { handleSubmit } = form;
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-6">
+    <div className="flex flex-col items-start gap-8 w-full max-w-[608px]">
+      <div className="flex flex-col items-start gap-6 w-full">
         <FormField
           control={form.control}
           name="portfolioItems"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormControl>
                 <div className="w-full">
                   <input
@@ -57,9 +56,10 @@ export function PortfolioUploadStep({
                   />
                   <div
                     onClick={handleFileSelect}
-                    className="flex flex-col items-center justify-center gap-6 w-full h-30 py-9 px-0 border border-dashed border-black rounded-3xl bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="flex py-9 justify-center items-center flex-1 self-stretch rounded-[32px] border border-dashed border-black bg-[#EAECF0] cursor-pointer hover:bg-gray-100 transition-colors"
+                    style={{ minHeight: "120px" }}
                   >
-                    <div className="flex flex-col items-center gap-2">
+                    <div className="flex w-[158px] flex-col items-center gap-2">
                       <svg
                         width="24"
                         height="24"
@@ -84,11 +84,11 @@ export function PortfolioUploadStep({
                           </clipPath>
                         </defs>
                       </svg>
-                      <span className="text-sm font-medium text-black font-geist">
+                      <div className="text-black font-geist text-[13px] font-medium leading-[120%]">
                         {selectedFiles.length > 0
                           ? `${selectedFiles.length} file(s) selected`
                           : "Click to upload Portfolio"}
-                      </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -99,7 +99,7 @@ export function PortfolioUploadStep({
         />
 
         {selectedFiles.length > 0 && (
-          <div className="space-y-2">
+          <div className="space-y-2 w-full">
             <h4 className="text-sm font-medium text-gray-700">
               Selected files:
             </h4>
@@ -120,7 +120,7 @@ export function PortfolioUploadStep({
       <button
         type="button"
         onClick={handleSubmit(onNext)}
-        className="w-full flex items-center justify-center gap-2.5 py-3.5 px-0 bg-black text-white rounded-3xl font-geist text-base font-medium hover:bg-gray-900 transition-colors"
+        className="flex py-[14px] justify-center items-center gap-[10px] self-stretch rounded-[24px] bg-black text-white font-geist text-base font-medium leading-[120%] hover:bg-gray-900 transition-colors"
       >
         Submit
       </button>
