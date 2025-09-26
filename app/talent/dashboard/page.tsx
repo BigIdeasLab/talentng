@@ -38,7 +38,7 @@ function DashboardContent() {
             <p className="text-base text-gray-500 font-geist">
               Standout talents making waves around the web
             </p>
-            <a href="/opportunities" className="text-base text-gray-600 underline font-geist hover:text-gray-800 transition-colors">
+            <a href="/talent/opportunities" className="text-base text-gray-600 underline font-geist hover:text-gray-800 transition-colors">
               View more
             </a>
           </div>

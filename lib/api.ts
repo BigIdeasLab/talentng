@@ -1,11 +1,7 @@
 import { getCookie } from "@/lib/utils";
 import { Opportunity } from "./types/opportunity";
 
-const baseUrl = process.env.NEXT_PUBLIC_TALENTNG_API_URL;
-
-if (!baseUrl) {
-  throw new Error("Missing NEXT_PUBLIC_TALENTNG_API_URL environment variable");
-}
+const baseUrl = "/api/v1";
 
 type ApiOptions = {
   headers?: Record<string, string>;
@@ -37,7 +33,7 @@ const apiClient = async <T>(
     if (body instanceof FormData) {
       // For FormData, let the browser set the Content-Type header
       // so it can include the boundary.
-      delete (config.headers as Record<string, string>)['Content-Type'];
+      delete (config.headers as Record<string, string>)["Content-Type"];
       config.body = body;
     } else {
       // For other body types, stringify as JSON
@@ -99,4 +95,8 @@ export const getOpportunities = async (
 export const getOpportunityById = async (id: string): Promise<Opportunity> => {
   const endpoint = `/opportunities/${id}`;
   return apiClient<Opportunity>(endpoint);
+};
+
+export const getDashboardStats = async () => {
+  return apiClient<any>("/talent/dashboard");
 };

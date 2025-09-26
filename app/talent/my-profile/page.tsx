@@ -25,7 +25,7 @@ export default function MyProfilePage() {
 
   const { data: profile, isLoading } = useQuery<TalentProfile>({
     queryKey: ["talent-profile", user?.id],
-    queryFn: () => api("/profiles/me"),
+    queryFn: () => api("/talent/me"),
     enabled: !!user,
   });
 
@@ -49,9 +49,9 @@ export default function MyProfilePage() {
             ? updatedProfile.skills.split(",").map((s) => s.trim())
             : profile?.skills,
       };
-      return api("/profiles/me", {
+      return api("/talent/me", {
         method: "PATCH",
-        body: JSON.stringify(payload),
+        body: payload,
       });
     },
     onSuccess: () => {
@@ -76,7 +76,7 @@ export default function MyProfilePage() {
     mutationFn: (file: File) => {
       const formData = new FormData();
       formData.append("file", file);
-      return api("/profiles/me/profile-image", {
+      return api("/talent/profile-image", {
         method: "PATCH",
         body: formData,
       });
@@ -104,7 +104,7 @@ export default function MyProfilePage() {
     mutationFn: (file: File) => {
       const formData = new FormData();
       formData.append("file", file);
-      return api("/profiles/me/portfolio", {
+      return api("/talent/portfolio", {
         method: "POST",
         body: formData,
       });
@@ -129,7 +129,7 @@ export default function MyProfilePage() {
 
   const portfolioDeleteMutation = useMutation({
     mutationFn: (key: string) => {
-      return api(`/profiles/me/portfolio/${key}`, {
+      return api(`/talent/portfolio/${key}`, {
         method: "DELETE",
       });
     },
@@ -229,11 +229,13 @@ export default function MyProfilePage() {
       );
 
       if (Object.keys(filteredLinks).length > 0) {
-        filteredProfileData.links = filteredLinks;
+        (filteredProfileData as any).links = JSON.stringify(filteredLinks);
       } else {
         delete filteredProfileData.links;
       }
     }
+
+    delete (filteredProfileData as any).portfolioItems;
 
     profileUpdateMutation.mutate(filteredProfileData);
   };
