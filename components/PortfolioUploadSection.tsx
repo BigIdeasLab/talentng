@@ -138,7 +138,9 @@ export function PortfolioUploadSection() {
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={selectedFiles.length === 0 || portfolioUploadMutation.isPending}
+            disabled={
+              selectedFiles.length === 0 || portfolioUploadMutation.isPending
+            }
             className="mt-6 flex py-[14px] justify-center items-center gap-[10px] self-stretch rounded-[24px] bg-black text-white font-geist text-base font-medium leading-[120%] hover:bg-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full"
           >
             {portfolioUploadMutation.isPending ? "Uploading..." : "Submit"}
