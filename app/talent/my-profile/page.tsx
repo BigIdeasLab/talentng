@@ -732,6 +732,9 @@ export default function MyProfilePage() {
           </button>
         </div>
       </form>
+
+      {/* Portfolio Upload Section */}
+      <PortfolioUploadSection />
     </div>
   );
 }
