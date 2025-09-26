@@ -53,13 +53,14 @@ export default function CompleteProfile() {
         "availability",
         "location",
         "links",
-        "portfolioItems",
         "resumeUrl",
         "visibility",
       ]);
+    } else if (currentStep === 4) {
+      isValid = await form.trigger(["portfolioItems"]);
     }
 
-    if (isValid && currentStep < 3) {
+    if (isValid && currentStep < 4) {
       setCurrentStep(currentStep + 1);
     } else if (!isValid) {
       toast.error("Please fill in all required fields correctly.");
@@ -81,15 +82,16 @@ export default function CompleteProfile() {
         {/* Dynamic Step Header */}
         <div className="space-y-4 mb-8">
           <div className="text-base font-medium text-black font-geist">
-            Steps {currentStep.toString().padStart(2, "0")}/03
+            Steps {currentStep.toString().padStart(2, "0")}/04
           </div>
           <h2 className="text-2xl font-medium text-black font-geist">
             {currentStep === 1 && "Basic Info"}
             {currentStep === 2 && "Skills & Experience"}
             {currentStep === 3 && "Availability & Location"}
+            {currentStep === 4 && "Upload your best work"}
           </h2>
           <p className="text-base font-medium text-gray-500 font-geist">
-            Setup your profile for this workspace
+            {currentStep === 4 ? "Setup your profile for this worrkspace" : "Setup your profile for this workspace"}
           </p>
         </div>
 
@@ -105,6 +107,10 @@ export default function CompleteProfile() {
 
             {currentStep === 3 && (
               <AvailabilityLocationStep form={form} onNext={handleNext} />
+            )}
+
+            {currentStep === 4 && (
+              <PortfolioUploadStep form={form} onNext={handleNext} />
             )}
           </form>
         </FormProvider>
