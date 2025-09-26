@@ -36,7 +36,7 @@ export function StatsSection() {
         <div className="space-y-6">
           <div className="space-y-2">
             <h3 className="text-xl font-bold text-black font-geist">
-              Applications Submitted
+              📩 Applications Submitted
             </h3>
             <div className="text-[3.5rem] font-bold text-black font-geist leading-none">
               104
@@ -50,7 +50,7 @@ export function StatsSection() {
         <div className="space-y-6">
           <div className="space-y-2">
             <h3 className="text-xl font-bold text-black font-geist">
-              Interviews Scheduled
+              📅 Interviews Scheduled
             </h3>
             <div className="text-[3.5rem] font-bold text-black font-geist leading-none">
               023
@@ -64,7 +64,7 @@ export function StatsSection() {
         <div className="space-y-6">
           <div className="space-y-2">
             <h3 className="text-xl font-bold text-black font-geist">
-              Profile Views
+              👁️ Profile Views
             </h3>
             <div className="text-[3.5rem] font-bold text-black font-geist leading-none">
               2,432
