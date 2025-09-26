@@ -6,6 +6,7 @@ import { FormProvider } from "react-hook-form";
 import { BasicInfoStep } from "@/components/CompleteProfile/BasicInfoStep";
 import { SkillsExperienceStep } from "@/components/CompleteProfile/SkillsExperienceStep";
 import { AvailabilityLocationStep } from "@/components/CompleteProfile/AvailabilityLocationStep";
+import { PortfolioUploadStep } from "@/components/CompleteProfile/PortfolioUploadStep";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema, ProfileFormValues } from "@/lib/validations/profile";
