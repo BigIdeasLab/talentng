@@ -13,7 +13,7 @@ export const profileSchema = z.object({
   availability: z.enum(["full_time", "part_time", "contract", "unavailable"]).optional(),
   location: z.string().optional().or(z.literal("")),
   links: z.string().optional(), // Assuming JSON string validation happens on backend or later
-  portfolioItems: z.array(z.string()).optional(), // Assuming JSON string validation happens on backend or later
+  portfolioItems: z.array(z.string()).optional().or(z.literal([])), // Portfolio files are optional
   resumeUrl: z.string().url("Invalid URL format.").optional().or(z.literal("")),
   visibility: z.enum(["public", "private"]).optional(),
 });
