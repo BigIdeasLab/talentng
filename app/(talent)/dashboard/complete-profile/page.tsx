@@ -91,7 +91,9 @@ export default function CompleteProfile() {
             {currentStep === 4 && "Upload your best work"}
           </h2>
           <p className="text-base font-medium text-gray-500 font-geist">
-            {currentStep === 4 ? "Setup your profile for this worrkspace" : "Setup your profile for this workspace"}
+            {currentStep === 4
+              ? "Setup your profile for this worrkspace"
+              : "Setup your profile for this workspace"}
           </p>
         </div>
 

@@ -14,7 +14,10 @@ interface PortfolioUploadStepProps {
   onNext: () => void;
 }
 
-export function PortfolioUploadStep({ form, onNext }: PortfolioUploadStepProps) {
+export function PortfolioUploadStep({
+  form,
+  onNext,
+}: PortfolioUploadStepProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
@@ -25,10 +28,10 @@ export function PortfolioUploadStep({ form, onNext }: PortfolioUploadStepProps) 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     setSelectedFiles(files);
-    
+
     // Update form with file names or file objects
     // For now, we'll store the file names as strings
-    const fileNames = files.map(file => file.name);
+    const fileNames = files.map((file) => file.name);
     form.setValue("portfolioItems", fileNames);
   };
 
@@ -97,10 +100,15 @@ export function PortfolioUploadStep({ form, onNext }: PortfolioUploadStepProps) 
 
         {selectedFiles.length > 0 && (
           <div className="space-y-2">
-            <h4 className="text-sm font-medium text-gray-700">Selected files:</h4>
+            <h4 className="text-sm font-medium text-gray-700">
+              Selected files:
+            </h4>
             <ul className="space-y-1">
               {selectedFiles.map((file, index) => (
-                <li key={index} className="text-sm text-gray-600 px-3 py-1 bg-gray-50 rounded">
+                <li
+                  key={index}
+                  className="text-sm text-gray-600 px-3 py-1 bg-gray-50 rounded"
+                >
                   {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
                 </li>
               ))}
