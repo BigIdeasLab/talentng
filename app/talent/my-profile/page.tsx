@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { PortfolioUploadSection } from "@/components/PortfolioUploadSection";
 
 type ProfileData = Omit<Partial<TalentProfile>, "skills"> & { skills?: string };
 
