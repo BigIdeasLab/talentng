@@ -59,10 +59,8 @@ const Login = () => {
 
         const decodedToken = decodeJwt(accessToken);
         if (decodedToken) {
-          if (!user.username) {
-            router.push("/set-username");
-          } else if (decodedToken.role === "general") {
-            router.push("/select-role");
+          if (!user.username || decodedToken.role === "general") {
+            router.push("/onboarding");
           } else {
             router.push("/dashboard");
           }

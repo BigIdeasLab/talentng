@@ -1,4 +1,5 @@
 export type PortfolioItem = {
+  id: string;
   key: string;
   url: string;
   mime: string;
@@ -9,30 +10,56 @@ export type PortfolioItem = {
 export type TalentProfile = {
   id: string;
   userId: string;
-  headline: string;
-  bio: string;
-  talent: string;
+
+  fullName: string | null;
+  headline: string | null;
+  bio: string | null;
+
   skills: string[];
-  workExperience: string;
-  company: string;
-  duration: string;
-  description: string;
-  availability: "full_time" | "part_time" | "freelance" | "";
-  location: string;
+  workExperience: string[];
+  education: string[];
+  company: string | null;
+  duration: string | null;
+  description: string | null;
+
+  availability: "full_time" | "part_time" | "freelance" | "" | null;
+  location: string | null;
+
   links: {
     github?: string;
     linkedin?: string;
-  };
-  resumeUrl: string;
+  } | null;
+
+  resumeUrl: string | null;
   visibility: "public" | "private";
   isFeatured: boolean;
   featuredUntil: string | null;
+
+  views: number;
+
+  coverImageUrl: string | null;
+  profileImageUrl: string | null;
+
+  portfolioItems: PortfolioItem[];
+  gallery: PortfolioItem[];
+
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-  fullname: string;
-  username: string;
-  coverImageUrl: string | null;
-  profileImageUrl: string | null;
-  portfolioItems: PortfolioItem[];
+
+  user: {
+    id: string;
+    username: string;
+    email: string;
+    role: string;
+    status: string;
+    isVerified: boolean;
+    verificationLevel: string;
+    emailVerifiedAt: string | null;
+    lastLoginAt: string | null;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+    oneSignalPlayerId: string | null;
+  };
 };

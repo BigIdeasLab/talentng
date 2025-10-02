@@ -10,7 +10,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface AvailabilityLocationStepProps {
@@ -18,13 +24,16 @@ interface AvailabilityLocationStepProps {
   onNext: () => void;
 }
 
-export function AvailabilityLocationStep({ form, onNext }: AvailabilityLocationStepProps) {
+export function AvailabilityLocationStep({
+  form,
+  onNext,
+}: AvailabilityLocationStepProps) {
   const { handleSubmit, control } = form;
 
   return (
     <div className="space-y-8">
       {/* Form */}
-      <form onSubmit={handleSubmit(onNext)} className="space-y-6">
+      <div className="space-y-6">
         {/* Location Input */}
         <FormField
           control={control}
@@ -33,8 +42,35 @@ export function AvailabilityLocationStep({ form, onNext }: AvailabilityLocationS
             <FormItem>
               <FormLabel>Location</FormLabel>
               <FormControl>
+                import { cn } from "@/lib/utils";
+...<Input
+                                        placeholder="Location"
+                                        {...field}
+                                        className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent", field.value && "bg-blue-100")}                />...<Input
+                  placeholder="https://github.com/yourusername"
+                  {...field}
+                  className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent", field.value && "bg-blue-100")}
+                />...<Input
+                  placeholder="https://linkedin.com/in/yourusername"
+                  {...field}
+                  className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent", field.value && "bg-blue-100")}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* GitHub URL Input */}
+        <FormField
+          control={control}
+          name="links.github"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>GitHub URL</FormLabel>
+              <FormControl>
                 <Input
-                  placeholder="Location"
+                  placeholder="https://github.com/yourusername"
                   {...field}
                   className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                 />
@@ -44,16 +80,16 @@ export function AvailabilityLocationStep({ form, onNext }: AvailabilityLocationS
           )}
         />
 
-        {/* Contact Info Input */}
+        {/* LinkedIn URL Input */}
         <FormField
           control={control}
-          name="links"
+          name="links.linkedin"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Contact Info</FormLabel>
+              <FormLabel>LinkedIn URL</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Contact Info (email, phone, social links like LinkedIn, Behance, GitHub)"
+                  placeholder="https://linkedin.com/in/yourusername"
                   {...field}
                   className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                 />
@@ -64,7 +100,6 @@ export function AvailabilityLocationStep({ form, onNext }: AvailabilityLocationS
         />
 
         {/* Availability Section */}
-        {/*
         <FormField
           control={control}
           name="availability"
@@ -79,7 +114,7 @@ export function AvailabilityLocationStep({ form, onNext }: AvailabilityLocationS
                 >
                   <FormItem className="flex items-center space-x-2 space-y-0">
                     <FormControl>
-                      <RadioGroupItem value="full-time" />
+                      <RadioGroupItem value="Full Time" />
                     </FormControl>
                     <FormLabel className="text-base font-medium text-gray-500 font-geist cursor-pointer">
                       Full Time
@@ -87,7 +122,7 @@ export function AvailabilityLocationStep({ form, onNext }: AvailabilityLocationS
                   </FormItem>
                   <FormItem className="flex items-center space-x-2 space-y-0">
                     <FormControl>
-                      <RadioGroupItem value="part-time" />
+                      <RadioGroupItem value="Part Time" />
                     </FormControl>
                     <FormLabel className="text-base font-medium text-gray-500 font-geist cursor-pointer">
                       Part Time
@@ -95,10 +130,10 @@ export function AvailabilityLocationStep({ form, onNext }: AvailabilityLocationS
                   </FormItem>
                   <FormItem className="flex items-center space-x-2 space-y-0">
                     <FormControl>
-                      <RadioGroupItem value="freelance" />
+                      <RadioGroupItem value="Contract" />
                     </FormControl>
                     <FormLabel className="text-base font-medium text-gray-500 font-geist cursor-pointer">
-                      Freelance
+                      Contract
                     </FormLabel>
                   </FormItem>
                 </RadioGroup>
@@ -107,18 +142,18 @@ export function AvailabilityLocationStep({ form, onNext }: AvailabilityLocationS
             </FormItem>
           )}
         />
-        */}
 
         {/* Submit Button */}
         <div className="pt-2">
           <button
-            type="submit"
+            type="button"
+            onClick={onNext}
             className="w-full py-3.5 bg-black text-white rounded-3xl font-geist text-base font-medium hover:bg-gray-900 transition-colors"
           >
-            Submit
+            Next
           </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

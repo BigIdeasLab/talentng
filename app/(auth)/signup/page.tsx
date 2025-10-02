@@ -40,6 +40,22 @@ const Signup = () => {
     },
   });
 
+  const sendVerificationEmailMutation = useMutation({
+    mutationFn: (email: string) => {
+      return apiClient('/auth/verify-email/send', {
+        method: 'POST',
+        body: { email },
+      });
+    },
+    onSuccess: (_, variables) => {
+      toast.success('Verification email sent!');
+      router.push(`/confirm-email?email=${variables}`);
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to send verification email.');
+    },
+  });
+
   const mutation = useMutation({
     mutationFn: (data: SignUpFormValues) => {
       return apiClient('/auth/register', {
@@ -47,10 +63,9 @@ const Signup = () => {
         body: data,
       });
     },
-    onSuccess: (data: any) => {
+    onSuccess: (data: any, variables) => {
       toast.success('Account created successfully!');
-      const { accessToken, userId } = data;
-      router.push(`/onboarding?userId=${userId}&accessToken=${accessToken}`);
+      sendVerificationEmailMutation.mutate(variables.email);
     },
     onError: (error) => {
       toast.error(error.message || 'An error occurred. Please try again.');

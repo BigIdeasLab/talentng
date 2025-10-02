@@ -44,11 +44,24 @@ const apiClient = async <T>(
   const response = await fetch(`${baseUrl}${endpoint}`, config);
 
   if (!response.ok) {
-    const errorData = await response
-      .json()
-      .catch(() => ({ message: response.statusText }));
+    const errorText = await response.text();
+    let errorData;
+    try {
+      errorData = JSON.parse(errorText);
+      if (typeof errorData === 'string') {
+        errorData = JSON.parse(errorData);
+      }
+    } catch (e) {
+      // If parsing fails, use the raw text or a default message
+      errorData = { message: errorText || response.statusText };
+    }
+
+    // The error from the backend might be a stringified object with a 'message' property
+    // or it could be a simple string message.
+    const errorMessage = typeof errorData === 'string' ? errorData : errorData.message;
+
     throw new Error(
-      errorData.message || "An error occurred during the API request.",
+      errorMessage || "An error occurred during the API request.",
     );
   }
 

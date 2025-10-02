@@ -28,7 +28,21 @@ export function SkillsExperienceStep({ form, onNext }: SkillsExperienceStepProps
           <FormItem>
             <FormLabel>Skills</FormLabel>
             <FormControl>
-              <Input placeholder="Skills (comma-separated)" {...field} />
+import { cn } from "@/lib/utils";...<Input placeholder="Skills (comma-separated)" {...field} className={cn(field.value && "bg-blue-100")} />...<Input placeholder="e.g., Senior Software Engineer" {...field} className={cn(field.value && "bg-blue-100")} />...<SelectTrigger className={cn(field.value && "text-blue-500")}...<Input placeholder="Company" {...field} className={cn(field.value && "bg-blue-100")} />...<Input placeholder="Duration" {...field} className={cn(field.value && "bg-blue-100")} />...<Textarea placeholder="Description" {...field} rows={4} className={cn(field.value && "bg-blue-100")} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="headline"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Job Title/Headline</FormLabel>
+            <FormControl>
+              <Input placeholder="e.g., Senior Software Engineer" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -41,9 +55,9 @@ export function SkillsExperienceStep({ form, onNext }: SkillsExperienceStepProps
         render={({ field }) => (
           <FormItem>
             <FormLabel>Work Experience</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select onValueChange={field.onChange} value={field.value || ""}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger className={cn(field.value && "bg-blue-100")}>
                   <SelectValue placeholder="Select experience level" />
                 </SelectTrigger>
               </FormControl>

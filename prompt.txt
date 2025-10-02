@@ -1,0 +1,42 @@
+Christian Atam ris atam ok i see a problem ....the complete profile page has some missing and some unnessary fields ......go to my-profile page check the implementation there then modify the complet profile setup to match
+
+Gemini stat_minus_1 Thinking Understood. You want the "Complete Profile" wizard to perfectly match the fields and structure shown on the final "My Profile" page, removing any unnecessary fields and adding any that are missing.
+
+This is a great step to ensure consistency. I will:
+
+First, analyze the my-profile/page.tsx to understand the correct structure and fields. Then, I will compare this to the current setup in the complete-profile page and its validation schema. Finally, I will modify the complete-profile steps, components, and validation rules to align perfectly with the "My Profile" page. I'll start by reading app/talent/my-profile/page.tsx.
+
+check ReadFile...profile\page.tsx stat_minus_1 Thinking Okay, I've analyzed the my-profile page. It gives me a clear picture of the fields that should be part of a user's profile. Here's a summary:
+
+Basic Info: Profile Image, Full Name, Bio. Skills & Experience: Skills (as a comma-separated string), Job Title/Headline, Company, Duration, Work Experience (dropdown), Description. Portfolio: A list of uploaded portfolio items. Availability & Location: Location, GitHub URL, LinkedIn URL, Availability (Full Time, Part Time, Contract). Now, I'll compare this with the current validation schema (lib/validations/profile.ts) to identify the discrepancies. After that, I'll have a clear plan to refactor the "Complete Profile" wizard.
+
+check ReadFile...tions\profile.ts stat_minus_1 Thinking Excellent. I have a clear path forward. Based on my analysis of the my-profile page, I've identified several inconsistencies in the "Complete Profile" wizard.
+
+Here is my plan to align everything:
+
+Update the Validation Schema: I will correct the data rules (lib/validations/profile.ts) to be the single source of truth. This involves:
+
+Renaming fullname to fullName. Changing skills to be a single string (instead of a list). Changing links to be an object that can hold github and linkedin URLs. Removing unnecessary fields: talent, resumeUrl, and visibility. Adding a field for profileImageUrl. Refactor the Step Components: I will modify each step of the wizard to match the new schema.
+
+Step 1 (Basic Info): Remove the "Talent" field and add a "Profile Image" upload. Step 2 (Skills & Experience): Add the "Job Title/Headline" field. Step 3 (Availability & Location): Replace the generic "Contact Info" with specific "GitHub" and "LinkedIn" inputs and properly implement the "Availability" selection. Update the Main Page: I will adjust the main complete-profile/page.tsx to manage the new field structure and step definitions.
+
+I will begin by applying the necessary changes to the validation schema.
+
+check WriteFile...profileSchema>; ...tions\profile.ts You chose to accept 'WriteFile' once. stat_minus_1 Thinking The validation schema has been updated.
+
+Next, I will refactor the first step, BasicInfoStep.tsx. I'll remove the unnecessary "Talent" field, add an input for the "Profile Image URL", and correct the field name for "Full Name" to align with our new schema.
+
+check ReadFile...asicInfoStep.tsx stat_minus_1 Thinking Okay, I have the contents of BasicInfoStep.tsx. I will now perform the following changes:
+
+Rename the fullname field to fullName. Remove the talent field entirely. Add a new text input field for profileImageUrl. Ensure the "Next" button is wired correctly. I'll now write these changes to the file.
+
+
+Gemini stat_minus_1 Thinking I see the error message. It seems there was an issue with the file path in the last step. I'll correct my course and proceed with the plan.
+
+I will now focus on refactoring AvailabilityLocationStep.tsx. I'll read the file first to get its current content.
+
+check ReadFile...LocationStep.tsx stat_minus_1 Thinking Got it. I'll replace the single "Contact Info" input with separate "GitHub" and "LinkedIn" fields, and then I'll uncomment and correct the "Availability" radio buttons to use "Full Time", "Part Time", and "Contract" to match the my-profile page.
+
+check Edit...LocationStep.tsx ...lidation schema. ... </div> ); } ... )} /> ... /> */} You chose to accept 'Edit' once. stat_minus_1 Thinking AvailabilityLocationStep.tsx is done. Now, I'm refactoring SkillsExperienceStep.tsx. I'll add the "Job Title/Headline" field and ensure the "skills" input is a single string, not an array. First, I'll read the file to see its current state.
+
+check ReadFile...perienceStep.tsx Agent Error, unknown agent message:............alot of mistakes where made check my code before you proceed

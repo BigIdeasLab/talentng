@@ -1,119 +1,246 @@
 "use client";
 
-import React, { useState } from "react";
-import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { FormProvider } from "react-hook-form";
+import React, { useState, useEffect } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { profileSchema, ProfileFormValues } from "@/lib/validations/profile";
+import { useAuth } from "@/hooks/use-auth";
+import apiClient from "@/lib/api";
+
 import { BasicInfoStep } from "@/components/CompleteProfile/BasicInfoStep";
 import { SkillsExperienceStep } from "@/components/CompleteProfile/SkillsExperienceStep";
 import { AvailabilityLocationStep } from "@/components/CompleteProfile/AvailabilityLocationStep";
 import { PortfolioUploadStep } from "@/components/CompleteProfile/PortfolioUploadStep";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { profileSchema, ProfileFormValues } from "@/lib/validations/profile";
-import { toast } from "sonner";
+import { BestWorkUploadStep } from "@/components/CompleteProfile/BestWorkUploadStep";
+import { TalentProfile } from "@/lib/types/profile";
+
+// Step definition
+const steps = [
+  {
+    id: 1,
+    name: "Basic Info",
+    Component: BasicInfoStep,
+    fields: ["fullName", "bio"],
+  },
+  {
+    id: 2,
+    name: "Skills & Experience",
+    Component: SkillsExperienceStep,
+    fields: [
+      "skills",
+      "headline",
+      "workExperience",
+      "company",
+      "duration",
+      "description",
+    ],
+  },
+  {
+    id: 3,
+    name: "Upload Portfolio",
+    Component: PortfolioUploadStep,
+    fields: ["portfolioItems"],
+  },
+  {
+    id: 4,
+    name: "Availability & Location",
+    Component: AvailabilityLocationStep,
+    fields: ["availability", "location", "links"],
+  },
+  {
+    id: 5,
+    name: "Upload your best work",
+    Component: BestWorkUploadStep,
+    fields: ["gallery"],
+  },
+];
 
 export default function CompleteProfile() {
-  const [currentStep, setCurrentStep] = useState(1);
+  const { user, loading: authLoading } = useAuth();
+  const queryClient = useQueryClient();
+  const [visibleSteps, setVisibleSteps] = useState(steps);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+
+  const { data: profile, isLoading: profileLoading } = useQuery<TalentProfile>({
+    queryKey: ["talent-profile", user?.id],
+    queryFn: () => apiClient("/talent/me"),
+    enabled: !!user,
+    refetchOnMount: "always",
+  });
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      fullname: "",
+      fullName: "",
+      profileImageUrl: "",
       headline: "",
       bio: "",
-      skills: [],
+      skills: "",
       workExperience: "",
       company: "",
       duration: "",
       description: "",
-      talent: "",
       availability: undefined,
       location: "",
-      links: "",
+      links: { github: "", linkedin: "" },
       portfolioItems: [],
-      resumeUrl: "",
-      visibility: undefined,
+      gallery: [],
+    },
+  });
+
+  useEffect(() => {
+    if (profile) {
+      console.log("Fetched profile data:", profile);
+      // Reset form with user data
+      form.reset({
+        fullName: profile.fullName || "",
+        profileImageUrl: profile.profileImageUrl || "",
+        headline: profile.headline || "",
+        bio: profile.bio || "",
+        skills: Array.isArray(profile.skills) ? profile.skills.join(", ") : "",
+        workExperience: Array.isArray(profile.workExperience)
+          ? profile.workExperience.join(", ")
+          : "",
+        company: profile.company || "",
+        duration: profile.duration || "",
+        description: profile.description || "",
+        availability: profile.availability || undefined,
+        location: profile.location || "",
+        links: profile.links || { github: "", linkedin: "" },
+        portfolioItems: profile.portfolioItems || [],
+        gallery: profile.gallery || [],
+      });
+
+      // Filter out completed steps
+      const filteredSteps = steps.filter((step) => {
+        return !step.fields.every((field) => {
+          const value = profile[field as keyof TalentProfile];
+          if (Array.isArray(value)) {
+            return value.length > 0;
+          }
+          return !!value;
+        });
+      });
+
+      // If all steps are complete, show the last one. Otherwise, show the filtered steps.
+      setVisibleSteps(
+        filteredSteps.length > 0 ? filteredSteps : [steps[steps.length - 1]],
+      );
+      setCurrentStepIndex(0);
+    }
+  }, [profile, form]);
+
+  const currentStep = visibleSteps[currentStepIndex];
+  const totalVisibleSteps = visibleSteps.length;
+
+  const profileUpdateMutation = useMutation({
+    mutationFn: (data: ProfileFormValues) => {
+      const { gallery, ...rest } = data;
+      const payload = {
+        ...rest,
+        skills:
+          typeof data.skills === "string"
+            ? data.skills.split(",").map((s) => s.trim())
+            : [],
+      };
+      console.log("Payload being sent to server:", payload);
+      return apiClient(`/users/profile/${user?.id}`, {
+        method: "PATCH",
+        body: payload,
+      });
+    },
+    onSuccess: () => {
+      toast.success("Profile updated successfully!");
+      queryClient.invalidateQueries({ queryKey: ["talent-profile", user?.id] });
+      // refetchUser(); // Consider if you need to refetch user data from useAuth
+    },
+    onError: (error) => {
+      console.error("Failed to update profile:", error);
+      toast.error("Failed to update profile. Please try again.");
+    },
+  });
+
+  const galleryUploadMutation = useMutation({
+    mutationFn: async (files: File[]) => {
+      const uploadPromises = files.map((file) => {
+        const formData = new FormData();
+        formData.append("files", file);
+        return apiClient("/talent/gallery", {
+          method: "POST",
+          body: formData,
+        });
+      });
+      return Promise.all(uploadPromises);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["talent-profile", user?.id] });
+      toast.success("Gallery images uploaded successfully!");
+    },
+    onError: (error) => {
+      console.error("Error uploading gallery images:", error);
+      toast.error("Failed to upload gallery images. Please try again.");
     },
   });
 
   const handleNext = async () => {
-    let isValid = false;
-    if (currentStep === 1) {
-      isValid = await form.trigger(["fullname", "bio"]);
-    } else if (currentStep === 2) {
-      isValid = await form.trigger([
-        "skills",
-        "workExperience",
-        "company",
-        "duration",
-        "description",
-      ]);
-    } else if (currentStep === 3) {
-      isValid = await form.trigger([
-        "availability",
-        "location",
-        "links",
-        "resumeUrl",
-        "visibility",
-      ]);
-    } else if (currentStep === 4) {
-      isValid = await form.trigger(["portfolioItems"]);
-    }
+    const fieldsToValidate = currentStep.fields as (keyof ProfileFormValues)[];
+    const isValid = await form.trigger(fieldsToValidate);
 
-    if (isValid && currentStep < 4) {
-      setCurrentStep(currentStep + 1);
-    } else if (!isValid) {
+    if (isValid) {
+      if (currentStep.name === "Upload your best work") {
+        const galleryFiles = form.getValues("gallery");
+        if (galleryFiles && galleryFiles.length > 0) {
+          await galleryUploadMutation.mutateAsync(galleryFiles);
+        }
+      }
+
+      if (currentStepIndex < totalVisibleSteps - 1) {
+        setCurrentStepIndex(currentStepIndex + 1);
+      } else {
+        // This is the last step, so we submit the rest of the form
+        await form.handleSubmit((data) => profileUpdateMutation.mutate(data))();
+      }
+    } else {
       toast.error("Please fill in all required fields correctly.");
     }
   };
 
   const onSubmit = (data: ProfileFormValues) => {
-    // Handle final submission
-    console.log("Final form data:", data);
-    toast.success("Profile updated successfully!");
-    // Here you would typically make an API call to update the profile
-    // Navigate back to dashboard or show success message
+    profileUpdateMutation.mutate(data);
   };
+
+  if (authLoading || profileLoading) {
+    return <div className="p-8">Loading profile...</div>;
+  }
+
+  if (!currentStep) {
+    return <div className="p-8">All steps completed!</div>;
+  }
+
+  const { Component } = currentStep;
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 p-8">
-      {/* Step Content */}
       <div className="max-w-2xl">
-        {/* Dynamic Step Header */}
         <div className="space-y-4 mb-8">
           <div className="text-base font-medium text-black font-geist">
-            Steps {currentStep.toString().padStart(2, "0")}/04
+            Step {(currentStepIndex + 1).toString().padStart(2, "0")}/
+            {totalVisibleSteps.toString().padStart(2, "0")}
           </div>
           <h2 className="text-2xl font-medium text-black font-geist">
-            {currentStep === 1 && "Basic Info"}
-            {currentStep === 2 && "Skills & Experience"}
-            {currentStep === 3 && "Availability & Location"}
-            {currentStep === 4 && "Upload your best work"}
+            {currentStep.name}
           </h2>
           <p className="text-base font-medium text-gray-500 font-geist">
-            {currentStep === 4
-              ? "Setup your profile for this worrkspace"
-              : "Setup your profile for this workspace"}
+            Setup your profile for this workspace
           </p>
         </div>
 
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            {currentStep === 1 && (
-              <BasicInfoStep form={form} onNext={handleNext} />
-            )}
-
-            {currentStep === 2 && (
-              <SkillsExperienceStep form={form} onNext={handleNext} />
-            )}
-
-            {currentStep === 3 && (
-              <AvailabilityLocationStep form={form} onNext={handleNext} />
-            )}
-
-            {currentStep === 4 && (
-              <PortfolioUploadStep form={form} onNext={handleNext} />
-            )}
+            <Component form={form} onNext={handleNext} />
           </form>
         </FormProvider>
       </div>

@@ -8,7 +8,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { PortfolioUploadSection } from "@/components/PortfolioUploadSection";
+import { BestWorkUpload } from "@/components/BestWorkUpload";
+import { cn } from "@/lib/utils";
 
 type ProfileData = Omit<Partial<TalentProfile>, "skills"> & { skills?: string };
 
@@ -34,6 +35,7 @@ export default function MyProfilePage() {
 
   useEffect(() => {
     if (profile) {
+      console.log("Fetched profile data on my-profile page:", profile);
       setProfileData({
         ...profile,
         skills: Array.isArray(profile.skills) ? profile.skills.join(", ") : "",
@@ -129,8 +131,8 @@ export default function MyProfilePage() {
   });
 
   const portfolioDeleteMutation = useMutation({
-    mutationFn: (key: string) => {
-      return api(`/talent/portfolio/${key}`, {
+    mutationFn: (id: string) => {
+      return api(`/talent/portfolio/${id}`, {
         method: "DELETE",
       });
     },
@@ -237,7 +239,9 @@ export default function MyProfilePage() {
     }
 
     delete (filteredProfileData as any).portfolioItems;
+    delete (filteredProfileData as any).gallery;
 
+    console.log("Data being sent to server:", filteredProfileData);
     profileUpdateMutation.mutate(filteredProfileData);
   };
 
@@ -385,24 +389,13 @@ export default function MyProfilePage() {
 
             {/* Full Name */}
             <input
-              id="fullname"
+              id="fullName"
               type="text"
               placeholder="Full Name"
-              value={profileData.fullname || ""}
+              value={profileData.fullName || ""}
               onChange={handleInputChange}
               disabled={!isEditing}
-              className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
-            />
-
-            {/* Talent */}
-            <input
-              id="talent"
-              type="text"
-              placeholder="Talent"
-              value={profileData.talent || ""}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
+              className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50", profileData.fullName && "bg-blue-100")}
             />
 
             {/* Short Bio */}
@@ -413,7 +406,7 @@ export default function MyProfilePage() {
               onChange={handleInputChange}
               disabled={!isEditing}
               rows={4}
-              className="w-full p-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium resize-none focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
+              className={cn("w-full p-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium resize-none focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50", profileData.bio && "bg-blue-100")}
             />
           </div>
         </div>
@@ -436,7 +429,7 @@ export default function MyProfilePage() {
               value={profileData.skills || ""}
               onChange={handleInputChange}
               disabled={!isEditing}
-              className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
+              className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50", profileData.skills && "bg-blue-100")}
             />
 
             {/* Job Title */}
@@ -447,7 +440,7 @@ export default function MyProfilePage() {
               value={profileData.headline || ""}
               onChange={handleInputChange}
               disabled={!isEditing}
-              className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
+              className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50", profileData.headline && "bg-blue-100")}
             />
 
             {/* Company */}
@@ -458,7 +451,7 @@ export default function MyProfilePage() {
               value={profileData.company || ""}
               onChange={handleInputChange}
               disabled={!isEditing}
-              className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
+              className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50", profileData.company && "bg-blue-100")}
             />
 
             {/* Duration */}
@@ -469,7 +462,7 @@ export default function MyProfilePage() {
               value={profileData.duration || ""}
               onChange={handleInputChange}
               disabled={!isEditing}
-              className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
+              className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50", profileData.duration && "bg-blue-100")}
             />
 
             {/* Work Experience Dropdown */}
@@ -479,7 +472,7 @@ export default function MyProfilePage() {
                 value={profileData.workExperience || ""}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent appearance-none disabled:opacity-50"
+                className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent appearance-none disabled:opacity-50", profileData.workExperience && "bg-blue-100")}
               >
                 <option value="">Work Experience</option>
                 <option value="0-1">0-1 years</option>
@@ -498,7 +491,7 @@ export default function MyProfilePage() {
               onChange={handleInputChange}
               disabled={!isEditing}
               rows={4}
-              className="w-full p-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium resize-none focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
+              className={cn("w-full p-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium resize-none focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50", profileData.description && "bg-blue-100")}
             />
           </div>
         </div>
@@ -534,7 +527,7 @@ export default function MyProfilePage() {
                         <button
                           type="button"
                           onClick={() =>
-                            portfolioDeleteMutation.mutate(item.key)
+                            portfolioDeleteMutation.mutate(item.id)
                           }
                           disabled={portfolioDeleteMutation.isPending}
                           className="text-red-500 hover:text-red-700 disabled:opacity-50"
@@ -613,7 +606,6 @@ export default function MyProfilePage() {
           </div>
         </div>
 
-        {/* Availability & Location Section */}
         <div className="space-y-6 mt-8">
           <h2 className="text-2xl font-medium text-black font-geist">
             Availability & Location
@@ -631,7 +623,7 @@ export default function MyProfilePage() {
               value={profileData.location || ""}
               onChange={handleInputChange}
               disabled={!isEditing}
-              className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
+              className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50", profileData.location && "bg-blue-100")}
             />
 
             {/* GitHub Link */}
@@ -642,7 +634,7 @@ export default function MyProfilePage() {
               value={profileData.links?.github || ""}
               onChange={handleLinksChange}
               disabled={!isEditing}
-              className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
+              className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50", profileData.links?.github && "text-blue-500")}
             />
 
             {/* LinkedIn Link */}
@@ -653,7 +645,7 @@ export default function MyProfilePage() {
               value={profileData.links?.linkedin || ""}
               onChange={handleLinksChange}
               disabled={!isEditing}
-              className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50"
+              className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50", profileData.links?.linkedin && "text-blue-500")}
             />
 
             {/* Availability */}
@@ -721,7 +713,8 @@ export default function MyProfilePage() {
           </div>
         </div>
 
-        {/* Save Changes Button */}
+        <BestWorkUpload isEditing={isEditing} profile={profile} />
+
         <div className="max-w-2xl mt-8">
           <button
             type="submit"
@@ -732,9 +725,6 @@ export default function MyProfilePage() {
           </button>
         </div>
       </form>
-
-      {/* Portfolio Upload Section */}
-      <PortfolioUploadSection />
     </div>
   );
 }
