@@ -31,7 +31,7 @@ export const JobCard: React.FC<JobCardProps> = ({
             <div className="space-y-2">
               <div className="space-y-2">
                 <button
-                  onClick={() => router.push(`/opportunities/${id}`)}
+                  onClick={() => router.push(`/talent/opportunities/${id}`)}
                   className="text-left"
                 >
                   <h4 className="text-base font-geist text-black underline decoration-transparent hover:decoration-black">

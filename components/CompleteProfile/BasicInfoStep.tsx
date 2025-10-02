@@ -23,9 +23,10 @@ import { cn } from "@/lib/utils"; // Added cn import
 interface BasicInfoStepProps {
   form: UseFormReturn<ProfileFormValues>;
   onNext: () => void;
+  isLastStep?: boolean;
 }
 
-export function BasicInfoStep({ form, onNext }: BasicInfoStepProps) {
+export function BasicInfoStep({ form, onNext, isLastStep }: BasicInfoStepProps) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -187,7 +188,7 @@ export function BasicInfoStep({ form, onNext }: BasicInfoStepProps) {
       />
 
       <Button type="button" onClick={onNext} className="w-full">
-        Next
+        {isLastStep ? "Submit" : "Next"}
       </Button>
     </div>
   );

@@ -13,16 +13,20 @@ import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Trash2 } from "lucide-react";
 import { PortfolioItem } from "@/lib/types/profile";
 
+import { TalentProfile } from "@/lib/types/profile";
+
 interface PortfolioUploadStepProps {
   form: UseFormReturn<ProfileFormValues>;
   onNext: () => void;
   userId: string | undefined;
+  isLastStep?: boolean;
 }
 
 export function PortfolioUploadStep({
   form,
   onNext,
   userId,
+  isLastStep,
 }: PortfolioUploadStepProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -34,7 +38,7 @@ export function PortfolioUploadStep({
     PortfolioItem[]
   >(form.getValues("portfolioItems") || []);
 
-  const portfolioUploadMutation = useMutation({
+  const portfolioUploadMutation = useMutation<PortfolioItem, Error, File>({
     mutationFn: (file: File) => {
       const formData = new FormData();
       formData.append("file", file);
@@ -43,8 +47,17 @@ export function PortfolioUploadStep({
         body: formData,
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["talent-profile", userId] });
+    onSuccess: (newItem) => {
+      queryClient.setQueryData<TalentProfile | undefined>(
+        ["talent-profile", userId],
+        (oldData) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            portfolioItems: [...(oldData.portfolioItems || []), newItem],
+          };
+        }
+      );
     },
     onError: (error) => {
       console.error("Error uploading portfolio item:", error);
@@ -189,7 +202,13 @@ export function PortfolioUploadStep({
         disabled={isUploading}
         className="flex py-[14px] justify-center items-center gap-[10px] self-stretch rounded-[24px] bg-black text-white font-geist text-base font-medium leading-[120%] hover:bg-gray-900 transition-colors disabled:opacity-50"
       >
-        {isUploading ? "Uploading..." : "Submit"}
+                {isUploading
+          ? "Uploading..."
+          : selectedFilesToUpload.length > 0
+          ? "Upload"
+          : isLastStep
+          ? "Submit"
+          : "Next"}
       </button>
     </div>
   );

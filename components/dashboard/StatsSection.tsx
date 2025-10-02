@@ -16,12 +16,16 @@ export function StatsSection() {
   const [showCard, setShowCard] = useState(true);
 
   useEffect(() => {
-    if (data?.profileCompletion === 100) {
+    const confettiShown = localStorage.getItem("confettiShown");
+    if (data?.profileCompletion === 100 && !confettiShown) {
       setShowConfetti(true);
+      localStorage.setItem("confettiShown", "true");
       setTimeout(() => {
         setShowConfetti(false);
         setShowCard(false);
       }, 5000); // Confetti will show for 5 seconds
+    } else if (data?.profileCompletion === 100 && confettiShown) {
+      setShowCard(false);
     }
   }, [data]);
 

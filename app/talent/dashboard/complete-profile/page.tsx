@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -93,47 +93,52 @@ export default function CompleteProfile() {
     },
   });
 
+  const isInitialMount = useRef(true);
+
   useEffect(() => {
     if (profile) {
-      console.log("Fetched profile data:", profile);
-      // Reset form with user data
-      form.reset({
-        fullName: profile.fullName || "",
-        profileImageUrl: profile.profileImageUrl || "",
-        headline: profile.headline || "",
-        bio: profile.bio || "",
-        skills: Array.isArray(profile.skills) ? profile.skills.join(", ") : "",
-        workExperience: Array.isArray(profile.workExperience)
-          ? profile.workExperience.join(", ")
-          : "",
-        company: profile.company || "",
-        duration: profile.duration || "",
-        description: profile.description || "",
-        availability: profile.availability || undefined,
-        location: profile.location || "",
-        links: profile.links || { github: "", linkedin: "" },
-        portfolioItems: profile.portfolioItems || [],
-        gallery: profile.gallery || [],
-      });
-
-      // Filter out completed steps
-      const filteredSteps = steps.filter((step) => {
-        return !step.fields.every((field) => {
-          const value = profile[field as keyof TalentProfile];
-          if (Array.isArray(value)) {
-            return value.length > 0;
-          }
-          return !!value;
+      if (isInitialMount.current) {
+        // Reset form with user data
+        form.reset({
+          fullName: profile.fullName || "",
+          profileImageUrl: profile.profileImageUrl || "",
+          headline: profile.headline || "",
+          bio: profile.bio || "",
+          skills: Array.isArray(profile.skills) ? profile.skills.join(", ") : "",
+          workExperience: Array.isArray(profile.workExperience)
+            ? profile.workExperience.join(", ")
+            : "",
+          company: profile.company || "",
+          duration: profile.duration || "",
+          description: profile.description || "",
+          availability: profile.availability || undefined,
+          location: profile.location || "",
+          links: profile.links || { github: "", linkedin: "" },
+          portfolioItems: profile.portfolioItems || [],
+          gallery: profile.gallery || [],
         });
-      });
 
-      // If all steps are complete, show the last one. Otherwise, show the filtered steps.
-      setVisibleSteps(
-        filteredSteps.length > 0 ? filteredSteps : [steps[steps.length - 1]],
-      );
-      setCurrentStepIndex(0);
+        // Filter out completed steps
+        const filteredSteps = steps.filter((step) => {
+          return !step.fields.every((field) => {
+            const value = profile[field as keyof TalentProfile];
+            if (Array.isArray(value)) {
+              return value.length > 0;
+            }
+            return !!value;
+          });
+        });
+
+        if (filteredSteps.length === 0) {
+          router.push("/talent/dashboard");
+        } else {
+          setVisibleSteps(filteredSteps);
+          setCurrentStepIndex(0);
+        }
+        isInitialMount.current = false;
+      }
     }
-  }, [profile, form]);
+  }, [profile, form, router]);
 
   const currentStep = visibleSteps[currentStepIndex];
   const totalVisibleSteps = visibleSteps.length;
@@ -191,10 +196,12 @@ export default function CompleteProfile() {
   }
 
   if (!currentStep) {
-    return <div className="p-8">All steps completed!</div>;
+    return <div className="p-8">Redirecting to dashboard...</div>;
   }
 
   const { Component } = currentStep;
+
+  const isLastStep = currentStepIndex === totalVisibleSteps - 1;
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 p-8">
@@ -214,7 +221,7 @@ export default function CompleteProfile() {
 
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <Component form={form} onNext={handleNext} userId={user?.id} />
+            <Component form={form} onNext={handleNext} userId={user?.id} isLastStep={isLastStep} />
           </form>
         </FormProvider>
       </div>

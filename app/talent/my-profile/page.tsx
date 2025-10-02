@@ -504,7 +504,7 @@ export default function MyProfilePage() {
                 <ul className="list-disc list-inside space-y-2">
                   {profile.portfolioItems.map((item) => (
                     <li
-                      key={item.key}
+                      key={item.id}
                       className="flex items-center justify-between"
                     >
                       <a
@@ -513,7 +513,7 @@ export default function MyProfilePage() {
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:underline"
                       >
-                        {item.key.split("/").pop()}
+                        {item.key ? item.key.split("/").pop() : "Untitled"}
                       </a>
                       {isEditing && (
                         <button

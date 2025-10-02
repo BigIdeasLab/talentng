@@ -1,55 +1,10 @@
-C:\Users\hecan\Docum…ntend\lib\api.ts:44 
- PATCH http://localhost:8080/api/v1/users/profile/e424ff80-f7eb-4389-8ad3-a01d7b8aa944 404 (Not Found)
-apiClient	@	C:\Users\hecan\Docum…ntend\lib\api.ts:44
-CompleteProfile.useMutation[profileUpdateMutation]	@	C:\Users\hecan\Docum…rofile\page.tsx:150
-await in execute		
-eval	@	C:\Users\hecan\Docum…rofile\page.tsx:177
-await in eval		
-handleNext	@	C:\Users\hecan\Docum…rofile\page.tsx:177
-<button>		
-_c	@	C:\Users\hecan\Docum…ts\ui\button.tsx:46
-<Button>		
-BasicInfoStep	@	C:\Users\hecan\Docum…sicInfoStep.tsx:189
-<BasicInfoStep>		
-CompleteProfile	@	C:\Users\hecan\Docum…rofile\page.tsx:216
-"use client"		
-Promise.all	@	VM24938 <anonymous>:1
-<LinkComponent>		
-StatsSection	@	C:\Users\hecan\Docum…StatsSection.tsx:77
-<StatsSection>		
-DashboardContent	@	C:\Users\hecan\Docum…shboard\page.tsx:29
-<DashboardContent>		
-Dashboard	@	C:\Users\hecan\Docum…shboard\page.tsx:61
-"use client"		
-Promise.all	@	VM24938 <anonymous>:1
-Promise.all	@	VM24938 <anonymous>:1
-Promise.all	@	VM24938 <anonymous>:1
-
-C:\Users\hecan\Docum…rofile\page.tsx:161 Failed to update profile: Error: Cannot PATCH /api/v1/users/profile/e424ff80-f7eb-4389-8ad3-a01d7b8aa944
-    at apiClient (C:\Users\hecan\Docum…nd\lib\api.ts:63:11)
-CompleteProfile.useMutation[profileUpdateMutation]	@	C:\Users\hecan\Docum…rofile\page.tsx:161
-await in execute		
-eval	@	C:\Users\hecan\Docum…rofile\page.tsx:177
-await in eval		
-handleNext	@	C:\Users\hecan\Docum…rofile\page.tsx:177
-<button>		
-_c	@	C:\Users\hecan\Docum…ts\ui\button.tsx:46
-<Button>		
-BasicInfoStep	@	C:\Users\hecan\Docum…sicInfoStep.tsx:189
-<BasicInfoStep>		
-CompleteProfile	@	C:\Users\hecan\Docum…rofile\page.tsx:216
-"use client"		
-Promise.all	@	VM24938 <anonymous>:1
-<LinkComponent>		
-StatsSection	@	C:\Users\hecan\Docum…StatsSection.tsx:77
-<StatsSection>		
-DashboardContent	@	C:\Users\hecan\Docum…shboard\page.tsx:29
-<DashboardContent>		
-Dashboard	@	C:\Users\hecan\Docum…shboard\page.tsx:61
-"use client"		
-Promise.all	@	VM24938 <anonymous>:1
-Promise.all	@	VM24938 <anonymous>:1
-Promise.all	@	VM24938 <anonymous>:1
-﻿
-
-..............refrence my-profile and see how it is patching to help fix the error
+useEffect running. Profile: undefined
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:97 useEffect running. Profile: undefined
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:97 useEffect running. Profile: {id: 'ceffafd6-37ec-412e-99dd-97e1f0212515', userId: 'c66a3428-191e-43cf-b8da-9e5b0b527971', fullName: 'rturturtu', headline: '', bio: '', …}
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:99 Fetched profile data: {id: 'ceffafd6-37ec-412e-99dd-97e1f0212515', userId: 'c66a3428-191e-43cf-b8da-9e5b0b527971', fullName: 'rturturtu', headline: '', bio: '', …}
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:172 handleNext called. currentStepIndex: 0
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:172 handleNext called. currentStepIndex: 1
+C:\Users\hecan\Documents\talentng-frontend\components\CompleteProfile\PortfolioUploadStep.tsx:108 Uploading complete. Calling onNext.
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:172 handleNext called. currentStepIndex: 2
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:97 useEffect running. Profile: {id: 'ceffafd6-37ec-412e-99dd-97e1f0212515', userId: 'c66a3428-191e-43cf-b8da-9e5b0b527971', fullName: 'rturturtu', headline: '', bio: '', …}
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:99 Fetched profile data: {id: 'ceffafd6-37ec-412e-99dd-97e1f0212515', userId: 'c66a3428-191e-43cf-b8da-9e5b0b527971', fullName: 'rturturtu', headline: '', bio: '', …}

@@ -18,9 +18,10 @@ import { cn } from "@/lib/utils";
 interface SkillsExperienceStepProps {
   form: UseFormReturn<ProfileFormValues>;
   onNext: () => void;
+  isLastStep?: boolean;
 }
 
-export function SkillsExperienceStep({ form, onNext }: SkillsExperienceStepProps) {
+export function SkillsExperienceStep({ form, onNext, isLastStep }: SkillsExperienceStepProps) {
   return (
     <div className="space-y-8">
       <FormField
@@ -123,7 +124,7 @@ export function SkillsExperienceStep({ form, onNext }: SkillsExperienceStepProps
       />
 
       <Button type="button" onClick={onNext} className="w-full">
-        Next
+        {isLastStep ? "Submit" : "Next"}
       </Button>
     </div>
   );

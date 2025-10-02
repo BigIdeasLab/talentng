@@ -23,11 +23,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 interface AvailabilityLocationStepProps {
   form: UseFormReturn<ProfileFormValues>;
   onNext: () => void;
+  isLastStep?: boolean;
 }
 
 export function AvailabilityLocationStep({
   form,
   onNext,
+  isLastStep,
 }: AvailabilityLocationStepProps) {
   const { handleSubmit, control } = form;
 
@@ -118,7 +120,7 @@ export function AvailabilityLocationStep({
                 >
                   <FormItem className="flex items-center space-x-2 space-y-0">
                     <FormControl>
-                      <RadioGroupItem value="Full Time" />
+                      <RadioGroupItem value="full_time" />
                     </FormControl>
                     <FormLabel className="text-base font-medium text-gray-500 font-geist cursor-pointer">
                       Full Time
@@ -126,7 +128,7 @@ export function AvailabilityLocationStep({
                   </FormItem>
                   <FormItem className="flex items-center space-x-2 space-y-0">
                     <FormControl>
-                      <RadioGroupItem value="Part Time" />
+                      <RadioGroupItem value="part_time" />
                     </FormControl>
                     <FormLabel className="text-base font-medium text-gray-500 font-geist cursor-pointer">
                       Part Time
@@ -134,7 +136,7 @@ export function AvailabilityLocationStep({
                   </FormItem>
                   <FormItem className="flex items-center space-x-2 space-y-0">
                     <FormControl>
-                      <RadioGroupItem value="Contract" />
+                      <RadioGroupItem value="freelance" />
                     </FormControl>
                     <FormLabel className="text-base font-medium text-gray-500 font-geist cursor-pointer">
                       Contract
@@ -154,7 +156,7 @@ export function AvailabilityLocationStep({
             onClick={onNext}
             className="w-full py-3.5 bg-black text-white rounded-3xl font-geist text-base font-medium hover:bg-gray-900 transition-colors"
           >
-            Next
+            {isLastStep ? "Submit" : "Next"}
           </button>
         </div>
       </div>

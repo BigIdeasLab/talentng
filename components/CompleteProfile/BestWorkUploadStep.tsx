@@ -16,11 +16,13 @@ import { useAuth } from "@/hooks/use-auth";
 interface BestWorkUploadStepProps {
   form: UseFormReturn<ProfileFormValues>;
   onNext: () => void;
+  isLastStep?: boolean;
 }
 
 export function BestWorkUploadStep({
   form,
   onNext,
+  isLastStep,
 }: BestWorkUploadStepProps) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -152,7 +154,7 @@ export function BestWorkUploadStep({
         onClick={onNext}
         className="flex py-[14px] justify-center items-center gap-[10px] self-stretch rounded-[24px] bg-black text-white font-geist text-base font-medium leading-[120%] hover:bg-gray-900 transition-colors"
       >
-        Submit
+        {isLastStep ? "Submit" : "Next"}
       </button>
     </div>
   );
