@@ -14,6 +14,7 @@ export function StatsSection() {
 
   const [showConfetti, setShowConfetti] = useState(false);
   const [showCard, setShowCard] = useState(true);
+  const [animatedCompletion, setAnimatedCompletion] = useState(data?.profileCompletion || 0);
 
   useEffect(() => {
     const confettiShown = localStorage.getItem("confettiShown");
@@ -27,7 +28,28 @@ export function StatsSection() {
     } else if (data?.profileCompletion === 100 && confettiShown) {
       setShowCard(false);
     }
-  }, [data]);
+
+    // Animation logic for progress bar and percentage
+    if (data?.profileCompletion !== undefined) {
+      let start = animatedCompletion;
+      const end = data.profileCompletion;
+      const duration = 1000; // 1 second animation
+      const incrementTime = 10; // Update every 10ms
+      const totalIncrements = duration / incrementTime;
+      const increment = (end - start) / totalIncrements;
+
+      const timer = setInterval(() => {
+        start += increment;
+        if ((increment > 0 && start >= end) || (increment < 0 && start <= end)) {
+          start = end;
+          clearInterval(timer);
+        }
+        setAnimatedCompletion(start);
+      }, incrementTime);
+
+      return () => clearInterval(timer); // Cleanup on unmount or data change
+    }
+  }, [data?.profileCompletion]);
 
   if (isLoading) {
     return (
@@ -62,12 +84,12 @@ export function StatsSection() {
 
               <div className="space-y-2">
                 <div className="text-sm font-medium font-geist">
-                  {data.profileCompletion}%
+                  {Math.round(animatedCompletion)}%
                 </div>
                 <div className="w-full bg-gray-100 rounded-full h-2.5">
                   <div
-                    className="bg-pink-800 h-2.5 rounded-full"
-                    style={{ width: `${data.profileCompletion}%` }}
+                    className="bg-pink-800 h-2.5 rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: `${animatedCompletion}%` }}
                   ></div>
                 </div>
               </div>

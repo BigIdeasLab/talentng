@@ -24,7 +24,7 @@ const steps = [
     id: 1,
     name: "Basic Info",
     Component: BasicInfoStep,
-    fields: ["fullName", "bio"],
+    fields: ["fullName", "bio", "profileImageUrl"],
   },
   {
     id: 2,
