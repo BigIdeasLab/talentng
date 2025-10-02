@@ -13,7 +13,7 @@ import apiClient from "@/lib/api";
 import { BasicInfoStep } from "@/components/CompleteProfile/BasicInfoStep";
 import { SkillsExperienceStep } from "@/components/CompleteProfile/SkillsExperienceStep";
 import { AvailabilityLocationStep } from "@/components/CompleteProfile/AvailabilityLocationStep";
-import { PortfolioUploadStep } from "@/components/CompleteProfile/PortfolioUploadStep";
+import { PortfolioUploadSection } from "@/components/CompleteProfile/PortfolioUploadStep";
 import { BestWorkUploadStep } from "@/components/CompleteProfile/BestWorkUploadStep";
 import { TalentProfile } from "@/lib/types/profile";
 
@@ -41,7 +41,7 @@ const steps = [
   {
     id: 3,
     name: "Upload Portfolio",
-    Component: PortfolioUploadStep,
+    Component: PortfolioUploadSection,
     fields: ["portfolioItems"],
   },
   {
@@ -162,8 +162,6 @@ export default function CompleteProfile() {
       toast.error("Failed to update profile. Please try again.");
     },
   });
-
-
 
   const handleNext = async () => {
     const fieldsToValidate = currentStep.fields as (keyof ProfileFormValues)[];
