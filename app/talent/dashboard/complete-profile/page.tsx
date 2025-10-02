@@ -5,6 +5,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 import { profileSchema, ProfileFormValues } from "@/lib/validations/profile";
 import { useAuth } from "@/hooks/use-auth";
@@ -13,7 +14,7 @@ import apiClient from "@/lib/api";
 import { BasicInfoStep } from "@/components/CompleteProfile/BasicInfoStep";
 import { SkillsExperienceStep } from "@/components/CompleteProfile/SkillsExperienceStep";
 import { AvailabilityLocationStep } from "@/components/CompleteProfile/AvailabilityLocationStep";
-import { PortfolioUploadSection } from "@/components/CompleteProfile/PortfolioUploadStep";
+import { PortfolioUploadStep } from "@/components/CompleteProfile/PortfolioUploadStep";
 import { BestWorkUploadStep } from "@/components/CompleteProfile/BestWorkUploadStep";
 import { TalentProfile } from "@/lib/types/profile";
 
@@ -41,7 +42,7 @@ const steps = [
   {
     id: 3,
     name: "Upload Portfolio",
-    Component: PortfolioUploadSection,
+    Component: PortfolioUploadStep,
     fields: ["portfolioItems"],
   },
   {
@@ -61,6 +62,7 @@ const steps = [
 export default function CompleteProfile() {
   const { user, loading: authLoading } = useAuth();
   const queryClient = useQueryClient();
+  const router = useRouter();
   const [visibleSteps, setVisibleSteps] = useState(steps);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
@@ -155,6 +157,7 @@ export default function CompleteProfile() {
     onSuccess: () => {
       toast.success("Profile updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["talent-profile", user?.id] });
+      router.push("/talent/dashboard");
       // refetchUser(); // Consider if you need to refetch user data from useAuth
     },
     onError: (error) => {
@@ -211,7 +214,7 @@ export default function CompleteProfile() {
 
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <Component form={form} onNext={handleNext} />
+            <Component form={form} onNext={handleNext} userId={user?.id} />
           </form>
         </FormProvider>
       </div>
