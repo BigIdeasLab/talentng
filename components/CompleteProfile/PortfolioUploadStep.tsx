@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProfileFormValues } from "@/lib/validations/profile";
 import {
   FormControl,
@@ -7,18 +8,27 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import apiClient from "@/lib/api";
+import { useToast } from "@/components/ui/use-toast";
+import { Loader2, Trash2 } from "lucide-react";
+import { PortfolioItem } from "@/lib/types/profile";
 
 interface PortfolioUploadStepProps {
   form: UseFormReturn<ProfileFormValues>;
   onNext: () => void;
+  userId: string | undefined;
 }
 
 export function PortfolioUploadStep({
   form,
   onNext,
+  userId,
 }: PortfolioUploadStepProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [selectedFilesToUpload, setSelectedFilesToUpload] = useState<File[]>([]);
+  const [uploadedPortfolioItems, setUploadedPortfolioItems] = useState<PortfolioItem[]>(form.getValues("portfolioItems") || []);
 
   const handleFileSelect = () => {
     fileInputRef.current?.click();

@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface AvailabilityLocationStepProps {
@@ -42,18 +43,13 @@ export function AvailabilityLocationStep({
             <FormItem>
               <FormLabel>Location</FormLabel>
               <FormControl>
-                import { cn } from "@/lib/utils";
-...<Input
-                                        placeholder="Location"
-                                        {...field}
-                                        className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent", field.value && "bg-blue-100")}                />...<Input
-                  placeholder="https://github.com/yourusername"
+                <Input
+                  placeholder="Location"
                   {...field}
-                  className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent", field.value && "bg-blue-100")}
-                />...<Input
-                  placeholder="https://linkedin.com/in/yourusername"
-                  {...field}
-                  className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent", field.value && "bg-blue-100")}
+                  className={cn(
+                    "w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent",
+                    field.value && "bg-blue-100",
+                  )}
                 />
               </FormControl>
               <FormMessage />
@@ -72,7 +68,10 @@ export function AvailabilityLocationStep({
                 <Input
                   placeholder="https://github.com/yourusername"
                   {...field}
-                  className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                  className={cn(
+                    "w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent",
+                    field.value && "bg-blue-100",
+                  )}
                 />
               </FormControl>
               <FormMessage />
@@ -91,7 +90,10 @@ export function AvailabilityLocationStep({
                 <Input
                   placeholder="https://linkedin.com/in/yourusername"
                   {...field}
-                  className="w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                  className={cn(
+                    "w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent",
+                    field.value && "bg-blue-100",
+                  )}
                 />
               </FormControl>
               <FormMessage />
@@ -105,7 +107,9 @@ export function AvailabilityLocationStep({
           name="availability"
           render={({ field }) => (
             <FormItem className="space-y-4">
-              <FormLabel className="text-base font-semibold text-gray-950 font-geist">Availability</FormLabel>
+              <FormLabel className="text-base font-semibold text-gray-950 font-geist">
+                Availability
+              </FormLabel>
               <FormControl>
                 <RadioGroup
                   onValueChange={field.onChange}

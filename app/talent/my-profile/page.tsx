@@ -212,9 +212,7 @@ export default function MyProfilePage() {
 
     const filteredProfileData = Object.entries(profileData).reduce(
       (acc, [key, value]) => {
-        if (value !== "") {
-          (acc as any)[key] = value;
-        }
+        (acc as any)[key] = value;
         return acc;
       },
       {} as ProfileData,
@@ -223,19 +221,13 @@ export default function MyProfilePage() {
     if (filteredProfileData.links) {
       const filteredLinks = Object.entries(filteredProfileData.links).reduce(
         (acc, [key, value]) => {
-          if (value !== "") {
-            (acc as any)[key] = value;
-          }
+          (acc as any)[key] = value;
           return acc;
         },
         {} as { [key: string]: string },
       );
 
-      if (Object.keys(filteredLinks).length > 0) {
-        (filteredProfileData as any).links = JSON.stringify(filteredLinks);
-      } else {
-        delete filteredProfileData.links;
-      }
+      (filteredProfileData as any).links = filteredLinks;
     }
 
     delete (filteredProfileData as any).portfolioItems;
@@ -634,9 +626,8 @@ export default function MyProfilePage() {
               value={profileData.links?.github || ""}
               onChange={handleLinksChange}
               disabled={!isEditing}
-              className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50", profileData.links?.github && "text-blue-500")}
+              className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50", profileData.links?.github && "bg-blue-100")}
             />
-
             {/* LinkedIn Link */}
             <input
               id="linkedin"
@@ -645,9 +636,8 @@ export default function MyProfilePage() {
               value={profileData.links?.linkedin || ""}
               onChange={handleLinksChange}
               disabled={!isEditing}
-              className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50", profileData.links?.linkedin && "text-blue-500")}
+              className={cn("w-full h-12 px-3.5 border border-gray-300 rounded-3xl bg-white text-gray-500 placeholder-gray-500 font-geist text-base font-medium focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:opacity-50", profileData.links?.linkedin && "bg-blue-100")}
             />
-
             {/* Availability */}
             <div className="space-y-4">
               <h3 className="text-base font-semibold text-gray-950 font-geist">

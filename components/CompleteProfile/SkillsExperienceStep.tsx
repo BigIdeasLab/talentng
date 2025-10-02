@@ -13,6 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+import { cn } from "@/lib/utils";
+
 interface SkillsExperienceStepProps {
   form: UseFormReturn<ProfileFormValues>;
   onNext: () => void;
@@ -28,7 +30,11 @@ export function SkillsExperienceStep({ form, onNext }: SkillsExperienceStepProps
           <FormItem>
             <FormLabel>Skills</FormLabel>
             <FormControl>
-import { cn } from "@/lib/utils";...<Input placeholder="Skills (comma-separated)" {...field} className={cn(field.value && "bg-blue-100")} />...<Input placeholder="e.g., Senior Software Engineer" {...field} className={cn(field.value && "bg-blue-100")} />...<SelectTrigger className={cn(field.value && "text-blue-500")}...<Input placeholder="Company" {...field} className={cn(field.value && "bg-blue-100")} />...<Input placeholder="Duration" {...field} className={cn(field.value && "bg-blue-100")} />...<Textarea placeholder="Description" {...field} rows={4} className={cn(field.value && "bg-blue-100")} />
+              <Input
+                placeholder="Skills (comma-separated)"
+                {...field}
+                className={cn(field.value && "bg-blue-100")}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>

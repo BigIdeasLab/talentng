@@ -147,7 +147,7 @@ export default function CompleteProfile() {
             : [],
       };
       console.log("Payload being sent to server:", payload);
-      return apiClient(`/users/profile/${user?.id}`, {
+      return apiClient("/talent/me", {
         method: "PATCH",
         body: payload,
       });
@@ -163,40 +163,13 @@ export default function CompleteProfile() {
     },
   });
 
-  const galleryUploadMutation = useMutation({
-    mutationFn: async (files: File[]) => {
-      const uploadPromises = files.map((file) => {
-        const formData = new FormData();
-        formData.append("files", file);
-        return apiClient("/talent/gallery", {
-          method: "POST",
-          body: formData,
-        });
-      });
-      return Promise.all(uploadPromises);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["talent-profile", user?.id] });
-      toast.success("Gallery images uploaded successfully!");
-    },
-    onError: (error) => {
-      console.error("Error uploading gallery images:", error);
-      toast.error("Failed to upload gallery images. Please try again.");
-    },
-  });
+
 
   const handleNext = async () => {
     const fieldsToValidate = currentStep.fields as (keyof ProfileFormValues)[];
     const isValid = await form.trigger(fieldsToValidate);
 
     if (isValid) {
-      if (currentStep.name === "Upload your best work") {
-        const galleryFiles = form.getValues("gallery");
-        if (galleryFiles && galleryFiles.length > 0) {
-          await galleryUploadMutation.mutateAsync(galleryFiles);
-        }
-      }
-
       if (currentStepIndex < totalVisibleSteps - 1) {
         setCurrentStepIndex(currentStepIndex + 1);
       } else {

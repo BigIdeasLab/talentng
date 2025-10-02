@@ -9,6 +9,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
 
 interface BestWorkUploadStepProps {
   form: UseFormReturn<ProfileFormValues>;
@@ -19,24 +22,49 @@ export function BestWorkUploadStep({
   form,
   onNext,
 }: BestWorkUploadStepProps) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
+  const galleryUploadMutation = useMutation({
+    mutationFn: async (files: File[]) => {
+      const uploadPromises = files.map((file) => {
+        const formData = new FormData();
+        formData.append("files", file);
+        return api("/talent/gallery", {
+          method: "POST",
+          body: formData,
+        });
+      });
+      return Promise.all(uploadPromises);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["talent-profile", user?.id] });
+      toast.success("Gallery images uploaded successfully!");
+      setSelectedFiles([]); // Clear selected files after successful upload
+    },
+    onError: (error) => {
+      console.error("Error uploading gallery images:", error);
+      toast.error("Failed to upload gallery images. Please try again.");
+    },
+  });
 
   const handleFileSelect = () => {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length > 10) {
       toast.error("You can upload a maximum of 10 files.");
       return;
     }
     setSelectedFiles(files);
-    form.setValue("gallery", files);
+    if (files.length > 0) {
+      await galleryUploadMutation.mutateAsync(files);
+    }
   };
-
-  const { handleSubmit } = form;
 
   return (
     <div className="flex flex-col items-start gap-8 w-full max-w-[608px]">
@@ -121,7 +149,7 @@ export function BestWorkUploadStep({
 
       <button
         type="button"
-        onClick={handleSubmit(onNext)}
+        onClick={onNext}
         className="flex py-[14px] justify-center items-center gap-[10px] self-stretch rounded-[24px] bg-black text-white font-geist text-base font-medium leading-[120%] hover:bg-gray-900 transition-colors"
       >
         Submit
