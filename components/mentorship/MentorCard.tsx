@@ -1,44 +1,37 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
+import { Mentor } from "@/lib/types/mentor";
 
 interface MentorCardProps {
-  id: number;
-  name: string;
-  avatar: string;
-  title: string;
-  company: string;
-  location: string;
-  description: string;
-  availableFor: string[];
-  verified: boolean;
-  onBookSession: (id: number) => void;
+  mentor: Mentor;
+  onBookSession: (id: string) => void;
 }
 
-export function MentorCard({
-  id,
-  name,
-  avatar,
-  title,
-  company,
-  location,
-  description,
-  availableFor,
-  verified,
-  onBookSession,
-}: MentorCardProps) {
+export function MentorCard({ mentor, onBookSession }: MentorCardProps) {
   const router = useRouter();
+  const {
+    id,
+    fullName,
+    profileImageUrl,
+    headline,
+    company,
+    location,
+    bio,
+    expertise,
+    user,
+  } = mentor;
 
   return (
     <div
       role="button"
-      onClick={() => router.push(`/mentorship/${id}`)}
+      onClick={() => router.push(`/talent/mentorship/${id}`)}
       className="flex w-full max-w-[374px] p-4 flex-col items-start gap-4 border border-gray-200 rounded-[32px] bg-white cursor-pointer"
     >
       <div className="flex flex-col items-start gap-5 self-stretch">
         <img
-          src={avatar}
-          alt={name}
+          src={profileImageUrl ?? ''}
+          alt={fullName}
           className="w-16 h-16 rounded-full object-cover"
         />
 
@@ -46,10 +39,10 @@ export function MentorCard({
           <div className="flex w-full flex-col items-start gap-2">
             <div className="flex items-center gap-2">
               <h3 className="text-xl font-semibold text-black font-geist">
-                {name}
+                {fullName}
               </h3>
 
-              {verified && (
+              {user.isVerified && (
                 <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-50 text-blue-600 text-xs">
                   ✓
                 </span>
@@ -57,7 +50,7 @@ export function MentorCard({
             </div>
 
             <div className="text-base font-normal text-black font-geist self-stretch">
-              {title}, {company}
+              {headline}, {company}
             </div>
             <div className="text-base font-normal text-black font-geist">
               {location}
@@ -65,7 +58,7 @@ export function MentorCard({
           </div>
 
           <div className="text-base font-normal text-gray-500 font-geist self-stretch">
-            {description}
+            {bio}
           </div>
         </div>
       </div>
@@ -76,7 +69,7 @@ export function MentorCard({
         </div>
         <div className="flex flex-col items-start gap-3 self-stretch">
           <div className="flex items-center gap-3 self-stretch flex-wrap">
-            {availableFor.slice(0, 2).map((service, index) => (
+            {expertise.slice(0, 2).map((service, index) => (
               <div
                 key={index}
                 className="flex px-2.5 py-2.5 justify-center items-center gap-2.5 rounded-3xl border border-gray-200"
@@ -88,9 +81,9 @@ export function MentorCard({
             ))}
           </div>
 
-          {availableFor.length > 2 && (
+          {expertise.length > 2 && (
             <div className="flex items-center gap-3">
-              {availableFor.slice(2, 3).map((service, index) => (
+              {expertise.slice(2, 3).map((service, index) => (
                 <div
                   key={index}
                   className="flex px-2.5 py-2.5 justify-center items-center gap-2.5 rounded-3xl border border-gray-200"
@@ -101,10 +94,10 @@ export function MentorCard({
                 </div>
               ))}
 
-              {availableFor.length > 3 && (
+              {expertise.length > 3 && (
                 <div className="flex px-2.5 py-2.5 justify-center items-center gap-2.5 rounded-3xl border border-gray-200 bg-gray-50">
                   <div className="text-[13px] font-normal text-[#0C111D] font-geist">
-                    +{availableFor.length - 3}
+                    +{expertise.length - 3}
                   </div>
                 </div>
               )}

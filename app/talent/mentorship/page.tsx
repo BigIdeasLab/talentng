@@ -1,112 +1,39 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MentorCard } from "@/components/mentorship/MentorCard";
+import { getMentors } from "@/lib/api";
+import { Mentor } from "@/lib/types/mentor";
 
 export default function Mentorship() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilters, setSelectedFilters] = useState({
-    jobs: true,
-    designSystem: true,
-    location: false,
-  });
+  const [mentors, setMentors] = useState<Mentor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleFilterChange = (filter: keyof typeof selectedFilters) => {
-    setSelectedFilters((prev) => ({
-      ...prev,
-      [filter]: !prev[filter],
-    }));
-  };
+  useEffect(() => {
+    const fetchMentors = async () => {
+      try {
+        setLoading(true);
+        const fetchedMentors = await getMentors(searchQuery);
+        setMentors(fetchedMentors);
+      } catch (err) {
+        setError("Failed to fetch mentors. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMentors();
+  }, [searchQuery]);
 
   const handleReset = () => {
-    setSelectedFilters({
-      jobs: false,
-      designSystem: false,
-      location: false,
-    });
     setSearchQuery("");
   };
 
-  const handleBookSession = (mentorId: number) => {
+  const handleBookSession = (mentorId: string) => {
     // TODO: Implement book session functionality
     console.log("Booking session with mentor:", mentorId);
   };
-
-  // Mock mentor data based on the Figma design
-  const allMentors = [
-    {
-      id: 1,
-      name: "Promise Olaifa",
-      avatar:
-        "https://api.builder.io/api/v1/image/assets/TEMP/62a092bd6bc517738cffbf8ef4fbcb6b9763da78?width=128",
-      title: "Product Designer",
-      company: "ConnectNigeria",
-      location: "Lagos,Nigeria 🇳🇬",
-      description:
-        "Product Designer & Ux Consultant Product Designer Passionate about how people and technology can create a new and a better world",
-      availableFor: [
-        "Mentoring",
-        "Giving resume feedback",
-        "Participating in User Research",
-        "Career guidance",
-        "Portfolio review",
-        "Mock interviews",
-        "Design critique",
-      ],
-      verified: true,
-    },
-    {
-      id: 2,
-      name: "Desmond Awere",
-      avatar:
-        "https://api.builder.io/api/v1/image/assets/TEMP/3fb16dd7cc66e6d606a217c67c37ff5bb910a530?width=128",
-      title: "Product Designer",
-      company: "ConnectNigeria",
-      location: "Frankfurt,Germany 🇩🇪",
-      description:
-        "Product Designer & Ux Consultant Product Designer Passionate about how people and technology can create a new and a better world",
-      availableFor: [
-        "Mentoring",
-        "Giving resume feedback",
-        "Participating in User Research",
-        "Career guidance",
-        "Portfolio review",
-      ],
-      verified: true,
-    },
-    {
-      id: 3,
-      name: "Zeenie",
-      avatar:
-        "https://api.builder.io/api/v1/image/assets/TEMP/e6c405f1f8a640a9e5d63adf52ea7849f582c532?width=128",
-      title: "Product Designer",
-      company: "ConnectNigeria",
-      location: "Texas,USA 🇺🇸",
-      description:
-        "Product Designer & Ux Consultant Product Designer Passionate about how people and technology can create a new and a better world",
-      availableFor: [
-        "Mentoring",
-        "Giving resume feedback",
-        "Participating in User Research",
-        "Design strategy",
-        "User research",
-      ],
-      verified: true,
-    },
-  ];
-
-  // Filter logic
-  const filteredMentors = allMentors.filter((mentor) => {
-    // Search filter
-    const searchTerm = searchQuery.toLowerCase();
-    const matchesSearch =
-      !searchQuery ||
-      mentor.name.toLowerCase().includes(searchTerm) ||
-      mentor.title.toLowerCase().includes(searchTerm) ||
-      mentor.company.toLowerCase().includes(searchTerm) ||
-      mentor.location.toLowerCase().includes(searchTerm);
-
-    return matchesSearch;
-  });
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
@@ -124,9 +51,13 @@ export default function Mentorship() {
       <div className="space-y-4">
         {/* Search Bar */}
         <div className="flex px-3 py-3 justify-between items-center self-stretch rounded-[44px] border border-[#D0D5DD] bg-white shadow-[0px_4px_8px_0px_rgba(224,224,224,0.25)]">
-          <span className="text-base font-normal text-[#344054] font-geist">
-            {searchQuery || "Looking for?"}
-          </span>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Looking for?"
+            className="text-base font-normal text-[#344054] font-geist w-full focus:outline-none"
+          />
           <div className="flex px-[6.4px] py-[6.4px] items-center gap-2 rounded-[19.2px] bg-black">
             <svg
               width="20"
@@ -156,114 +87,6 @@ export default function Mentorship() {
             </svg>
           </div>
         </div>
-
-        {/* Filter Pills */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => handleFilterChange("jobs")}
-            className={`flex px-2.5 py-2.5 justify-between items-center rounded-[20px] ${
-              selectedFilters.jobs
-                ? "bg-black text-white"
-                : "bg-white border border-gray-100 text-black"
-            }`}
-          >
-            <span className="text-[13px] font-medium font-geist">Jobs</span>
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g clipPath="url(#clip0_down)">
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M9.79493 12.0448C9.58399 12.2555 9.29805 12.3738 8.99993 12.3738C8.7018 12.3738 8.41586 12.2555 8.20493 12.0448L3.96143 7.80279C3.75048 7.59175 3.63201 7.30555 3.63208 7.00715C3.63215 6.70876 3.75075 6.42262 3.9618 6.21167C4.17285 6.00072 4.45905 5.88225 4.75744 5.88232C5.05583 5.88239 5.34198 6.001 5.55293 6.21204L8.99993 9.65904L12.4469 6.21204C12.659 6.00701 12.9431 5.89349 13.2381 5.89591C13.5331 5.89833 13.8153 6.01651 14.024 6.225C14.2327 6.43349 14.3511 6.7156 14.3538 7.01057C14.3565 7.30554 14.2433 7.58977 14.0384 7.80204L9.79568 12.0455L9.79493 12.0448Z"
-                  fill={selectedFilters.jobs ? "white" : "black"}
-                />
-              </g>
-              <defs>
-                <clipPath id="clip0_down">
-                  <rect width="18" height="18" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
-          </button>
-
-          <button
-            onClick={() => handleFilterChange("designSystem")}
-            className={`flex px-2.5 py-2.5 items-center gap-2 rounded-[20px] ${
-              selectedFilters.designSystem
-                ? "bg-black text-white"
-                : "bg-white border border-gray-100 text-black"
-            }`}
-          >
-            <span className="text-[13px] font-medium font-geist">
-              Design system
-            </span>
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g clipPath="url(#clip0_down2)">
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M9.79493 12.0448C9.58399 12.2555 9.29805 12.3738 8.99993 12.3738C8.7018 12.3738 8.41586 12.2555 8.20493 12.0448L3.96143 7.80279C3.75048 7.59175 3.63201 7.30555 3.63208 7.00715C3.63215 6.70876 3.75075 6.42262 3.9618 6.21167C4.17285 6.00072 4.45905 5.88225 4.75744 5.88232C5.05583 5.88239 5.34198 6.001 5.55293 6.21204L8.99993 9.65904L12.4469 6.21204C12.659 6.00701 12.9431 5.89349 13.2381 5.89591C13.5331 5.89833 13.8153 6.01651 14.024 6.225C14.2327 6.43349 14.3511 6.7156 14.3538 7.01057C14.3565 7.30554 14.2433 7.58977 14.0384 7.80204L9.79568 12.0455L9.79493 12.0448Z"
-                  fill={selectedFilters.designSystem ? "white" : "black"}
-                />
-              </g>
-              <defs>
-                <clipPath id="clip0_down2">
-                  <rect width="18" height="18" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
-          </button>
-
-          <button
-            onClick={() => handleFilterChange("location")}
-            className={`flex px-2.5 py-2.5 items-center gap-2 rounded-[20px] ${
-              selectedFilters.location
-                ? "bg-black text-white"
-                : "bg-white border border-gray-100 text-black"
-            }`}
-          >
-            <span className="text-[13px] font-medium font-geist">Location</span>
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g clipPath="url(#clip0_down3)">
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M9.79493 12.0448C9.58399 12.2555 9.29805 12.3738 8.99993 12.3738C8.7018 12.3738 8.41586 12.2555 8.20493 12.0448L3.96143 7.80279C3.75048 7.59175 3.63201 7.30555 3.63208 7.00715C3.63215 6.70876 3.75075 6.42262 3.9618 6.21167C4.17285 6.00072 4.45905 5.88225 4.75744 5.88232C5.05583 5.88239 5.34198 6.001 5.55293 6.21204L8.99993 9.65904L12.4469 6.21204C12.659 6.00701 12.9431 5.89349 13.2381 5.89591C13.5331 5.89833 13.8153 6.01651 14.024 6.225C14.2327 6.43349 14.3511 6.7156 14.3538 7.01057C14.3565 7.30554 14.2433 7.58977 14.0384 7.80204L9.79568 12.0455L9.79493 12.0448Z"
-                  fill={selectedFilters.location ? "white" : "black"}
-                />
-              </g>
-              <defs>
-                <clipPath id="clip0_down3">
-                  <rect width="18" height="18" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
-          </button>
-
-          <button
-            onClick={handleReset}
-            className="flex px-2.5 py-2.5 items-center gap-2 rounded-[20px] border border-gray-100 bg-white text-gray-500 hover:bg-gray-50 transition-colors"
-          >
-            <span className="text-[13px] font-medium font-geist">Reset</span>
-          </button>
-        </div>
       </div>
 
       {/* Outstanding Mentors Section */}
@@ -274,11 +97,15 @@ export default function Mentorship() {
           </h2>
           <div className="flex items-center justify-between">
             <p className="text-base font-normal text-gray-500 font-geist">
-              {filteredMentors.length === 0
+              {loading
+                ? "Loading mentors..."
+                : error
+                ? error
+                : mentors.length === 0
                 ? "No mentors found matching your criteria"
                 : `Standout Mentors making waves around the web`}
             </p>
-            {filteredMentors.length > 0 && (
+            {mentors.length > 0 && !loading && !error && (
               <button className="text-base font-medium text-[#373F51] font-geist underline hover:text-gray-800 transition-colors">
                 View more
               </button>
@@ -288,7 +115,13 @@ export default function Mentorship() {
 
         {/* Mentor Cards Grid */}
         <div className="flex items-center gap-[26px] flex-wrap">
-          {filteredMentors.length === 0 ? (
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <div className="col-span-full text-center py-12 w-full">
+              <p className="text-lg text-red-500 font-geist">{error}</p>
+            </div>
+          ) : mentors.length === 0 ? (
             <div className="col-span-full text-center py-12 w-full">
               <p className="text-lg text-gray-500 font-geist">
                 No mentors match your search criteria.
@@ -301,18 +134,10 @@ export default function Mentorship() {
               </button>
             </div>
           ) : (
-            filteredMentors.map((mentor) => (
+            mentors.map((mentor) => (
               <MentorCard
                 key={mentor.id}
-                id={mentor.id}
-                name={mentor.name}
-                avatar={mentor.avatar}
-                title={mentor.title}
-                company={mentor.company}
-                location={mentor.location}
-                description={mentor.description}
-                availableFor={mentor.availableFor}
-                verified={mentor.verified}
+                mentor={mentor}
                 onBookSession={handleBookSession}
               />
             ))

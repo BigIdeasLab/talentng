@@ -1,6 +1,7 @@
 import { getCookie } from "@/lib/utils";
 import { Opportunity } from "./types/opportunity";
 import { Application } from "./types/application";
+import { Mentor } from "./types/mentor";
 
 const baseUrl = "/api/v1";
 
@@ -126,4 +127,11 @@ export const applyToOpportunity = async (
 
 export const getApplications = async (): Promise<Application[]> => {
   return apiClient<Application[]>("/applications");
+};
+
+export const getMentors = async (
+  query?: string
+): Promise<Mentor[]> => {
+  const endpoint = query ? `/mentor/search?q=${query}` : "/mentor/search";
+  return apiClient<Mentor[]>(endpoint);
 };
