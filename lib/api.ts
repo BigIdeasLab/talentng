@@ -1,5 +1,6 @@
 import { getCookie } from "@/lib/utils";
 import { Opportunity } from "./types/opportunity";
+import { Application } from "./types/application";
 
 const baseUrl = "/api/v1";
 
@@ -112,4 +113,17 @@ export const getOpportunityById = async (id: string): Promise<Opportunity> => {
 
 export const getDashboardStats = async () => {
   return apiClient<any>("/talent/dashboard");
+};
+
+export const applyToOpportunity = async (
+  application: Application,
+): Promise<any> => {
+  return apiClient<any>("/applications", {
+    method: "POST",
+    body: application,
+  });
+};
+
+export const getApplications = async (): Promise<Application[]> => {
+  return apiClient<Application[]>("/applications");
 };

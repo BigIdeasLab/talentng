@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { JobCard } from "@/components/opportunities/JobCard";
-import { getOpportunities } from "@/lib/api";
+import { getOpportunities, getApplications } from "@/lib/api";
 import { Opportunity } from "@/lib/types/opportunity";
 import ApplicationModal from "@/components/ApplicationModal";
 
@@ -11,18 +11,23 @@ interface OpportunitiesListProps {
 
 export function OpportunitiesList({ limit }: OpportunitiesListProps) {
   const [jobListings, setJobListings] = useState<Opportunity[]>([]);
+  const [appliedOpportunityIds, setAppliedOpportunityIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [applicationModalOpen, setApplicationModalOpen] = useState(false);
   const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
 
   useEffect(() => {
-    const fetchOpportunities = async () => {
+    const fetchOpportunitiesAndApplications = async () => {
       setLoading(true);
       setError(null);
       try {
-        const data = await getOpportunities({});
-        setJobListings(limit ? data.slice(0, limit) : data);
+        const [opportunities, applications] = await Promise.all([
+          getOpportunities({}),
+          getApplications(),
+        ]);
+        setJobListings(limit ? opportunities.slice(0, limit) : opportunities);
+        setAppliedOpportunityIds(new Set(applications.map(app => app.opportunityId)));
       } catch (err) {
         setError("Failed to fetch opportunities.");
         console.error(err);
@@ -31,7 +36,7 @@ export function OpportunitiesList({ limit }: OpportunitiesListProps) {
       }
     };
 
-    fetchOpportunities();
+    fetchOpportunitiesAndApplications();
   }, [limit]);
 
   const handleShare = (jobId: string) => {
@@ -71,6 +76,7 @@ export function OpportunitiesList({ limit }: OpportunitiesListProps) {
             employmentType={job.employmentType}
             onShare={handleShare}
             onApply={handleApply}
+            hasApplied={appliedOpportunityIds.has(job.id)}
           />
         ))}
       </div>

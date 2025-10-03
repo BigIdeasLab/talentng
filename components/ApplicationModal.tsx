@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
 import { Opportunity } from "@/lib/types/opportunity";
+import { applyToOpportunity } from "@/lib/api";
+import { Application } from "@/lib/types/application";
+import { toast } from "sonner";
 
 interface ApplicationModalProps {
   open: boolean;
@@ -15,17 +18,35 @@ export default function ApplicationModal({
   opportunity,
 }: ApplicationModalProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [coverLetter, setCoverLetter] = useState("");
   const router = useRouter();
 
-  const handleSubmit = () => {
-    // TODO: Implement actual application submission logic
-    console.log("Submitting application:", { opportunityId: opportunity.id, coverLetter });
-    setIsSubmitted(true);
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      const application: Application = {
+        opportunityId: opportunity.id,
+        note: coverLetter,
+      };
+
+      await applyToOpportunity(application);
+      setIsSubmitted(true);
+      toast.success("Application submitted successfully!");
+    } catch (error: any) {
+      if (error.message.includes("already applied")) {
+        toast.error("You have already applied for this opportunity.");
+      } else {
+        toast.error("Failed to submit application. Please try again.");
+      }
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleGoToDashboard = () => {
-    router.push("/dashboard");
+    router.push("/talent/dashboard");
     onClose();
     setIsSubmitted(false);
     setCoverLetter("");
@@ -102,13 +123,13 @@ export default function ApplicationModal({
                   placeholder="Cover Letter"
                   value={coverLetter}
                   onChange={(e) => setCoverLetter(e.target.value)}
-                  className="min-h-[378px] rounded-[32px] border border-gray-300 bg-white p-3.5 text-base font-medium text-gray-500 font-geist placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-gray-300 resize-none"
-                  style={{ 
-                    borderColor: '#D0D5DD',
-                    paddingTop: '14px',
-                    paddingLeft: '14px',
-                    paddingRight: '14px',
-                    paddingBottom: '14px'
+                  className="min-h-[200px] rounded-[32px] border border-gray-300 bg-white p-3.5 text-base font-medium text-gray-500 font-geist placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-gray-300 resize-none"
+                  style={{
+                    borderColor: "#D0D5DD",
+                    paddingTop: "14px",
+                    paddingLeft: "14px",
+                    paddingRight: "14px",
+                    paddingBottom: "14px",
                   }}
                 />
               </div>
@@ -116,9 +137,10 @@ export default function ApplicationModal({
               {/* Submit Button */}
               <button
                 onClick={handleSubmit}
-                className="w-full flex items-center justify-center gap-2.5 py-3.5 px-3.5 rounded-3xl bg-black text-white font-geist text-base font-medium hover:bg-gray-900 transition-colors"
+                disabled={isSubmitting}
+                className="w-full flex items-center justify-center gap-2.5 py-3.5 px-3.5 rounded-3xl bg-black text-white font-geist text-base font-medium hover:bg-gray-900 transition-colors disabled:bg-gray-400"
               >
-                Submit Application
+                {isSubmitting ? "Submitting..." : "Submit Application"}
               </button>
             </div>
           </div>
@@ -148,7 +170,12 @@ export default function ApplicationModal({
                   </g>
                   <defs>
                     <clipPath id="clip0_2193_4889">
-                      <rect width="44" height="44" fill="white" transform="translate(0 0.5)" />
+                      <rect
+                        width="44"
+                        height="44"
+                        fill="white"
+                        transform="translate(0 0.5)"
+                      />
                     </clipPath>
                   </defs>
                 </svg>
@@ -157,7 +184,8 @@ export default function ApplicationModal({
               {/* Success Message */}
               <div className="text-center">
                 <p className="text-base font-normal text-black font-geist leading-[19.2px]">
-                  Your application for {opportunity.title} at {opportunity.company} has been submitted.
+                  Your application for {opportunity.title} at{" "}
+                  {opportunity.company} has been submitted.
                 </p>
               </div>
             </div>

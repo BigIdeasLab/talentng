@@ -41,4 +41,5 @@ export interface JobCardProps {
   };
   onShare?: (jobId: string) => void;
   onApply?: (jobId: string) => void;
+  hasApplied?: boolean;
 }
