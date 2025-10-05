@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getNotifications, markNotificationAsRead } from "@/lib/api";
+import { Notification } from "@/lib/types/notification";
+import { useAuth } from "@/hooks/use-auth";
+import { formatDistanceToNow } from "date-fns";
 
 interface NotificationPanelProps {
   open: boolean;
@@ -9,6 +13,40 @@ export default function NotificationPanel({
   open,
   onClose,
 }: NotificationPanelProps) {
+  const { user } = useAuth();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (open && user) {
+      const fetchNotifications = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          const fetchedNotifications = await getNotifications(user.id);
+          setNotifications(fetchedNotifications);
+        } catch (err) {
+          setError("Failed to fetch notifications.");
+        }
+        setLoading(false);
+      };
+      fetchNotifications();
+    }
+  }, [open, user]);
+
+  const handleMarkAsRead = async (notificationId: string) => {
+    try {
+      const updatedNotification = await markNotificationAsRead(notificationId);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notificationId ? updatedNotification : n))
+      );
+    } catch (err) {
+      // Handle error appropriately
+      console.error("Failed to mark notification as read.");
+    }
+  };
+
   return (
     <div
       className={`fixed inset-0 z-50 transition-opacity duration-300 ${open ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}
@@ -59,96 +97,62 @@ export default function NotificationPanel({
 
           {/* Content */}
           <div className="flex-1 p-6">
-            <div className="space-y-6">
-              {/* Today section */}
-              <div className="text-sm text-gray-500 font-geist">Today</div>
-
-              {/* Notifications list */}
+            {loading && <p>Loading...</p>}
+            {error && <p>{error}</p>}
+            {!loading && !error && (
               <div className="space-y-6">
-                {/* Basic notification */}
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-2">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                <div className="text-sm text-gray-500 font-geist">Today</div>
+                <div className="space-y-6">
+                  {notifications.map((notification) => (
+                    <div
+                      key={notification.id}
+                      className="flex items-start justify-between"
+                      onClick={() => handleMarkAsRead(notification.id)}
                     >
-                      <g clipPath="url(#clip0_mail_send)">
-                        <path
-                          d="M19.9999 4C20.5303 4 21.039 4.21071 21.4141 4.58579C21.7892 4.96086 21.9999 5.46957 21.9999 6V18C21.9999 18.5304 21.7892 19.0391 21.4141 19.4142C21.039 19.7893 20.5303 20 19.9999 20H3.99987C3.46944 20 2.96073 19.7893 2.58565 19.4142C2.21058 19.0391 1.99987 18.5304 1.99987 18V17H3.99987V18H19.9999V7.423L13.0649 14.358C12.7836 14.6392 12.4021 14.7972 12.0044 14.7972C11.6066 14.7972 11.2252 14.6392 10.9439 14.358L3.99987 7.414V8H1.99987V6C1.99987 5.46957 2.21058 4.96086 2.58565 4.58579C2.96073 4.21071 3.46944 4 3.99987 4H19.9999ZM5.99987 13C6.25475 13.0003 6.4999 13.0979 6.68524 13.2728C6.87057 13.4478 6.9821 13.687 6.99704 13.9414C7.01198 14.1958 6.92919 14.4464 6.7656 14.6418C6.60201 14.8373 6.36996 14.9629 6.11687 14.993L5.99987 15H0.999869C0.744989 14.9997 0.499836 14.9021 0.3145 14.7272C0.129164 14.5522 0.0176337 14.313 0.0026966 14.0586C-0.0122405 13.8042 0.0705432 13.5536 0.234134 13.3582C0.397724 13.1627 0.629773 13.0371 0.882869 13.007L0.999869 13H5.99987ZM4.99987 10C5.26509 10 5.51944 10.1054 5.70698 10.2929C5.89451 10.4804 5.99987 10.7348 5.99987 11C5.99987 11.2652 5.89451 11.5196 5.70698 11.7071C5.51944 11.8946 5.26509 12 4.99987 12H1.99987C1.73465 12 1.4803 11.8946 1.29276 11.7071C1.10523 11.5196 0.999869 11.2652 0.999869 11C0.999869 10.7348 1.10523 10.4804 1.29276 10.2929C1.4803 10.1054 1.73465 10 1.99987 10H4.99987Z"
-                          fill="#667085"
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_mail_send">
-                          <rect width="24" height="24" fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-                    <div className="flex flex-col gap-2">
-                      <div className="text-sm font-semibold text-black font-geist">
-                        Notification Title
-                      </div>
-                      <div className="text-sm text-gray-500 font-geist">
-                        Notification subtitle
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-xs text-gray-500 font-geist">
-                      39m
-                    </span>
-                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                  </div>
-                </div>
-
-                {/* Job invite notification */}
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-2 flex-1">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g clipPath="url(#clip0_mail_send2)">
-                        <path
-                          d="M19.9999 4C20.5303 4 21.039 4.21071 21.4141 4.58579C21.7892 4.96086 21.9999 5.46957 21.9999 6V18C21.9999 18.5304 21.7892 19.0391 21.4141 19.4142C21.039 19.7893 20.5303 20 19.9999 20H3.99987C3.46944 20 2.96073 19.7893 2.58565 19.4142C2.21058 19.0391 1.99987 18.5304 1.99987 18V17H3.99987V18H19.9999V7.423L13.0649 14.358C12.7836 14.6392 12.4021 14.7972 12.0044 14.7972C11.6066 14.7972 11.2252 14.6392 10.9439 14.358L3.99987 7.414V8H1.99987V6C1.99987 5.46957 2.21058 4.96086 2.58565 4.58579C2.96073 4.21071 3.46944 4 3.99987 4H19.9999ZM5.99987 13C6.25475 13.0003 6.4999 13.0979 6.68524 13.2728C6.87057 13.4478 6.9821 13.687 6.99704 13.9414C7.01198 14.1958 6.92919 14.4464 6.7656 14.6418C6.60201 14.8373 6.36996 14.9629 6.11687 14.993L5.99987 15H0.999869C0.744989 14.9997 0.499836 14.9021 0.3145 14.7272C0.129164 14.5522 0.0176337 14.313 0.0026966 14.0586C-0.0122405 13.8042 0.0705432 13.5536 0.234134 13.3582C0.397724 13.1627 0.629773 13.0371 0.882869 13.007L0.999869 13H5.99987ZM4.99987 10C5.26509 10 5.51944 10.1054 5.70698 10.2929C5.89451 10.4804 5.99987 10.7348 5.99987 11C5.99987 11.2652 5.89451 11.5196 5.70698 11.7071C5.51944 11.8946 5.26509 12 4.99987 12H1.99987C1.73465 12 1.4803 11.8946 1.29276 11.7071C1.10523 11.5196 0.999869 11.2652 0.999869 11C0.999869 10.7348 1.10523 10.4804 1.29276 10.2929C1.4803 10.1054 1.73465 10 1.99987 10H4.99987Z"
-                          fill="#667085"
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_mail_send2">
-                          <rect width="24" height="24" fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-                    <div className="flex flex-col gap-4 flex-1">
-                      <div className="flex flex-col gap-2">
-                        <div className="text-sm font-semibold text-black font-geist">
-                          Job Invite
-                        </div>
-                        <div className="text-sm text-gray-500 font-geist">
-                          Product Designer- Lagos Nigeria 🇳🇬
+                      <div className="flex items-start gap-2">
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g clipPath="url(#clip0_mail_send)">
+                            <path
+                              d="M19.9999 4C20.5303 4 21.039 4.21071 21.4141 4.58579C21.7892 4.96086 21.9999 5.46957 21.9999 6V18C21.9999 18.5304 21.7892 19.0391 21.4141 19.4142C21.039 19.7893 20.5303 20 19.9999 20H3.99987C3.46944 20 2.96073 19.7893 2.58565 19.4142C2.21058 19.0391 1.99987 18.5304 1.99987 18V17H3.99987V18H19.9999V7.423L13.0649 14.358C12.7836 14.6392 12.4021 14.7972 12.0044 14.7972C11.6066 14.7972 11.2252 14.6392 10.9439 14.358L3.99987 7.414V8H1.99987V6C1.99987 5.46957 2.21058 4.96086 2.58565 4.58579C2.96073 4.21071 3.46944 4 3.99987 4H19.9999ZM5.99987 13C6.25475 13.0003 6.4999 13.0979 6.68524 13.2728C6.87057 13.4478 6.9821 13.687 6.99704 13.9414C7.01198 14.1958 6.92919 14.4464 6.7656 14.6418C6.60201 14.8373 6.36996 14.9629 6.11687 14.993L5.99987 15H0.999869C0.744989 14.9997 0.499836 14.9021 0.3145 14.7272C0.129164 14.5522 0.0176337 14.313 0.0026966 14.0586C-0.0122405 13.8042 0.0705432 13.5536 0.234134 13.3582C0.397724 13.1627 0.629773 13.0371 0.882869 13.007L0.999869 13H5.99987ZM4.99987 10C5.26509 10 5.51944 10.1054 5.70698 10.2929C5.89451 10.4804 5.99987 10.7348 5.99987 11C5.99987 11.2652 5.89451 11.5196 5.70698 11.7071C5.51944 11.8946 5.26509 12 4.99987 12H1.99987C1.73465 12 1.4803 11.8946 1.29276 11.7071C1.10523 11.5196 0.999869 11.2652 0.999869 11C0.999869 10.7348 1.10523 10.4804 1.29276 10.2929C1.4803 10.1054 1.73465 10 1.99987 10H4.99987Z"
+                              fill="#667085"
+                            />
+                          </g>
+                          <defs>
+                            <clipPath id="clip0_mail_send">
+                              <rect width="24" height="24" fill="white" />
+                            </clipPath>
+                          </defs>
+                        </svg>
+                        <div className="flex flex-col gap-2">
+                          <div className="text-sm font-semibold text-black font-geist">
+                            {notification.payload.title}
+                          </div>
+                          <div className="text-sm text-gray-500 font-geist">
+                            {notification.payload.message}
+                          </div>
                         </div>
                       </div>
-                      <button className="px-4 py-2 bg-black text-white text-sm font-medium rounded-full w-fit font-geist">
-                        View Invite
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <span className="text-xs text-gray-500 font-geist">
+                          {formatDistanceToNow(new Date(notification.createdAt), {
+                            addSuffix: true,
+                          })}
+                        </span>
+                        {!notification.readAt && (
+                          <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-xs text-gray-500 font-geist">
-                      39m
-                    </span>
-                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                  </div>
+                  ))}
                 </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Divider at bottom (as shown in Figma) */}

@@ -2,6 +2,7 @@ import { getCookie } from "@/lib/utils";
 import { Opportunity } from "./types/opportunity";
 import { Application } from "./types/application";
 import { Mentor } from "./types/mentor";
+import { Notification } from "./types/notification";
 
 const baseUrl = "/api/v1";
 
@@ -155,5 +156,31 @@ export const bookSession = async (
   return apiClient<any>(`/booking`, {
     method: "POST",
     body: { mentorId, startTime },
+  });
+};
+
+export const getNotifications = async (
+  userId: string,
+  read?: boolean,
+  type?: string,
+): Promise<Notification[]> => {
+  const query = new URLSearchParams({ userId });
+  if (read !== undefined) {
+    query.append("read", String(read));
+  }
+  if (type) {
+    query.append("type", type);
+  }
+  const endpoint = `/notifications?${query.toString()}`;
+  return apiClient<Notification[]>(endpoint);
+};
+
+export const markNotificationAsRead = async (
+  notificationId: string,
+): Promise<Notification> => {
+  const endpoint = `/notifications/${notificationId}`;
+  return apiClient<Notification>(endpoint, {
+    method: "PATCH",
+    body: { isRead: true },
   });
 };
