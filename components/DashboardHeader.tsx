@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import NotificationPanel from "@/components/NotificationPanel";
 import { useAuth } from "@/hooks/use-auth";
@@ -13,6 +13,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { getNotifications } from "@/lib/api";
+import { Notification } from "@/lib/types/notification";
 
 export function DashboardHeader({
   toggleSidebar,
@@ -24,6 +26,29 @@ export function DashboardHeader({
   const { user, logout } = useAuth();
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchNotifications = async () => {
+    if (user) {
+      setLoading(true);
+      setError(null);
+      try {
+        const fetchedNotifications = await getNotifications(user.id);
+        setNotifications(fetchedNotifications);
+      } catch (err) {
+        setError("Failed to fetch notifications.");
+      }
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [user]);
+
+  const unreadCount = notifications.filter((n) => !n.readAt).length;
 
   const isOpportunitiesList = pathname === "/opportunities";
   const isOpportunitiesDetail =
@@ -115,7 +140,7 @@ export function DashboardHeader({
           <div className="flex items-center gap-3 sm:gap-4">
             {/* Notification */}
             <button
-              className="p-2.5 bg-gray-100 rounded-3xl hover:bg-gray-200 transition-colors"
+              className="relative p-2.5 bg-gray-100 rounded-3xl hover:bg-gray-200 transition-colors"
               onClick={() => setIsNotificationOpen(true)}
             >
               <svg
@@ -134,6 +159,11 @@ export function DashboardHeader({
                   />
                 </g>
               </svg>
+              {unreadCount > 0 && (
+                <div className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-xs text-white">
+                  {unreadCount}
+                </div>
+              )}
             </button>
 
             {/* User Avatar Dropdown */}
@@ -212,6 +242,10 @@ export function DashboardHeader({
       <NotificationPanel
         open={isNotificationOpen}
         onClose={() => setIsNotificationOpen(false)}
+        notifications={notifications}
+        loading={loading}
+        error={error}
+        refetch={fetchNotifications}
       />
     </header>
   );

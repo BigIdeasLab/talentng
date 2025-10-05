@@ -1,46 +1,29 @@
-import React, { useEffect, useState } from "react";
-import { getNotifications, markNotificationAsRead } from "@/lib/api";
+import React from "react";
 import { Notification } from "@/lib/types/notification";
-import { useAuth } from "@/hooks/use-auth";
 import { formatDistanceToNow } from "date-fns";
+import { markNotificationAsRead } from "@/lib/api";
 
 interface NotificationPanelProps {
   open: boolean;
   onClose: () => void;
+  notifications: Notification[];
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
 }
 
 export default function NotificationPanel({
   open,
   onClose,
+  notifications,
+  loading,
+  error,
+  refetch,
 }: NotificationPanelProps) {
-  const { user } = useAuth();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (open && user) {
-      const fetchNotifications = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-          const fetchedNotifications = await getNotifications(user.id);
-          setNotifications(fetchedNotifications);
-        } catch (err) {
-          setError("Failed to fetch notifications.");
-        }
-        setLoading(false);
-      };
-      fetchNotifications();
-    }
-  }, [open, user]);
-
   const handleMarkAsRead = async (notificationId: string) => {
     try {
-      const updatedNotification = await markNotificationAsRead(notificationId);
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === notificationId ? updatedNotification : n))
-      );
+      await markNotificationAsRead(notificationId);
+      refetch();
     } catch (err) {
       // Handle error appropriately
       console.error("Failed to mark notification as read.");
