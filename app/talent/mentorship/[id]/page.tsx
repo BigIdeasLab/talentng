@@ -1,64 +1,47 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import BookingModal from "@/components/BookingModal";
-
-type Mentor = {
-  id: number;
-  name: string;
-  avatar: string;
-  title: string;
-  company: string;
-  location: string;
-  description: string;
-  availableFor: string[];
-  verified: boolean;
-};
-
-const mentors: Mentor[] = [
-  {
-    id: 1,
-    name: "Promise Olaifa",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/52c24c20593f581ab8cf4ece4cf50020375bc67c?width=256",
-    title: "Product Designer",
-    company: "ConnectNigeria",
-    location: "Lagos, Nigeria 🇳🇬",
-    description:
-      "As a dedicated Product Designer and UX Consultant, I am deeply passionate about the intersection of human experience and technology. I believe that through innovative design and thoughtful user experiences, we can forge a new path toward a better world. My journey in this field has been driven by a desire to understand how people interact with technology, and how we can leverage that understanding to create products that not only meet user needs but also inspire and uplift. I envision a future where technology seamlessly integrates into our lives, enhancing our daily experiences and fostering connections among individuals and communities. By focusing on empathy and user-centered design principles, I strive to contribute to a landscape where technology serves as a catalyst for positive change, ultimately leading to a more inclusive and sustainable world.",
-    availableFor: [
-      "Mentoring",
-      "Giving resume feedback",
-      "Participating in User Research",
-      "Career guidance",
-      "Mock interviews",
-      "Portfolio review",
-      "Product critique",
-      "Design systems",
-    ],
-    verified: true,
-  },
-  {
-    id: 2,
-    name: "Desmond Awere",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/3fb16dd7cc66e6d606a217c67c37ff5bb910a530?width=256",
-    title: "Product Designer",
-    company: "ConnectNigeria",
-    location: "Frankfurt, Germany 🇩🇪",
-    description: "Product Designer & UX",
-    availableFor: ["Mentoring", "Portfolio review"],
-    verified: true,
-  },
-];
+import { getMentorById } from "@/lib/api";
+import { Mentor } from "@/lib/types/mentor";
 
 export default function MentorDetail() {
   const { id } = useParams();
   const router = useRouter();
-  const mentorId = Number(id || 0);
-  const mentor = mentors.find((m) => m.id === mentorId) || mentors[0];
-
+  const [mentor, setMentor] = useState<Mentor | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchMentor = async () => {
+      try {
+        setLoading(true);
+        const fetchedMentor = await getMentorById(id as string);
+        setMentor(fetchedMentor);
+      } catch (err) {
+        setError("Failed to fetch mentor details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchMentor();
+    }
+  }, [id]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
+  if (!mentor) {
+    return <p>Mentor not found.</p>;
+  }
 
   return (
     <>
@@ -91,50 +74,28 @@ export default function MentorDetail() {
             <div className="bg-white rounded-2xl p-6 border border-gray-100">
               <div className="flex flex-col md:flex-row md:items-start gap-6">
                 <img
-                  src={mentor.avatar}
-                  alt={mentor.name}
+                  src={mentor.profileImageUrl ?? ''}
+                  alt={mentor.fullName}
                   className="w-32 h-32 rounded-full object-cover"
                 />
 
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <h2 className="text-3xl font-semibold font-geist text-black">
-                      {mentor.name}
+                      {mentor.fullName}
                     </h2>
-                    {mentor.verified && (
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g clipPath="url(#clip0_verify)">
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M17.9055 1.01419C17.6672 0.633365 17.3161 0.336324 16.901 0.164413C16.486 -0.0074974 16.0277 -0.0457244 15.5899 0.0550546L12.4829 0.768788C12.1645 0.841978 11.8336 0.841978 11.5152 0.768788L8.40813 0.0550546C7.97035 -0.0457244 7.51204 -0.0074974 7.09701 0.164413C6.68197 0.336324 6.33085 0.633365 6.09253 1.01419L4.39904 3.71704C4.22623 3.99355 3.99294 4.22685 3.71645 4.4014L1.01378 6.095C0.633634 6.33313 0.337048 6.6837 0.165185 7.09805C-0.00667728 7.51241 -0.045291 7.96999 0.0547039 8.40729L0.768391 11.518C0.841312 11.8359 0.841312 12.1662 0.768391 12.484L0.0547039 15.593C-0.0456796 16.0306 -0.00726024 16.4885 0.164621 16.9032C0.336502 17.3179 0.633305 17.6688 1.01378 17.907L3.71645 19.6006C3.99294 19.7735 4.22623 20.0068 4.40077 20.2833L6.09426 22.9861C6.58157 23.7655 7.51127 24.1509 8.40813 23.9452L11.5152 23.2315C11.8336 23.1583 12.1645 23.1583 12.4829 23.2315L15.5917 23.9452C16.0292 24.0456 16.4871 24.0072 16.9018 23.8353C17.3165 23.6634 17.6673 23.3666 17.9055 22.9861L19.599 20.2833C19.7718 20.0068 20.0051 19.7735 20.2816 19.6006L22.986 17.907C23.3665 17.6685 23.6632 17.3172 23.8347 16.9022C24.0063 16.4871 24.0443 16.0289 23.9434 15.5913L23.2314 12.484C23.1582 12.1656 23.1582 11.8347 23.2314 11.5163L23.9451 8.40729C24.0456 7.96992 24.0075 7.51209 23.8359 7.09739C23.6643 6.6827 23.3679 6.33174 22.9877 6.09327L20.2833 4.39967C20.0072 4.22653 19.7739 3.99317 19.6007 3.71704L17.9055 1.01419ZM17.0363 8.14634C17.1432 7.94979 17.1697 7.71944 17.1102 7.50376C17.0507 7.28807 16.9099 7.10388 16.7173 6.98992C16.5248 6.87596 16.2956 6.84113 16.0779 6.89275C15.8602 6.94438 15.6711 7.07842 15.5502 7.2667L11.0313 14.9156L8.30272 12.3026C8.22177 12.2195 8.12491 12.1535 8.01792 12.1086C7.91092 12.0637 7.79599 12.0409 7.67997 12.0414C7.56395 12.0419 7.44922 12.0658 7.34262 12.1116C7.23602 12.1574 7.13974 12.2242 7.05952 12.308C6.9793 12.3918 6.91678 12.4909 6.8757 12.5995C6.83461 12.708 6.8158 12.8236 6.82038 12.9396C6.82496 13.0555 6.85285 13.1694 6.90281 13.2743C6.95277 13.3792 7.02358 13.4724 8.14634 14.439L10.4222 16.6093C10.7472 16.9183 11.2013 17.0504 11.6434 16.9753C12.0855 16.9002 12.4712 16.6263 12.6983 16.2333L17.0363 8.14634Z"
-                            fill="#0095EC"
-                          />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_verify">
-                            <rect width="24" height="24" fill="white" />
-                          </clipPath>
-                        </defs>
-                      </svg>
-                    )}
+                    {mentor.user.isVerified && <span>✓</span>}
                   </div>
 
                   <div className="text-base text-black mt-1">
-                    {mentor.title}, {mentor.company}
+                    {mentor.headline}, {mentor.company}
                   </div>
                   <div className="text-base text-black mt-1">
                     {mentor.location}
                   </div>
 
                   <p className="text-base text-gray-500 mt-4 leading-7">
-                    {mentor.description}
+                    {mentor.bio}
                   </p>
 
                   <div className="mt-6 max-w-xl">
@@ -142,7 +103,7 @@ export default function MentorDetail() {
                       Available for
                     </div>
                     <div className="flex flex-wrap gap-2 mt-3">
-                      {mentor.availableFor.slice(0, 3).map((a) => (
+                      {mentor.expertise.slice(0, 3).map((a) => (
                         <div
                           key={a}
                           className="px-3 py-2 border border-gray-200 rounded-full text-[13px] text-[#0C111D] bg-white"
@@ -150,9 +111,9 @@ export default function MentorDetail() {
                           {a}
                         </div>
                       ))}
-                      {mentor.availableFor.length > 3 && (
+                      {mentor.expertise.length > 3 && (
                         <div className="px-3 py-2 border border-gray-200 rounded-full text-[13px] text-[#0C111D] bg-gray-50">
-                          +{mentor.availableFor.length - 3}
+                          +{mentor.expertise.length - 3}
                         </div>
                       )}
                     </div>

@@ -132,6 +132,28 @@ export const getApplications = async (): Promise<Application[]> => {
 export const getMentors = async (
   query?: string
 ): Promise<Mentor[]> => {
-  const endpoint = query ? `/mentor/search?q=${query}` : "/mentor/search";
+  const endpoint = query ? `/mentor?q=${query}` : "/mentor";
   return apiClient<Mentor[]>(endpoint);
+};
+
+export const getMentorById = async (id: string): Promise<Mentor> => {
+  return apiClient<Mentor>(`/mentor/${id}`);
+};
+
+export const getMentorAvailability = async (
+  mentorId: string,
+): Promise<{ startTime: string; endTime: string }[]> => {
+  return apiClient<{ startTime: string; endTime: string }[]>(
+    `/booking/mentor/${mentorId}/availability`,
+  );
+};
+
+export const bookSession = async (
+  mentorId: string,
+  startTime: string,
+): Promise<any> => {
+  return apiClient<any>(`/booking`, {
+    method: "POST",
+    body: { mentorId, startTime },
+  });
 };

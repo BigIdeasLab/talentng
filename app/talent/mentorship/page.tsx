@@ -3,12 +3,15 @@ import React, { useState, useEffect } from "react";
 import { MentorCard } from "@/components/mentorship/MentorCard";
 import { getMentors } from "@/lib/api";
 import { Mentor } from "@/lib/types/mentor";
+import BookingModal from "@/components/BookingModal";
 
 export default function Mentorship() {
   const [searchQuery, setSearchQuery] = useState("");
   const [mentors, setMentors] = useState<Mentor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedMentor, setSelectedMentor] = useState<Mentor | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchMentors = async () => {
@@ -31,8 +34,16 @@ export default function Mentorship() {
   };
 
   const handleBookSession = (mentorId: string) => {
-    // TODO: Implement book session functionality
-    console.log("Booking session with mentor:", mentorId);
+    const mentor = mentors.find((m) => m.id === mentorId);
+    if (mentor) {
+      setSelectedMentor(mentor);
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedMentor(null);
   };
 
   return (
@@ -100,10 +111,10 @@ export default function Mentorship() {
               {loading
                 ? "Loading mentors..."
                 : error
-                ? error
-                : mentors.length === 0
-                ? "No mentors found matching your criteria"
-                : `Standout Mentors making waves around the web`}
+                  ? error
+                  : mentors.length === 0
+                    ? "No mentors found matching your criteria"
+                    : `Standout Mentors making waves around the web`}
             </p>
             {mentors.length > 0 && !loading && !error && (
               <button className="text-base font-medium text-[#373F51] font-geist underline hover:text-gray-800 transition-colors">
@@ -144,6 +155,13 @@ export default function Mentorship() {
           )}
         </div>
       </div>
+      {selectedMentor && (
+        <BookingModal
+          open={isModalOpen}
+          onClose={handleCloseModal}
+          mentor={selectedMentor}
+        />
+      )}
     </div>
   );
 }
