@@ -1,10 +1,43 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Switch } from "@/components/ui/switch";
+import { NotificationSettings as NotificationSettingsType } from "@/lib/types/settings";
+import { useToast } from "@/hooks/use-toast";
+import { updateNotificationSettings } from "@/lib/api/settings";
+import { useDebounce } from "@/hooks/use-debounce";
 
-export default function NotificationSettings() {
-  const [emailNotifications, setEmailNotifications] = useState(false);
-  const [inAppNotifications, setInAppNotifications] = useState(false);
-  const [pushNotifications, setPushNotifications] = useState(false);
+interface NotificationSettingsProps {
+  settings: NotificationSettingsType;
+}
+
+export default function NotificationSettings({ settings }: NotificationSettingsProps) {
+  const { toast } = useToast();
+  const [notificationSettings, setNotificationSettings] = useState(settings);
+  const [loading, setLoading] = useState(false);
+
+  const debouncedSettings = useDebounce(notificationSettings, 500);
+
+  useEffect(() => {
+    const updateSettings = async () => {
+      setLoading(true);
+      try {
+        await updateNotificationSettings(debouncedSettings);
+        toast({ title: "Success", description: "Notification settings updated." });
+      } catch (error) {
+        toast({ title: "Error", description: "Failed to update notification settings." });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (JSON.stringify(debouncedSettings) !== JSON.stringify(settings)) {
+      updateSettings();
+    }
+  }, [debouncedSettings, settings, toast]);
+
+  const handleSwitchChange = (name: keyof NotificationSettingsType, value: boolean) => {
+    setNotificationSettings((prev) => ({ ...prev, [name]: value }));
+  };
+
 
   return (
     <div className="space-y-8">
@@ -21,8 +54,9 @@ export default function NotificationSettings() {
             Email Notifications
           </span>
           <Switch
-            checked={emailNotifications}
-            onCheckedChange={setEmailNotifications}
+            checked={notificationSettings.email}
+            onCheckedChange={(value) => handleSwitchChange("email", value)}
+            disabled={loading}
           />
         </div>
 
@@ -31,8 +65,9 @@ export default function NotificationSettings() {
             In-App Notifications
           </span>
           <Switch
-            checked={inAppNotifications}
-            onCheckedChange={setInAppNotifications}
+            checked={notificationSettings.inApp}
+            onCheckedChange={(value) => handleSwitchChange("inApp", value)}
+            disabled={loading}
           />
         </div>
 
@@ -41,8 +76,9 @@ export default function NotificationSettings() {
             Push Notifications
           </span>
           <Switch
-            checked={pushNotifications}
-            onCheckedChange={setPushNotifications}
+            checked={notificationSettings.push}
+            onCheckedChange={(value) => handleSwitchChange("push", value)}
+            disabled={loading}
           />
         </div>
       </div>

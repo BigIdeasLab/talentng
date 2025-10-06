@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Switch } from "@/components/ui/switch";
 import {
   Table,
@@ -8,9 +8,39 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { SecuritySettings } from "@/lib/types/settings";
+import { useToast } from "@/hooks/use-toast";
+import { setTwoFactor } from "@/lib/api/settings";
+import { useDebounce } from "@/hooks/use-debounce";
 
-export default function PrivacySecurity() {
-  const [twoFactorAuth, setTwoFactorAuth] = useState(false);
+interface PrivacySecurityProps {
+  settings: SecuritySettings;
+}
+
+export default function PrivacySecurity({ settings }: PrivacySecurityProps) {
+  const { toast } = useToast();
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(settings.twoFactorEnabled);
+  const [loading, setLoading] = useState(false);
+
+  const debouncedTwoFactor = useDebounce(twoFactorEnabled, 500);
+
+  useEffect(() => {
+    const updateTwoFactor = async () => {
+      setLoading(true);
+      try {
+        await setTwoFactor(debouncedTwoFactor);
+        toast({ title: "Success", description: "Two-factor authentication settings updated." });
+      } catch (error) {
+        toast({ title: "Error", description: "Failed to update two-factor authentication settings." });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (debouncedTwoFactor !== settings.twoFactorEnabled) {
+      updateTwoFactor();
+    }
+  }, [debouncedTwoFactor, settings.twoFactorEnabled, toast]);
 
   const loginActivity = [
     {
@@ -43,11 +73,15 @@ export default function PrivacySecurity() {
           <span className="text-xl font-medium text-black">
             Two-Factor Authentication
           </span>
-          <Switch checked={twoFactorAuth} onCheckedChange={setTwoFactorAuth} />
+          <Switch 
+            checked={twoFactorEnabled}
+            onCheckedChange={setTwoFactorEnabled} 
+            disabled={loading}
+          />
         </div>
       </div>
 
-      {/* Login Activity */}
+      {/* Login Activity - Not yet functional */}
       <div className="space-y-4">
         <div>
           <h3 className="text-2xl font-medium text-black mb-2">

@@ -4,7 +4,7 @@ import { Application } from "./types/application";
 import { Mentor } from "./types/mentor";
 import { Notification } from "./types/notification";
 
-const baseUrl = "/api/v1";
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 type ApiOptions = {
   headers?: Record<string, string>;

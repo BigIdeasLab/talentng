@@ -9,9 +9,43 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ProfileSettings } from "@/lib/types/settings";
+import { useToast } from "@/hooks/use-toast";
+import { updateProfilePreferences } from "@/lib/api/settings";
 
-export default function ProfilePreferences() {
-  const [profileVisibility, setProfileVisibility] = useState(false);
+interface ProfilePreferencesProps {
+  settings: ProfileSettings;
+}
+
+export default function ProfilePreferences({ settings }: ProfilePreferencesProps) {
+  const { toast } = useToast();
+  const [formData, setFormData] = useState(settings);
+  const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSwitchChange = (value: boolean) => {
+    setFormData((prev) => ({ ...prev, visibility: value ? "public" : "private" }));
+  };
+
+  const handleSaveChanges = async () => {
+    setLoading(true);
+    try {
+      await updateProfilePreferences(formData);
+      toast({ title: "Success", description: "Profile preferences updated." });
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to update profile preferences." });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -23,8 +57,8 @@ export default function ProfilePreferences() {
           </h2>
           <p className="text-gray-500">Setup your profile for this workspace</p>
         </div>
-        <Button variant="outline" className="rounded-3xl border-gray-200">
-          Save Changes
+        <Button variant="outline" className="rounded-3xl border-gray-200" onClick={handleSaveChanges} disabled={loading}>
+          {loading ? "Saving..." : "Save Changes"}
         </Button>
       </div>
 
@@ -35,8 +69,8 @@ export default function ProfilePreferences() {
             Profile Visibility
           </span>
           <Switch
-            checked={profileVisibility}
-            onCheckedChange={setProfileVisibility}
+            checked={formData.visibility === "public"}
+            onCheckedChange={handleSwitchChange}
           />
         </div>
 
@@ -44,37 +78,40 @@ export default function ProfilePreferences() {
         <div className="space-y-6">
           <Input
             placeholder="Location (for job suggestions)"
+            name="location"
+            value={formData.location}
+            onChange={handleInputChange}
             className="h-12 rounded-3xl border-gray-300 text-gray-600"
           />
 
-          <Select>
+          <Select value={formData.preferredRole} onValueChange={(value) => handleSelectChange("preferredRole", value)}>
             <SelectTrigger className="h-12 rounded-3xl border-gray-300 text-gray-600">
               <SelectValue placeholder="Preferred Role" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="frontend">Frontend Developer</SelectItem>
-              <SelectItem value="backend">Backend Developer</SelectItem>
-              <SelectItem value="fullstack">Full Stack Developer</SelectItem>
-              <SelectItem value="mobile">Mobile Developer</SelectItem>
-              <SelectItem value="devops">DevOps Engineer</SelectItem>
+              <SelectItem value="Software Engineer">Software Engineer</SelectItem>
+              <SelectItem value="Frontend Developer">Frontend Developer</SelectItem>
+              <SelectItem value="Backend Developer">Backend Developer</SelectItem>
+              <SelectItem value="Full Stack Developer">Full Stack Developer</SelectItem>
+              <SelectItem value="Mobile Developer">Mobile Developer</SelectItem>
+              <SelectItem value="DevOps Engineer">DevOps Engineer</SelectItem>
             </SelectContent>
           </Select>
 
-          <Select>
+          <Select value={formData.availability} onValueChange={(value) => handleSelectChange("availability", value)}>
             <SelectTrigger className="h-12 rounded-3xl border-gray-300 text-gray-600">
               <SelectValue placeholder="Availability" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="fulltime">Full-time</SelectItem>
-              <SelectItem value="parttime">Part-time</SelectItem>
+              <SelectItem value="full-time">Full-time</SelectItem>
+              <SelectItem value="part-time">Part-time</SelectItem>
               <SelectItem value="contract">Contract</SelectItem>
-              <SelectItem value="freelance">Freelance</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        <Button className="w-full rounded-3xl bg-black text-white hover:bg-gray-800">
-          Save Changes
+        <Button className="w-full rounded-3xl bg-black text-white hover:bg-gray-800" onClick={handleSaveChanges} disabled={loading}>
+          {loading ? "Saving..." : "Save Changes"}
         </Button>
       </div>
     </div>

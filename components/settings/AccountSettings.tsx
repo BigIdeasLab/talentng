@@ -1,8 +1,74 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Edit } from "lucide-react";
+import { AccountSettings as AccountSettingsType } from "@/lib/types/settings";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { updateAccountInfo, changePassword, deleteAccount } from "@/lib/api/settings";
 
-export default function AccountSettings() {
+interface AccountSettingsProps {
+  settings: AccountSettingsType;
+}
+
+export default function AccountSettings({ settings }: AccountSettingsProps) {
+  const { toast } = useToast();
+  const [formData, setFormData] = useState(settings);
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPasswordData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSaveChanges = async () => {
+    setLoading(true);
+    try {
+      await updateAccountInfo(formData);
+      toast({ title: "Success", description: "Account information updated." });
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to update account information." });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    setLoading(true);
+    try {
+      await changePassword(passwordData);
+      toast({ title: "Success", description: "Password changed successfully." });
+      setPasswordData({ currentPassword: "", newPassword: "" });
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to change password." });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm("Are you sure you want to delete your account? This action is irreversible.")) {
+      setLoading(true);
+      try {
+        await deleteAccount();
+        toast({ title: "Success", description: "Account deleted successfully." });
+        // Handle logout and redirect here
+      } catch (error) {
+        toast({ title: "Error", description: "Failed to delete account." });
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -12,12 +78,8 @@ export default function AccountSettings() {
           <p className="text-gray-500">Setup your profile for this workspace</p>
         </div>
         <div className="flex items-center gap-4">
-          <Button variant="outline" className="rounded-3xl border-gray-200">
-            Save Changes
-          </Button>
-          <Button className="rounded-3xl bg-black text-white hover:bg-gray-800">
-            <Edit className="w-4 h-4 mr-2" />
-            Edit
+          <Button variant="outline" className="rounded-3xl border-gray-200" onClick={handleSaveChanges} disabled={loading}>
+            {loading ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </div>
@@ -27,6 +89,9 @@ export default function AccountSettings() {
         <div>
           <Input
             placeholder="Full Name"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleInputChange}
             className="h-12 rounded-3xl border-gray-300 text-gray-600"
           />
         </div>
@@ -34,6 +99,9 @@ export default function AccountSettings() {
           <Input
             placeholder="Email"
             type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
             className="h-12 rounded-3xl border-gray-300 text-gray-600"
           />
         </div>
@@ -41,16 +109,35 @@ export default function AccountSettings() {
           <Input
             placeholder="Phone Number"
             type="tel"
+            name="phoneNumber"
+            value={formData.phoneNumber}
+            onChange={handleInputChange}
             className="h-12 rounded-3xl border-gray-300 text-gray-600"
           />
         </div>
         <div>
           <Input
-            placeholder="Password"
+            placeholder="Current Password"
             type="password"
+            name="currentPassword"
+            value={passwordData.currentPassword}
+            onChange={handlePasswordChange}
             className="h-12 rounded-3xl border-gray-300 text-gray-600"
           />
         </div>
+        <div>
+          <Input
+            placeholder="New Password"
+            type="password"
+            name="newPassword"
+            value={passwordData.newPassword}
+            onChange={handlePasswordChange}
+            className="h-12 rounded-3xl border-gray-300 text-gray-600"
+          />
+        </div>
+        <Button onClick={handleChangePassword} disabled={loading}>
+          {loading ? "Changing..." : "Change Password"}
+        </Button>
       </div>
 
       {/* Delete Account */}
@@ -58,12 +145,10 @@ export default function AccountSettings() {
         <Button
           variant="outline"
           className="text-red-500 border-gray-100 rounded-2xl"
+          onClick={handleDeleteAccount}
+          disabled={loading}
         >
-          Delete account
-        </Button>
-
-        <Button className="w-full max-w-lg rounded-3xl bg-black text-white hover:bg-gray-800">
-          Save Changes
+          {loading ? "Deleting..." : "Delete account"}
         </Button>
       </div>
     </div>
