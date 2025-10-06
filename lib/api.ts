@@ -145,7 +145,7 @@ export const getMentorAvailability = async (
   mentorId: string,
 ): Promise<{ startTime: string; endTime: string }[]> => {
   return apiClient<{ startTime: string; endTime: string }[]>(
-    `/booking/mentor/${mentorId}/availability`,
+    `/mentor/${mentorId}/availability`,
   );
 };
 
@@ -153,7 +153,7 @@ export const bookSession = async (
   mentorId: string,
   startTime: string,
 ): Promise<any> => {
-  return apiClient<any>(`/booking`, {
+  return apiClient<any>(`/mentor/booking`, {
     method: "POST",
     body: { mentorId, startTime },
   });

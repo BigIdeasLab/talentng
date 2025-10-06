@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Mentor } from "@/lib/types/mentor";
-import { getMentorAvailability, bookSession } from "@/lib/api";
+
+type Mentor = {
+  id: number;
+  name: string;
+  avatar: string;
+  title: string;
+  company: string;
+  location: string;
+};
 
 interface BookingModalProps {
   open: boolean;
   onClose: () => void;
   mentor: Mentor;
 }
-
-type Availability = {
-  date: string;
-  slots: { startTime: string; endTime: string }[];
-};
 
 export default function BookingModal({
   open,
@@ -22,45 +24,6 @@ export default function BookingModal({
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [notes, setNotes] = useState("");
-  const [availability, setAvailability] = useState<Availability[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [bookingConfirmed, setBookingConfirmed] = useState(false);
-
-  useEffect(() => {
-    if (open) {
-      const fetchAvailability = async () => {
-        try {
-          setLoading(true);
-          setError(null);
-          const availableSlots = await getMentorAvailability(mentor.id);
-          const groupedByDate = availableSlots.reduce((acc, slot) => {
-            const date = new Date(slot.startTime).toLocaleDateString([], {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            });
-            if (!acc[date]) {
-              acc[date] = [];
-            }
-            acc[date].push(slot);
-            return acc;
-          }, {} as Record<string, { startTime: string; endTime: string }[]>);
-
-          const availabilityData = Object.entries(groupedByDate).map(
-            ([date, slots]) => ({ date, slots }),
-          );
-          setAvailability(availabilityData);
-        } catch (err) {
-          setError("Failed to fetch availability. Please try again later.");
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchAvailability();
-    }
-  }, [open, mentor.id]);
 
   useEffect(() => {
     if (!open) {
@@ -68,25 +31,8 @@ export default function BookingModal({
       setSelectedDate(null);
       setSelectedTime(null);
       setNotes("");
-      setAvailability([]);
-      setBookingConfirmed(false);
     }
   }, [open]);
-
-  const handleBooking = async () => {
-    if (!selectedTime) return;
-    try {
-      setLoading(true);
-      setError(null);
-      await bookSession(mentor.id, selectedTime);
-      setBookingConfirmed(true);
-      setStep(4);
-    } catch (err: any) {
-      setError(err.message || "Failed to book session. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (!open) return null;
 
@@ -103,7 +49,7 @@ export default function BookingModal({
           <div>
             <div className="text-lg font-semibold">Mentorship Session</div>
             <div className="text-sm text-gray-600">
-              {mentor.fullName} • {mentor.headline}
+              {mentor.name} • {mentor.title} at {mentor.company}
             </div>
           </div>
           <button
@@ -116,38 +62,55 @@ export default function BookingModal({
         </div>
 
         <div className="p-4">
-          {step < 4 && (
-            <div className="text-sm text-gray-500 mb-4">STEP {step} of 3</div>
-          )}
+          <div className="text-sm text-gray-500 mb-4">STEP {step} of 3</div>
 
-          {loading && <p>Loading...</p>}
-          {error && <p className="text-red-500">{error}</p>}
-
-          {step === 1 && !loading && !error && (
+          {step === 1 && (
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Select date</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {availability.map(({ date }) => (
-                  <button
-                    key={date}
-                    onClick={() => {
-                      setSelectedDate(date);
-                      setStep(2);
-                    }}
-                    className={`p-4 rounded-lg border ${selectedDate === date ? "bg-black text-white" : "bg-white text-black"}`}
-                  >
-                    {date}
-                  </button>
-                ))}
+              <h3 className="text-xl font-semibold">Select date and time</h3>
+              <p className="text-sm text-gray-600">
+                In your local timezone (auto-detected)
+              </p>
+
+              <div className="mt-4">
+                {/* Simple calendar illustration using grid of dates */}
+                <div className="bg-white border rounded-xl p-3">
+                  <div className="text-2xl font-bold mb-4">January 2025</div>
+                  <div className="grid grid-cols-7 gap-2 text-center">
+                    {Array.from({ length: 31 }).map((_, i) => {
+                      const day = i + 1;
+                      const key = `d-${day}`;
+                      const active = selectedDate === String(day);
+                      return (
+                        <button
+                          key={key}
+                          onClick={() => setSelectedDate(String(day))}
+                          className={`py-2 px-1 text-sm rounded-md ${active ? "bg-black text-white" : "bg-transparent text-black"}`}
+                        >
+                          {day}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 flex justify-center">
+                <button
+                  onClick={() => setStep(2)}
+                  disabled={!selectedDate}
+                  className={`px-8 py-3 rounded-full ${selectedDate ? "bg-black text-white" : "bg-gray-200 text-gray-400"}`}
+                >
+                  Continue
+                </button>
               </div>
             </div>
           )}
 
-          {step === 2 && !loading && !error && (
+          {step === 2 && (
             <div className="space-y-4">
               <h3 className="text-xl font-semibold">Select time</h3>
               <p className="text-sm text-gray-600">
-                Date: {selectedDate}{" "}
+                Date: {selectedDate ?? "—"}.{" "}
                 <button
                   className="text-orange-500 underline"
                   onClick={() => setStep(1)}
@@ -156,21 +119,25 @@ export default function BookingModal({
                 </button>
               </p>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {availability
-                  .find((a) => a.date === selectedDate)
-                  ?.slots.map((slot) => (
-                    <button
-                      key={slot.startTime}
-                      onClick={() => setSelectedTime(slot.startTime)}
-                      className={`px-4 py-3 rounded-full border ${selectedTime === slot.startTime ? "bg-black text-white" : "bg-white text-black"}`}
-                    >
-                      {new Date(slot.startTime).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </button>
-                  ))}
+              <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {[
+                  "12:15 am",
+                  "1:30 am",
+                  "2:45 am",
+                  "3:00 am",
+                  "3:15 am",
+                  "4:00 am",
+                  "4:15 am",
+                  "4:45 am",
+                ].map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setSelectedTime(t)}
+                    className={`px-4 py-3 rounded-full border ${selectedTime === t ? "bg-black text-white" : "bg-white text-black"}`}
+                  >
+                    {t}
+                  </button>
+                ))}
               </div>
 
               <div className="mt-4 flex justify-center">
@@ -185,15 +152,11 @@ export default function BookingModal({
             </div>
           )}
 
-          {step === 3 && !loading && !error && (
+          {step === 3 && (
             <div className="space-y-4">
               <h3 className="text-xl font-semibold">Confirm Booking</h3>
               <p className="text-sm text-gray-600">
-                Date: {selectedDate} .{" "}
-                {new Date(selectedTime!).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}{" "}
+                Date: {selectedDate ?? "—"} . {selectedTime ?? "—"}{" "}
                 <button
                   className="text-orange-500 underline"
                   onClick={() => setStep(1)}
@@ -203,6 +166,14 @@ export default function BookingModal({
               </p>
 
               <div className="mt-4 space-y-3">
+                <div className="border rounded-2xl p-4">
+                  <select className="w-full bg-transparent outline-none">
+                    <option>Topic to be talked about</option>
+                    <option>Resume review</option>
+                    <option>Portfolio review</option>
+                  </select>
+                </div>
+
                 <div className="border rounded-2xl p-4">
                   <textarea
                     rows={5}
@@ -216,32 +187,18 @@ export default function BookingModal({
 
               <div className="mt-4 flex justify-center">
                 <button
-                  onClick={handleBooking}
+                  onClick={() => {
+                    // pretend submit
+                    alert(
+                      `Booking confirmed with ${mentor.name} on ${selectedDate} at ${selectedTime}`,
+                    );
+                    onClose();
+                  }}
                   className="px-8 py-3 rounded-full bg-black text-white"
                 >
                   Confirm Booking
                 </button>
               </div>
-            </div>
-          )}
-
-          {step === 4 && bookingConfirmed && (
-            <div className="text-center space-y-4">
-              <h3 className="text-2xl font-bold text-green-600">Booking Confirmed!</h3>
-              <p>Your session with {mentor.fullName} is confirmed.</p>
-              <p>
-                Date: {selectedDate} at{" "}
-                {new Date(selectedTime!).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </p>
-              <button
-                onClick={onClose}
-                className="px-8 py-3 rounded-full bg-black text-white"
-              >
-                Close
-              </button>
             </div>
           )}
         </div>
