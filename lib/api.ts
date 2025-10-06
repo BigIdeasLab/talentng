@@ -4,7 +4,7 @@ import { Application } from "./types/application";
 import { Mentor } from "./types/mentor";
 import { Notification } from "./types/notification";
 
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const baseUrl = process.env.NEXT_PUBLIC_TALENTNG_API_URL;
 
 type ApiOptions = {
   headers?: Record<string, string>;
@@ -51,7 +51,7 @@ const apiClient = async <T>(
     let errorData;
     try {
       errorData = JSON.parse(errorText);
-      if (typeof errorData === 'string') {
+      if (typeof errorData === "string") {
         errorData = JSON.parse(errorData);
       }
     } catch (e) {
@@ -61,7 +61,8 @@ const apiClient = async <T>(
 
     // The error from the backend might be a stringified object with a 'message' property
     // or it could be a simple string message.
-    const errorMessage = typeof errorData === 'string' ? errorData : errorData.message;
+    const errorMessage =
+      typeof errorData === "string" ? errorData : errorData.message;
 
     throw new Error(
       errorMessage || "An error occurred during the API request.",
@@ -130,9 +131,7 @@ export const getApplications = async (): Promise<Application[]> => {
   return apiClient<Application[]>("/applications");
 };
 
-export const getMentors = async (
-  query?: string
-): Promise<Mentor[]> => {
+export const getMentors = async (query?: string): Promise<Mentor[]> => {
   const endpoint = query ? `/mentor?q=${query}` : "/mentor";
   return apiClient<Mentor[]>(endpoint);
 };
@@ -153,7 +152,7 @@ export const bookSession = async (
   mentorId: string,
   startTime: string,
   topic?: string,
-  note?: string
+  note?: string,
 ): Promise<any> => {
   return apiClient<any>(`/mentor/booking`, {
     method: "POST",
