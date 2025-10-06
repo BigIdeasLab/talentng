@@ -3,6 +3,7 @@ import { Opportunity } from "./types/opportunity";
 import { Application } from "./types/application";
 import { Mentor } from "./types/mentor";
 import { Notification } from "./types/notification";
+import { LearningResource } from "./types/learning";
 
 const baseUrl = process.env.NEXT_PUBLIC_TALENTNG_API_URL;
 
@@ -184,4 +185,28 @@ export const markNotificationAsRead = async (
     method: "PATCH",
     body: { isRead: true },
   });
+};
+
+interface GetLearningResourcesParams {
+  title?: string;
+  category?: string;
+  provider?: string;
+  tags?: string;
+}
+
+export const getLearningResources = async (
+  params?: GetLearningResourcesParams,
+): Promise<LearningResource[]> => {
+  const query = new URLSearchParams();
+  if (params) {
+    for (const key in params) {
+      const value = params[key as keyof GetLearningResourcesParams];
+      if (value !== undefined && value !== null) {
+        query.append(key, String(value));
+      }
+    }
+  }
+  const queryString = query.toString();
+  const endpoint = `/learning-resources${queryString ? `?${queryString}` : ""}`;
+  return apiClient<LearningResource[]>(endpoint);
 };
