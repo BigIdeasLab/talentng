@@ -17,9 +17,9 @@ interface PrivacySecurityProps {
   settings: SecuritySettings;
 }
 
-export default function PrivacySecurity({ settings }: PrivacySecurityProps) {
+export default function PrivacySecurity({ settings = {} as SecuritySettings }: PrivacySecurityProps) {
   const { toast } = useToast();
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(settings.twoFactorEnabled);
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(settings.twoFactorEnabled ?? false);
   const [loading, setLoading] = useState(false);
 
   const debouncedTwoFactor = useDebounce(twoFactorEnabled, 500);

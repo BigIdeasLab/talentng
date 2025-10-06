@@ -10,9 +10,9 @@ interface AccountSettingsProps {
   settings: AccountSettingsType;
 }
 
-export default function AccountSettings({ settings }: AccountSettingsProps) {
+export default function AccountSettings({ settings = {} as AccountSettingsType }: AccountSettingsProps) {
   const { toast } = useToast();
-  const [formData, setFormData] = useState(settings);
+  const [formData, setFormData] = useState(settings ?? { fullName: '', email: '', phoneNumber: '' });
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",

@@ -17,9 +17,9 @@ interface ProfilePreferencesProps {
   settings: ProfileSettings;
 }
 
-export default function ProfilePreferences({ settings }: ProfilePreferencesProps) {
+export default function ProfilePreferences({ settings = {} as ProfileSettings }: ProfilePreferencesProps) {
   const { toast } = useToast();
-  const [formData, setFormData] = useState(settings);
+  const [formData, setFormData] = useState(settings ?? { visibility: 'private', location: '', preferredRole: '', availability: '' });
   const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -9,9 +9,11 @@ interface NotificationSettingsProps {
   settings: NotificationSettingsType;
 }
 
-export default function NotificationSettings({ settings }: NotificationSettingsProps) {
+export default function NotificationSettings({ settings = {} as NotificationSettingsType }: NotificationSettingsProps) {
   const { toast } = useToast();
-  const [notificationSettings, setNotificationSettings] = useState(settings);
+  const [notificationSettings, setNotificationSettings] = useState(
+    settings ?? { email: false, inApp: false, push: false }
+  );
   const [loading, setLoading] = useState(false);
 
   const debouncedSettings = useDebounce(notificationSettings, 500);
