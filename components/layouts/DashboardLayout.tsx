@@ -14,7 +14,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex h-screen bg-white">
       {/* Sidebar */}
-      <div className={`fixed h-full z-50 ${isSidebarOpen ? "block" : "hidden"} lg:block`}>
+      <div className={`fixed h-full ${isSidebarOpen ? "block" : "hidden"} lg:block`}>
         <Sidebar isSidebarOpen={isSidebarOpen} />
       </div>
 

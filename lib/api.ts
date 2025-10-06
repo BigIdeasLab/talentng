@@ -152,10 +152,12 @@ export const getMentorAvailability = async (
 export const bookSession = async (
   mentorId: string,
   startTime: string,
+  topic?: string,
+  note?: string
 ): Promise<any> => {
   return apiClient<any>(`/mentor/booking`, {
     method: "POST",
-    body: { mentorId, startTime },
+    body: { mentorId, startTime, topic, note },
   });
 };
 
