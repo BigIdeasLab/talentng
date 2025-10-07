@@ -66,15 +66,17 @@ export function DashboardHeader({
             ? "Mentorship"
             : pathname.startsWith("/learning-hub")
               ? "Learning Hub"
-              : pathname.startsWith("/settings")
-                ? "Settings"
-                : pathname.startsWith("/dashboard")
-                  ? "Dashboard"
-                  : pathname.startsWith("/login")
-                    ? "Login"
-                    : pathname.startsWith("/signup")
-                      ? "Sign Up"
-                      : "Dashboard";
+              : pathname.startsWith("/calendar")
+                ? "Calendar"
+                : pathname.startsWith("/settings")
+                  ? "Settings"
+                  : pathname.startsWith("/dashboard")
+                    ? "Dashboard"
+                    : pathname.startsWith("/login")
+                      ? "Login"
+                      : pathname.startsWith("/signup")
+                        ? "Sign Up"
+                        : "Dashboard";
 
   const userInitial = user?.username
     ? user.username.charAt(0).toUpperCase()
