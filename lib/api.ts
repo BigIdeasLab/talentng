@@ -5,7 +5,9 @@ import { Mentor } from "./types/mentor";
 import { Notification } from "./types/notification";
 import { LearningResource } from "./types/learning";
 
-const baseUrl = process.env.NEXT_PUBLIC_TALENTNG_API_URL;
+const baseUrl = process.env.NODE_ENV === 'production' 
+  ? process.env.NEXT_PUBLIC_TALENTNG_API_URL 
+  : '/api/v1';
 
 type ApiOptions = {
   headers?: Record<string, string>;

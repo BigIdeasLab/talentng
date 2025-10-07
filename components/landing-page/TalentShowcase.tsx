@@ -1,9 +1,13 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import { ChevronDown, Share2, Briefcase, Building, Search } from "lucide-react";
 import { getOpportunities, getMentors, getLearningResources } from "@/lib/api";
 import { OpportunitiesList } from "@/components/landing-page/OpportunitiesList";
 import { OutstandingMentors } from "@/components/landing-page/OutstandingMentors";
 import RecommendedLearningPaths from "@/components/learning/RecommendedLearningPaths";
+import { Opportunity } from "@/lib/types/opportunity";
+import { Mentor } from "@/lib/types/mentor";
+import { LearningResource } from "@/lib/types/learning";
 
 const VerificationBadge = () => (
   <svg
@@ -23,10 +27,27 @@ const VerificationBadge = () => (
   </svg>
 );
 
-const TalentShowcase = async () => {
-  const opportunities = await getOpportunities({});
-  const mentors = await getMentors('');
-  const learningResources = await getLearningResources({});
+const TalentShowcase = () => {
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [mentors, setMentors] = useState<Mentor[]>([]);
+  const [learningResources, setLearningResources] = useState<LearningResource[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const opportunitiesData = await getOpportunities({});
+        setOpportunities(opportunitiesData);
+        const mentorsData = await getMentors('');
+        setMentors(mentorsData);
+        const learningResourcesData = await getLearningResources({});
+        setLearningResources(learningResourcesData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const findTalents = [
     {
@@ -135,7 +156,9 @@ const TalentShowcase = async () => {
                         className="w-8 h-8 rounded-2xl"
                       />
                       <div
-                        className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-lg border-[2.682px] border-white ${talent.profile.isOnline ? "bg-[#3AB266]" : "bg-[#B1B1B1]"}`}
+                        className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-lg border-[2.682px] border-white ${
+                          talent.profile.isOnline ? "bg-[#3AB266]" : "bg-[#B1B1B1]"
+                        }`}
                       />
                     </div>
                     <div className="flex items-center gap-2">
