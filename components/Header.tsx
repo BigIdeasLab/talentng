@@ -1,7 +1,11 @@
+'use client';
 import React from "react";
 import Link from "next/link";
+import { useAuth } from "@/hooks/use-auth";
 
 const Header = () => {
+  const { user } = useAuth();
+
   return (
     <header className="w-full bg-white border-b border-gray-100">
       <div className="max-w-[1216px] mx-auto px-4 md:px-8 lg:px-28 py-4 flex items-center justify-between">
@@ -41,18 +45,29 @@ const Header = () => {
 
         {/* Auth Buttons */}
         <div className="flex items-center gap-2">
-          <Link
-            href="/login"
-            className="px-[14px] py-[14px] rounded-3xl text-black font-geist text-base font-medium hover:bg-gray-50 transition-colors"
-          >
-            Login
-          </Link>
-          <Link
-            href="/signup"
-            className="px-[14px] py-[14px] rounded-3xl bg-brand-primary text-white font-geist text-base font-medium hover:bg-brand-primary/90 transition-colors"
-          >
-            Get Started
-          </Link>
+          {user ? (
+            <Link
+              href="/talent/dashboard"
+              className="px-[14px] py-[14px] rounded-3xl bg-brand-primary text-white font-geist text-base font-medium hover:bg-brand-primary/90 transition-colors"
+            >
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="px-[14px] py-[14px] rounded-3xl text-black font-geist text-base font-medium hover:bg-gray-50 transition-colors"
+              >
+                Login
+              </Link>
+              <Link
+                href="/signup"
+                className="px-[14px] py-[14px] rounded-3xl bg-brand-primary text-white font-geist text-base font-medium hover:bg-brand-primary/90 transition-colors"
+              >
+                Get Started
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
