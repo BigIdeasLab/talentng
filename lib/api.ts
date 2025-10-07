@@ -52,26 +52,28 @@ const apiClient = async <T>(
     cache: 'no-store',
   });
 
+  const responseText = await response.text();
+
   if (!response.ok) {
-    const errorClone = response.clone();
     let errorMessage = response.statusText;
     try {
-      const errorText = await errorClone.text();
-      try {
-        const parsed = JSON.parse(errorText);
-        errorMessage = typeof parsed === 'string' ? parsed : parsed.message || errorMessage;
-      } catch {
-        errorMessage = errorText || errorMessage;
-      }
-    } catch {}
+      const parsed = JSON.parse(responseText);
+      errorMessage = typeof parsed === 'string' ? parsed : parsed.message || errorMessage;
+    } catch {
+      errorMessage = responseText || errorMessage;
+    }
     throw new Error(errorMessage || 'An error occurred during the API request.');
   }
 
   const contentType = response.headers.get('content-type') || '';
   if (contentType.includes('application/json')) {
-    return (await response.json()) as T;
+    try {
+      return JSON.parse(responseText) as T;
+    } catch {
+      // Fallback if server mislabeled content type
+      return responseText as unknown as T;
+    }
   }
-  const responseText = await response.text();
   return responseText as unknown as T;
 };
 
