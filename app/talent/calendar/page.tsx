@@ -1,91 +1,140 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-
 export default function CalendarPage() {
-  const [isVisible, setIsVisible] = useState(true);
-
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Header Section */}
-      <div className="flex flex-col gap-5 mb-6">
-        {/* Visibility Toggle */}
-        <div className="flex items-center gap-2 px-3 py-3 bg-gray-100 rounded-3xl border border-gray-50 w-fit">
-          <span className="text-base font-medium text-black font-geist">
-            Visibility
-          </span>
-          <Switch
-            checked={isVisible}
-            onCheckedChange={setIsVisible}
-            className="data-[state=checked]:bg-[#00DE51]"
-          />
-        </div>
-
-        {/* Title Row */}
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-medium text-black font-geist">
-            Calendar
-          </h1>
-        </div>
-
-        {/* Divider */}
-        <div className="border-b border-gray-100"></div>
-      </div>
-
       {/* My Schedule Section */}
       <h2 className="text-xl font-bold text-black font-geist mb-8">
         My Schedule
       </h2>
 
-      {/* Empty State */}
-      <div className="flex flex-col items-center justify-center py-16 sm:py-20 lg:py-24">
-        <div className="flex flex-col items-center gap-8 max-w-lg w-full px-4">
-          {/* Calendar Icon */}
-          <svg
-            width="64"
-            height="64"
-            viewBox="0 0 64 64"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-16 h-16"
-          >
-            <g clipPath="url(#clip0_calendar)">
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M42.6667 8C43.3739 8 44.0522 8.28095 44.5523 8.78105C45.0524 9.28115 45.3333 9.95942 45.3333 10.6667V13.3333H50.6667C52.0812 13.3333 53.4377 13.8952 54.4379 14.8954C55.4381 15.8956 56 17.2522 56 18.6667V33.408C52.9518 30.6832 48.9761 29.2286 44.8892 29.343C40.8022 29.4574 36.9141 31.132 34.0231 34.0231C31.132 36.9141 29.4574 40.8022 29.343 44.8892C29.2286 48.9761 30.6832 52.9518 33.408 56H13.3333C11.9188 56 10.5623 55.4381 9.5621 54.4379C8.5619 53.4377 8 52.0812 8 50.6667V18.6667C8 17.2522 8.5619 15.8956 9.5621 14.8954C10.5623 13.8952 11.9188 13.3333 13.3333 13.3333H18.6667V10.6667C18.6667 9.95942 18.9476 9.28115 19.4477 8.78105C19.9478 8.28095 20.6261 8 21.3333 8C22.0406 8 22.7189 8.28095 23.219 8.78105C23.719 9.28115 24 9.95942 24 10.6667V13.3333H40V10.6667C40 9.95942 40.281 9.28115 40.7811 8.78105C41.2811 8.28095 41.9594 8 42.6667 8ZM45.3333 34.6667C48.1623 34.6667 50.8754 35.7905 52.8758 37.7909C54.8762 39.7913 56 42.5044 56 45.3333C56 48.1623 54.8762 50.8754 52.8758 52.8758C50.8754 54.8762 48.1623 56 45.3333 56C42.5044 56 39.7913 54.8762 37.7909 52.8758C35.7905 50.8754 34.6667 48.1623 34.6667 45.3333C34.6667 42.5044 35.7905 39.7913 37.7909 37.7909C39.7913 35.7905 42.5044 34.6667 45.3333 34.6667ZM45.3333 38.6667C44.6802 38.6668 44.0498 38.9065 43.5617 39.3406C43.0736 39.7746 42.7618 40.3727 42.6853 41.0213L42.6667 41.3333V45.3333C42.6668 45.9865 42.9066 46.6169 43.3406 47.105C43.7746 47.5931 44.3727 47.9049 45.0213 47.9813L45.3333 48H48C48.6797 47.9992 49.3334 47.739 49.8276 47.2724C50.3219 46.8058 50.6193 46.1681 50.6591 45.4896C50.699 44.8111 50.4782 44.143 50.042 43.6218C49.6057 43.1006 48.9869 42.7656 48.312 42.6853L48 42.6667V41.3333C48 40.6261 47.7191 39.9478 47.219 39.4477C46.7189 38.9476 46.0406 38.6667 45.3333 38.6667ZM22.6667 37.3333H21.3333C20.6261 37.3333 19.9478 37.6143 19.4477 38.1144C18.9476 38.6145 18.6667 39.2928 18.6667 40C18.6667 40.7072 18.9476 41.3855 19.4477 41.8856C19.9478 42.3857 20.6261 42.6667 21.3333 42.6667H22.6667C23.3739 42.6667 24.0522 42.3857 24.5523 41.8856C25.0524 41.3855 25.3333 40.7072 25.3333 40C25.3333 39.2928 25.0524 38.6145 24.5523 38.1144C24.0522 37.6143 23.3739 37.3333 22.6667 37.3333ZM29.3333 26.6667H21.3333C20.6537 26.6674 19.9999 26.9277 19.5057 27.3943C19.0115 27.8608 18.714 28.4985 18.6742 29.1771C18.6344 29.8556 18.8551 30.5237 19.2914 31.0449C19.7276 31.5661 20.3464 31.9011 21.0213 31.9813L21.3333 32H29.3333C30.013 31.9992 30.6668 31.739 31.161 31.2724C31.6552 30.8058 31.9526 30.1681 31.9925 29.4896C32.0323 28.8111 31.8115 28.143 31.3753 27.6218C30.9391 27.1006 30.3203 26.7656 29.6453 26.6853L29.3333 26.6667Z"
-                fill="#DCDCDC"
-              />
-            </g>
-            <defs>
-              <clipPath id="clip0_calendar">
-                <rect width="64" height="64" fill="white" />
-              </clipPath>
-            </defs>
-          </svg>
+      {/* Appointment Card */}
+      <div className="w-full max-w-[461px] p-6 rounded-[32px] border border-gray-200 bg-white relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-50 pointer-events-none">
+          <div className="flex flex-wrap gap-3 p-6">
+            {Array.from({ length: 27 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <img
+                  src="https://api.builder.io/api/v1/image/assets/TEMP/585122567c01b40a4c45c259801ea50ecc3435b9?width=48"
+                  alt=""
+                  className="w-6 h-[18px]"
+                />
+                {(i + 1) % 9 !== 0 && (
+                  <div className="w-px h-4 bg-gray-200" />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
 
-          {/* Text Content */}
-          <div className="flex flex-col items-center gap-4 w-full">
-            <h3 className="text-2xl font-medium text-black text-center font-geist">
-              You don't have any session
-            </h3>
-            <p className="text-base text-gray-500 text-center font-geist">
-              Book a session with a mentor today to have access to this page
-            </p>
+        {/* Content */}
+        <div className="relative z-10 flex flex-col gap-6">
+          {/* Profile Image */}
+          <img
+            src="https://api.builder.io/api/v1/image/assets/TEMP/d24e56855e47e75fe627c7b79b23ca484452b9c0?width=128"
+            alt="Promise"
+            className="w-16 h-16 rounded-full"
+          />
+
+          {/* Meeting Details */}
+          <div className="flex flex-col gap-4">
+            {/* Title */}
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-1">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-6 h-6"
+                >
+                  <g clipPath="url(#clip0_video)">
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M16 7.00049C16.0013 7.71562 15.81 8.4179 15.446 9.03349C16.1564 9.14029 16.805 9.4985 17.2737 10.043C17.7423 10.5875 18.0001 11.2821 18 12.0005V12.2105L19.713 11.1545C19.9402 11.0145 20.2006 10.9376 20.4674 10.9318C20.7343 10.926 20.9978 10.9915 21.2308 11.1215C21.4639 11.2516 21.658 11.4414 21.7933 11.6715C21.9285 11.9016 21.9998 12.1636 22 12.4305V17.5685C22 17.8355 21.9288 18.0976 21.7936 18.3278C21.6585 18.558 21.4644 18.748 21.2313 18.8782C20.9982 19.0083 20.7346 19.0739 20.4677 19.0682C20.2008 19.0624 19.9403 18.9856 19.713 18.8455L18 17.7905V18.0005C18 18.7961 17.6839 19.5592 17.1213 20.1218C16.5587 20.6844 15.7956 21.0005 15 21.0005H5C4.20435 21.0005 3.44129 20.6844 2.87868 20.1218C2.31607 19.5592 2 18.7961 2 18.0005V12.0005C1.99992 11.465 2.14315 10.9393 2.41483 10.4779C2.68651 10.0165 3.07674 9.63619 3.545 9.37649C3.10085 8.67737 2.91903 7.84339 3.03187 7.02284C3.14472 6.20228 3.5449 5.44834 4.16128 4.89506C4.77766 4.34179 5.57028 4.02503 6.39821 4.00112C7.22614 3.97722 8.03572 4.2477 8.683 4.76449C9.16186 4.05397 9.85621 3.51599 10.6638 3.22977C11.4714 2.94356 12.3496 2.92423 13.169 3.17463C13.9884 3.42503 14.7058 3.93194 15.2154 4.6207C15.7251 5.30946 16.0001 6.14367 16 7.00049ZM12 5.00049C11.4696 5.00049 10.9609 5.2112 10.5858 5.58628C10.2107 5.96135 10 6.47006 10 7.00049C10 7.53092 10.2107 8.03963 10.5858 8.4147C10.9609 8.78977 11.4696 9.00049 12 9.00049C12.5304 9.00049 13.0391 8.78977 13.4142 8.4147C13.7893 8.03963 14 7.53092 14 7.00049C14 6.47006 13.7893 5.96135 13.4142 5.58628C13.0391 5.2112 12.5304 5.00049 12 5.00049ZM6.5 9.00049C6.89782 9.00049 7.27936 8.84245 7.56066 8.56115C7.84196 8.27984 8 7.89831 8 7.50049C8 7.10266 7.84196 6.72113 7.56066 6.43983C7.27936 6.15852 6.89782 6.00049 6.5 6.00049C6.10218 6.00049 5.72064 6.15852 5.43934 6.43983C5.15804 6.72113 5 7.10266 5 7.50049C5 7.89831 5.15804 8.27984 5.43934 8.56115C5.72064 8.84245 6.10218 9.00049 6.5 9.00049Z"
+                      fill="#667085"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_video">
+                      <rect width="24" height="24" fill="white" />
+                    </clipPath>
+                  </defs>
+                </svg>
+                <h3 className="text-xl font-semibold text-black font-geist">
+                  Meet with Promise
+                </h3>
+              </div>
+              <p className="text-base text-black font-geist">
+                Discuss about your life
+              </p>
+            </div>
+
+            {/* Time and Date */}
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <div className="flex items-center gap-2">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-3.5 h-3.5"
+                >
+                  <g clipPath="url(#clip0_time)">
+                    <path
+                      d="M7.00033 1.16602C10.2221 1.16602 12.8337 3.7776 12.8337 6.99935C12.8337 10.2211 10.2221 12.8327 7.00033 12.8327C3.77858 12.8327 1.16699 10.2211 1.16699 6.99935C1.16699 3.7776 3.77858 1.16602 7.00033 1.16602ZM7.00033 3.49935C6.84562 3.49935 6.69724 3.56081 6.58785 3.6702C6.47845 3.7796 6.41699 3.92797 6.41699 4.08268V6.99935C6.41703 7.15405 6.47851 7.3024 6.58791 7.41177L8.33791 9.16177C8.44793 9.26802 8.59528 9.32682 8.74823 9.32549C8.90117 9.32416 9.04748 9.26282 9.15564 9.15466C9.26379 9.04651 9.32514 8.9002 9.32647 8.74725C9.3278 8.5943 9.269 8.44695 9.16274 8.33693L7.58366 6.75785V4.08268C7.58366 3.92797 7.5222 3.7796 7.4128 3.6702C7.30341 3.56081 7.15504 3.49935 7.00033 3.49935Z"
+                      fill="#09244B"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_time">
+                      <rect width="14" height="14" fill="white" />
+                    </clipPath>
+                  </defs>
+                </svg>
+                <span className="text-[13px] text-black font-geist">
+                  09:30 PM - 10:00 PM
+                </span>
+              </div>
+
+              <div className="w-1 h-1 rounded-full bg-black" />
+
+              <div className="flex items-center gap-2">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-3.5 h-3.5"
+                >
+                  <g clipPath="url(#clip0_calendar)">
+                    <path
+                      d="M12.25 7V11.0833C12.25 11.3928 12.1271 11.6895 11.9083 11.9083C11.6895 12.1271 11.3928 12.25 11.0833 12.25H2.91667C2.60725 12.25 2.3105 12.1271 2.09171 11.9083C1.87292 11.6895 1.75 11.3928 1.75 11.0833V7H12.25ZM9.33333 1.75C9.48804 1.75 9.63642 1.81146 9.74581 1.92085C9.85521 2.03025 9.91667 2.17862 9.91667 2.33333V2.91667H11.0833C11.3928 2.91667 11.6895 3.03958 11.9083 3.25838C12.1271 3.47717 12.25 3.77391 12.25 4.08333V5.83333H1.75V4.08333C1.75 3.77391 1.87292 3.47717 2.09171 3.25838C2.3105 3.03958 2.60725 2.91667 2.91667 2.91667H4.08333V2.33333C4.08333 2.17862 4.14479 2.03025 4.25419 1.92085C4.36358 1.81146 4.51196 1.75 4.66667 1.75C4.82138 1.75 4.96975 1.81146 5.07915 1.92085C5.18854 2.03025 5.25 2.17862 5.25 2.33333V2.91667H8.75V2.33333C8.75 2.17862 8.81146 2.03025 8.92085 1.92085C9.03025 1.81146 9.17862 1.75 9.33333 1.75Z"
+                      fill="#09244B"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_calendar">
+                      <rect width="14" height="14" fill="white" />
+                    </clipPath>
+                  </defs>
+                </svg>
+                <span className="text-[13px] text-black font-geist">
+                  30th Aug, 2025
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* Book a Session Button */}
-          <Button
-            className="w-full max-w-[270px] h-auto py-3 px-3 bg-black text-white hover:bg-gray-800 rounded-[44px] font-geist text-[13px] font-medium"
-            onClick={() => {
-              // Navigate to mentorship page to book a session
-              window.location.href = "/talent/mentorship";
-            }}
-          >
-            Book a Session
-          </Button>
+          {/* Join Meeting Button */}
+          <button className="w-full py-2.5 px-3 bg-black text-white rounded-3xl font-geist text-[13px] font-medium hover:bg-gray-800 transition-colors">
+            Join Meeting
+          </button>
         </div>
       </div>
     </div>
