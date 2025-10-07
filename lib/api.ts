@@ -5,9 +5,10 @@ import { Mentor } from "./types/mentor";
 import { Notification } from "./types/notification";
 import { LearningResource } from "./types/learning";
 
-const baseUrl = process.env.NODE_ENV === 'production' 
-  ? process.env.NEXT_PUBLIC_TALENTNG_API_URL 
-  : '/api/v1';
+const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_TALENTNG_API_URL
+    : "/api/v1";
 
 type ApiOptions = {
   headers?: Record<string, string>;
@@ -47,38 +48,37 @@ const apiClient = async <T>(
     }
   }
 
-  const response = await fetch(`${baseUrl}${endpoint}`, config);
+  const response = await fetch(`${baseUrl}${endpoint}`, {
+    ...config,
+    cache: "no-store",
+  });
+
+  const responseText = await response.text();
 
   if (!response.ok) {
-    const errorText = await response.text();
-    let errorData;
+    let errorMessage = response.statusText;
     try {
-      errorData = JSON.parse(errorText);
-      if (typeof errorData === "string") {
-        errorData = JSON.parse(errorData);
-      }
-    } catch (e) {
-      // If parsing fails, use the raw text or a default message
-      errorData = { message: errorText || response.statusText };
+      const parsed = JSON.parse(responseText);
+      errorMessage =
+        typeof parsed === "string" ? parsed : parsed.message || errorMessage;
+    } catch {
+      errorMessage = responseText || errorMessage;
     }
-
-    // The error from the backend might be a stringified object with a 'message' property
-    // or it could be a simple string message.
-    const errorMessage =
-      typeof errorData === "string" ? errorData : errorData.message;
-
     throw new Error(
       errorMessage || "An error occurred during the API request.",
     );
   }
 
-  // Handle cases where the response body might be empty
-  const responseText = await response.text();
-  try {
-    return JSON.parse(responseText) as T;
-  } catch (e) {
-    return responseText as unknown as T;
+  const contentType = response.headers.get("content-type") || "";
+  if (contentType.includes("application/json")) {
+    try {
+      return JSON.parse(responseText) as T;
+    } catch {
+      // Fallback if server mislabeled content type
+      return responseText as unknown as T;
+    }
   }
+  return responseText as unknown as T;
 };
 
 export default apiClient;
