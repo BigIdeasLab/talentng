@@ -5,9 +5,10 @@ import { Mentor } from "./types/mentor";
 import { Notification } from "./types/notification";
 import { LearningResource } from "./types/learning";
 
-const baseUrl = process.env.NODE_ENV === 'production' 
-  ? process.env.NEXT_PUBLIC_TALENTNG_API_URL 
-  : '/api/v1';
+const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_TALENTNG_API_URL
+    : "/api/v1";
 
 type ApiOptions = {
   headers?: Record<string, string>;
@@ -49,7 +50,7 @@ const apiClient = async <T>(
 
   const response = await fetch(`${baseUrl}${endpoint}`, {
     ...config,
-    cache: 'no-store',
+    cache: "no-store",
   });
 
   const responseText = await response.text();
@@ -58,15 +59,18 @@ const apiClient = async <T>(
     let errorMessage = response.statusText;
     try {
       const parsed = JSON.parse(responseText);
-      errorMessage = typeof parsed === 'string' ? parsed : parsed.message || errorMessage;
+      errorMessage =
+        typeof parsed === "string" ? parsed : parsed.message || errorMessage;
     } catch {
       errorMessage = responseText || errorMessage;
     }
-    throw new Error(errorMessage || 'An error occurred during the API request.');
+    throw new Error(
+      errorMessage || "An error occurred during the API request.",
+    );
   }
 
-  const contentType = response.headers.get('content-type') || '';
-  if (contentType.includes('application/json')) {
+  const contentType = response.headers.get("content-type") || "";
+  if (contentType.includes("application/json")) {
     try {
       return JSON.parse(responseText) as T;
     } catch {

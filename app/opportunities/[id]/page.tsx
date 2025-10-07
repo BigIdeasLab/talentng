@@ -13,7 +13,9 @@ export default function OpportunityDetail() {
   const params = useParams();
   const router = useRouter();
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
-  const [similarOpportunities, setSimilarOpportunities] = useState<Opportunity[]>([]);
+  const [similarOpportunities, setSimilarOpportunities] = useState<
+    Opportunity[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export default function OpportunityDetail() {
           getOpportunities({}),
         ]);
         setOpportunity(opportunityData);
-        
+
         // Get similar opportunities (exclude current one, limit to 3)
         const similar = allOpportunities
           .filter((opp) => opp.id !== id)
@@ -78,7 +80,7 @@ export default function OpportunityDetail() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <Header />
-      
+
       {/* Main Content */}
       <div className="max-w-[1216px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 space-y-12">
         {/* Back Button */}
@@ -120,7 +122,8 @@ export default function OpportunityDetail() {
                   {opportunity.title}
                 </h1>
                 <p className="font-geist text-base text-black">
-                  {opportunity.type}, {opportunity.employmentType}, {opportunity.location}
+                  {opportunity.type}, {opportunity.employmentType},{" "}
+                  {opportunity.location}
                 </p>
               </div>
 
@@ -194,32 +197,36 @@ export default function OpportunityDetail() {
             )}
 
             {/* Key Responsibilities */}
-            {opportunity.keyResponsibilities && opportunity.keyResponsibilities.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="font-geist text-xl text-black">
-                  Key Responsibilities:
-                </h3>
-                <div className="font-geist text-base text-black leading-[160%]">
-                  {opportunity.keyResponsibilities.map((responsibility, index) => (
-                    <div key={index}>• {responsibility}</div>
-                  ))}
+            {opportunity.keyResponsibilities &&
+              opportunity.keyResponsibilities.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="font-geist text-xl text-black">
+                    Key Responsibilities:
+                  </h3>
+                  <div className="font-geist text-base text-black leading-[160%]">
+                    {opportunity.keyResponsibilities.map(
+                      (responsibility, index) => (
+                        <div key={index}>• {responsibility}</div>
+                      ),
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* Job Qualifications */}
-            {opportunity.requirements && opportunity.requirements.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="font-geist text-xl text-black">
-                  Job Qualifications:
-                </h3>
-                <div className="font-geist text-base text-black leading-[160%]">
-                  {opportunity.requirements.map((requirement, index) => (
-                    <div key={index}>• {requirement}</div>
-                  ))}
+            {opportunity.requirements &&
+              opportunity.requirements.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="font-geist text-xl text-black">
+                    Job Qualifications:
+                  </h3>
+                  <div className="font-geist text-base text-black leading-[160%]">
+                    {opportunity.requirements.map((requirement, index) => (
+                      <div key={index}>• {requirement}</div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
         </div>
 
