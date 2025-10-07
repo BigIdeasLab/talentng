@@ -7,6 +7,7 @@ import { Opportunity } from "@/lib/types/opportunity";
 import { JobCard } from "@/components/opportunities/JobCard";
 import { CallToAction } from "@/components/landing-page";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 
 export default function OpportunityDetail() {
   const params = useParams();
