@@ -20,9 +20,7 @@ export default function CalendarPage() {
                   alt=""
                   className="w-6 h-[18px]"
                 />
-                {(i + 1) % 9 !== 0 && (
-                  <div className="w-px h-4 bg-gray-200" />
-                )}
+                {(i + 1) % 9 !== 0 && <div className="w-px h-4 bg-gray-200" />}
               </div>
             ))}
           </div>
