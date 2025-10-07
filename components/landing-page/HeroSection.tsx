@@ -3,7 +3,9 @@
 import React, { useState } from "react";
 
 const HeroSection = () => {
-  const [activeTab, setActiveTab] = useState<"recruiting" | "freelancers">("recruiting");
+  const [activeTab, setActiveTab] = useState<"recruiting" | "freelancers">(
+    "recruiting",
+  );
 
   return (
     <section className="w-full max-w-[1008px] mx-auto px-4 py-12 md:py-20">
@@ -18,9 +20,13 @@ const HeroSection = () => {
           >
             For Recruiting
           </button>
-          
+
           <button
-            onClick={() => setActiveTab(activeTab === "recruiting" ? "freelancers" : "recruiting")}
+            onClick={() =>
+              setActiveTab(
+                activeTab === "recruiting" ? "freelancers" : "recruiting",
+              )
+            }
             className="relative"
           >
             <svg
