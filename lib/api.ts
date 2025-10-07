@@ -47,38 +47,32 @@ const apiClient = async <T>(
     }
   }
 
-  const response = await fetch(`${baseUrl}${endpoint}`, config);
+  const response = await fetch(`${baseUrl}${endpoint}`, {
+    ...config,
+    cache: 'no-store',
+  });
 
   if (!response.ok) {
-    const errorText = await response.text();
-    let errorData;
+    const errorClone = response.clone();
+    let errorMessage = response.statusText;
     try {
-      errorData = JSON.parse(errorText);
-      if (typeof errorData === "string") {
-        errorData = JSON.parse(errorData);
+      const errorText = await errorClone.text();
+      try {
+        const parsed = JSON.parse(errorText);
+        errorMessage = typeof parsed === 'string' ? parsed : parsed.message || errorMessage;
+      } catch {
+        errorMessage = errorText || errorMessage;
       }
-    } catch (e) {
-      // If parsing fails, use the raw text or a default message
-      errorData = { message: errorText || response.statusText };
-    }
-
-    // The error from the backend might be a stringified object with a 'message' property
-    // or it could be a simple string message.
-    const errorMessage =
-      typeof errorData === "string" ? errorData : errorData.message;
-
-    throw new Error(
-      errorMessage || "An error occurred during the API request.",
-    );
+    } catch {}
+    throw new Error(errorMessage || 'An error occurred during the API request.');
   }
 
-  // Handle cases where the response body might be empty
+  const contentType = response.headers.get('content-type') || '';
+  if (contentType.includes('application/json')) {
+    return (await response.json()) as T;
+  }
   const responseText = await response.text();
-  try {
-    return JSON.parse(responseText) as T;
-  } catch (e) {
-    return responseText as unknown as T;
-  }
+  return responseText as unknown as T;
 };
 
 export default apiClient;
