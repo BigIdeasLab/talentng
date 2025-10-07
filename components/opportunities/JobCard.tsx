@@ -16,6 +16,7 @@ export const JobCard: React.FC<JobCardProps> = ({
   onShare,
   onApply,
   hasApplied,
+  basePath = "/talent/opportunities",
 }) => {
   const router = useRouter();
   return (
@@ -32,7 +33,7 @@ export const JobCard: React.FC<JobCardProps> = ({
             <div className="space-y-2">
               <div className="space-y-2">
                 <button
-                  onClick={() => router.push(`/talent/opportunities/${id}`)}
+                  onClick={() => router.push(`${basePath}/${id}`)}
                   className="text-left"
                 >
                   <h4 className="text-base font-geist text-black underline decoration-transparent hover:decoration-black">

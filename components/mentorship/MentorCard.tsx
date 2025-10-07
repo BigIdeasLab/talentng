@@ -6,9 +6,14 @@ import { Mentor } from "@/lib/types/mentor";
 interface MentorCardProps {
   mentor: Mentor;
   onBookSession: (id: string) => void;
+  basePath?: string;
 }
 
-export function MentorCard({ mentor, onBookSession }: MentorCardProps) {
+export function MentorCard({
+  mentor,
+  onBookSession,
+  basePath = "/talent/mentorship",
+}: MentorCardProps) {
   const router = useRouter();
   const {
     id,
@@ -25,7 +30,7 @@ export function MentorCard({ mentor, onBookSession }: MentorCardProps) {
   return (
     <div
       role="button"
-      onClick={() => router.push(`/talent/mentorship/${id}`)}
+      onClick={() => router.push(`${basePath}/${id}`)}
       className="flex w-full max-w-[374px] p-4 flex-col items-start gap-4 border border-gray-200 rounded-[32px] bg-white cursor-pointer"
     >
       <div className="flex flex-col items-start gap-5 self-stretch">

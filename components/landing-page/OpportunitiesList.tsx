@@ -38,6 +38,7 @@ export function OpportunitiesList({ limit, initialOpportunities }: Opportunities
           onShare={handleShare}
           onApply={handleApply}
           hasApplied={false} // On landing page, we assume user has not applied
+          basePath="/opportunities"
         />
       ))}
     </div>
