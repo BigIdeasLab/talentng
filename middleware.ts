@@ -3,13 +3,13 @@ import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
 const protectedRoutes = [
-  "/talent/dashboard",
-  "/talent/dashboard/complete-profile",
-  "/talent/learning-hub",
-  "/talent/mentorship",
-  "/talent/my-profile",
-  "/talent/opportunities",
-  "/talent/settings",
+  // "/talent/dashboard",
+  // "/talent/dashboard/complete-profile",
+  // "/talent/learning-hub",
+  // "/talent/mentorship",
+  // "/talent/my-profile",
+  // "/talent/opportunities",
+  // "/talent/settings",
 ];
 
 const authRoutes = [
