@@ -14,7 +14,7 @@ const CallToAction = () => {
                 Talent
                 {/* Talent Badge - Hidden on mobile, visible on larger screens */}
                 <span className="hidden lg:absolute lg:left-full lg:top-[-20px] lg:flex lg:items-center lg:justify-center lg:w-[162px] lg:h-[77px] lg:px-8 lg:py-4 lg:rounded-[64px] lg:bg-white lg:transform lg:rotate-[0.249deg] lg:ml-4">
-                  <span className="text-[#FF5E46] text-center font-geist text-[32px] font-bold leading-[140%]">
+                  <span className="text-black text-center font-geist text-[32px] font-bold leading-[140%]">
                     Talent
                   </span>
                 </span>
