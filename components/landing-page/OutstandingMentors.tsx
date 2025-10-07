@@ -40,6 +40,7 @@ export function OutstandingMentors({ initialMentors }: OutstandingMentorsProps) 
             key={mentor.id}
             mentor={mentor}
             onBookSession={handleBookSession}
+            basePath="/mentorship"
           />
         ))}
       </div>
