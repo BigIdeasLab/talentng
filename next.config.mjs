@@ -10,12 +10,18 @@ const nextConfig = {
     ],
   },
   async rewrites() {
+    const apiUrl = process.env.NEXT_PUBLIC_TALENTNG_API_URL;
+    const isValid = typeof apiUrl === 'string' && (apiUrl.startsWith('http://') || apiUrl.startsWith('https://') || apiUrl.startsWith('/'));
+    if (!isValid) {
+      console.warn('NEXT_PUBLIC_TALENTNG_API_URL is not set or invalid; skipping /api/v1 rewrite.');
+      return [];
+    }
     return [
       {
         source: '/api/v1/:path*',
-        destination: `${process.env.NEXT_PUBLIC_TALENTNG_API_URL}/:path*`,
+        destination: `${apiUrl}/:path*`,
       },
-    ]
+    ];
   },
 
 };
