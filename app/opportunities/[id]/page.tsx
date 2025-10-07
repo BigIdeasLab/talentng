@@ -8,6 +8,7 @@ import { JobCard } from "@/components/opportunities/JobCard";
 import { CallToAction } from "@/components/landing-page";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import Link from "next/link";
 
 export default function OpportunityDetail() {
   const params = useParams();
@@ -45,10 +46,6 @@ export default function OpportunityDetail() {
 
   const handleShare = () => {
     console.log("Sharing opportunity:", opportunity?.id);
-  };
-
-  const handleApply = () => {
-    console.log("Applying to opportunity:", opportunity?.id);
   };
 
   if (loading) {
@@ -138,15 +135,15 @@ export default function OpportunityDetail() {
                   </span>
                   <Share2 className="w-4 h-4 text-black" />
                 </button>
-                <button
-                  onClick={handleApply}
+                <Link
+                  href={`/talent/opportunities/${params.id}`}
                   className="flex items-center gap-1 px-3.5 py-3.5 rounded-3xl bg-black hover:bg-gray-900 transition-colors"
                 >
                   <span className="font-geist text-sm font-medium text-white">
                     Apply
                   </span>
                   <Briefcase className="w-4 h-4 text-white" />
-                </button>
+                </Link>
               </div>
 
               {/* Budget */}
@@ -262,7 +259,6 @@ export default function OpportunityDetail() {
                   employmentType={job.employmentType}
                   talent={job.talent}
                   onShare={handleShare}
-                  onApply={handleApply}
                   basePath="/opportunities"
                 />
               ))}

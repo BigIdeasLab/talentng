@@ -1,6 +1,7 @@
 
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { MentorCard } from "@/components/mentorship/MentorCard";
 import { Mentor } from "@/lib/types/mentor";
 
@@ -9,10 +10,10 @@ interface OutstandingMentorsProps {
 }
 
 export function OutstandingMentors({ initialMentors }: OutstandingMentorsProps) {
+  const router = useRouter();
 
   const handleBookSession = (mentorId: string) => {
-    // TODO: Implement book session functionality
-    console.log("Booking session with mentor:", mentorId);
+    router.push(`/talent/mentorship/${mentorId}`);
   };
 
   return (

@@ -1,6 +1,7 @@
 
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { JobCard } from "@/components/opportunities/JobCard";
 import { Opportunity } from "@/lib/types/opportunity";
 
@@ -11,6 +12,7 @@ interface OpportunitiesListProps {
 
 export function OpportunitiesList({ limit, initialOpportunities }: OpportunitiesListProps) {
   const opportunities = limit ? initialOpportunities.slice(0, limit) : initialOpportunities;
+  const router = useRouter();
 
   const handleShare = (jobId: string) => {
     // TODO: Implement share functionality
@@ -18,8 +20,7 @@ export function OpportunitiesList({ limit, initialOpportunities }: Opportunities
   };
 
   const handleApply = (jobId: string) => {
-    // TODO: Implement apply functionality
-    console.log("Applying for job:", jobId);
+    router.push(`/talent/opportunities/${jobId}`);
   };
 
   return (

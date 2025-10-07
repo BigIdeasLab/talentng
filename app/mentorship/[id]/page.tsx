@@ -8,6 +8,7 @@ import { MentorCard } from "@/components/mentorship/MentorCard";
 import { CallToAction } from "@/components/landing-page";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import Link from "next/link";
 
 export default function MentorDetail() {
   const params = useParams();
@@ -96,9 +97,12 @@ export default function MentorDetail() {
               alt={mentor.fullName}
               className="w-32 h-32 rounded-full object-cover"
             />
-            <button className="inline-flex items-center justify-center rounded-3xl bg-black text-white h-11 px-4 text-sm font-medium">
+            <Link
+              href={`/talent/mentorship/${params.id}`}
+              className="inline-flex items-center justify-center rounded-3xl bg-black text-white h-11 px-4 text-sm font-medium"
+            >
               Book a session
-            </button>
+            </Link>
           </div>
 
           <div className="flex-1 mt-6">
