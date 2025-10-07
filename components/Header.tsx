@@ -62,7 +62,7 @@ const Header = () => {
               </Link>
               <Link
                 href="/signup"
-                className="px-[14px] py-[14px] rounded-3xl bg-brand-primary text-white font-geist text-base font-medium hover:bg-brand-primary/90 transition-colors"
+                className="px-[14px] py-[14px] rounded-3xl bg-black text-white font-geist text-base font-medium hover:bg-gray-800 transition-colors"
               >
                 Get Started
               </Link>
