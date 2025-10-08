@@ -31,7 +31,9 @@ const VerificationBadge = () => (
 const TalentShowcase = () => {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [mentors, setMentors] = useState<Mentor[]>([]);
-  const [learningResources, setLearningResources] = useState<LearningResource[]>([]);
+  const [learningResources, setLearningResources] = useState<
+    LearningResource[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ const TalentShowcase = () => {
       try {
         const opportunitiesData = await getOpportunities({});
         setOpportunities(opportunitiesData);
-        const mentorsData = await getMentors('');
+        const mentorsData = await getMentors("");
         setMentors(mentorsData);
         const learningResourcesData = await getLearningResources({});
         setLearningResources(learningResourcesData);
@@ -121,12 +123,20 @@ const TalentShowcase = () => {
                   </a>
                 </div>
               </div>
-              <OpportunitiesList initialOpportunities={opportunities} limit={3} isLoading={loading} />
+              <OpportunitiesList
+                initialOpportunities={opportunities}
+                limit={3}
+                isLoading={loading}
+              />
             </div>
 
             <OutstandingMentors initialMentors={mentors} isLoading={loading} />
 
-            <RecommendedLearningPaths resources={learningResources} loading={loading} error={null} />
+            <RecommendedLearningPaths
+              resources={learningResources}
+              loading={loading}
+              error={null}
+            />
           </div>
 
           <div className="w-full flex flex-col items-start gap-6">
@@ -149,7 +159,11 @@ const TalentShowcase = () => {
 
             <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
               {findTalents.map((talent) => (
-                <Link key={talent.id} href={`/talent/${talent.id}`} className="flex flex-col items-start gap-4 cursor-pointer group">
+                <Link
+                  key={talent.id}
+                  href={`/talent/${talent.id}`}
+                  className="flex flex-col items-start gap-4 cursor-pointer group"
+                >
                   <img
                     src={talent.image}
                     alt="Talent work"
@@ -164,7 +178,9 @@ const TalentShowcase = () => {
                       />
                       <div
                         className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-lg border-[2.682px] border-white ${
-                          talent.profile.isOnline ? "bg-[#3AB266]" : "bg-[#B1B1B1]"
+                          talent.profile.isOnline
+                            ? "bg-[#3AB266]"
+                            : "bg-[#B1B1B1]"
                         }`}
                       />
                     </div>
