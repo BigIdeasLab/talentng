@@ -47,6 +47,19 @@ export function deleteCookie(name: string) {
   document.cookie = `${name}=; Max-Age=0; path=/`;
 }
 
+export function setCookie(name: string, value: string, days: number = 7) {
+  if (typeof document === 'undefined') {
+    return;
+  }
+  let expires = "";
+  if (days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+
 export function formatDateForDisplay(dateString: string): string {
   const date = new Date(dateString);
   const options: Intl.DateTimeFormatOptions = {

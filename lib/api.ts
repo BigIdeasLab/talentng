@@ -1,4 +1,4 @@
-import { getCookie } from "@/lib/utils";
+import { getCookie, setCookie, deleteCookie } from "@/lib/utils";
 import { Opportunity } from "./types/opportunity";
 import { Application } from "./types/application";
 import { Mentor } from "./types/mentor";
@@ -16,73 +16,108 @@ type ApiOptions = {
   body?: any;
 };
 
+let isRefreshing = false;
+const failedQueue: any[] = [];
+
+const processQueue = (error: Error | null, token: string | null = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+
+  failedQueue.length = 0;
+};
+
 const apiClient = async <T>(
   endpoint: string,
   options: ApiOptions = {},
 ): Promise<T> => {
-  const { headers = {}, method = "GET", body } = options;
-  const token = getCookie("accessToken");
+  let token = getCookie("accessToken");
 
   const config: RequestInit = {
-    method,
+    method: options.method || "GET",
     headers: {
       "Content-Type": "application/json",
-      ...headers,
+      ...options.headers,
     },
   };
 
   if (token) {
-    (config.headers as Record<string, string>)["Authorization"] =
-      `Bearer ${token}`;
+    (config.headers as Record<string, string>)["Authorization"] = `Bearer ${token}`;
   }
 
-  if (body) {
-    if (body instanceof FormData) {
-      // For FormData, let the browser set the Content-Type header
-      // so it can include the boundary.
+  if (options.body) {
+    if (options.body instanceof FormData) {
       delete (config.headers as Record<string, string>)["Content-Type"];
-      config.body = body;
+      config.body = options.body;
     } else {
-      // For other body types, stringify as JSON
-      config.body = JSON.stringify(body);
+      config.body = JSON.stringify(options.body);
     }
   }
 
-  const response = await fetch(`${baseUrl}${endpoint}`, config);
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    let errorData;
-    try {
-      errorData = JSON.parse(errorText);
-      if (typeof errorData === "string") {
-        errorData = JSON.parse(errorData);
-      }
-    } catch (e) {
-      // If parsing fails, use the raw text or a default message
-      errorData = { message: errorText || response.statusText };
-    }
-
-    // The error from the backend might be a stringified object with a 'message' property
-    // or it could be a simple string message.
-    const errorMessage =
-      typeof errorData === "string" ? errorData : errorData.message;
-
-    throw new Error(
-      errorMessage || "An error occurred during the API request.",
-    );
-  }
-
-  // Handle cases where the response body might be empty
-  const responseText = await response.text();
   try {
-    return JSON.parse(responseText) as T;
-  } catch (e) {
-    return responseText as unknown as T;
+    let response = await fetch(`${baseUrl}${endpoint}`, config);
+
+    if (response.status === 401) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+        .then(newToken => {
+          (config.headers as Record<string, string>)["Authorization"] = `Bearer ${newToken}`;
+          return fetch(`${baseUrl}${endpoint}`, config);
+        })
+        .then(res => res.json());
+      }
+
+      isRefreshing = true;
+
+      try {
+        const refreshResponse = await fetch(`${baseUrl}/auth/refresh`, { method: 'POST' });
+        if (!refreshResponse.ok) {
+          throw new Error('Failed to refresh token');
+        }
+        const { accessToken: newAccessToken } = await refreshResponse.json();
+        setCookie("accessToken", newAccessToken);
+        processQueue(null, newAccessToken);
+        (config.headers as Record<string, string>)["Authorization"] = `Bearer ${newAccessToken}`;
+        response = await fetch(`${baseUrl}${endpoint}`, config);
+      } catch (error) {
+        processQueue(error as Error, null);
+        deleteCookie("accessToken");
+        deleteCookie("user");
+        window.location.href = '/login';
+        throw error;
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch (e) {
+        errorData = { message: errorText || response.statusText };
+      }
+      throw new Error(errorData.message || "An error occurred during the API request.");
+    }
+
+    const responseText = await response.text();
+    return responseText ? JSON.parse(responseText) : ({} as T);
+
+  } catch (error) {
+    console.error("API Client Error:", error);
+    throw error;
   }
 };
 
 export default apiClient;
+
 
 interface GetOpportunitiesParams {
   q?: string;
