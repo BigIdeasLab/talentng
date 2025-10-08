@@ -1,12 +1,12 @@
-"use client";
+'use client';
 import React, { useState, useEffect } from "react";
 import { MentorCard } from "@/components/mentorship/MentorCard";
 import { getMentors } from "@/lib/api";
 import { Mentor } from "@/lib/types/mentor";
 import BookingModal from "@/components/BookingModal";
+import { MentorCardSkeleton } from "./MentorCardSkeleton";
 
 export function OutstandingMentors() {
-  const [searchQuery, setSearchQuery] = useState("");
   const [mentors, setMentors] = useState<Mentor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +17,7 @@ export function OutstandingMentors() {
     const fetchMentors = async () => {
       try {
         setLoading(true);
-        const fetchedMentors = await getMentors(searchQuery);
+        const fetchedMentors = await getMentors();
         setMentors(fetchedMentors);
       } catch (err) {
         setError("Failed to fetch mentors. Please try again later.");
@@ -27,11 +27,7 @@ export function OutstandingMentors() {
     };
 
     fetchMentors();
-  }, [searchQuery]);
-
-  const handleReset = () => {
-    setSearchQuery("");
-  };
+  }, []);
 
   const handleBookSession = (mentorId: string) => {
     const mentor = mentors.find((m) => m.id === mentorId);
@@ -54,12 +50,10 @@ export function OutstandingMentors() {
         </h2>
         <div className="flex items-center justify-between">
           <p className="text-base font-normal text-gray-500 font-geist">
-            {loading
-              ? "Loading mentors..."
-              : error
+            {error
               ? error
-              : mentors.length === 0
-              ? "No mentors found matching your criteria"
+              : mentors.length === 0 && !loading
+              ? "No mentors found"
               : `Standout Mentors making waves around the web`}
           </p>
           {mentors.length > 0 && !loading && !error && (
@@ -73,7 +67,7 @@ export function OutstandingMentors() {
       {/* Mentor Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {loading ? (
-          <p>Loading...</p>
+          [...Array(3)].map((_, i) => <MentorCardSkeleton key={i} />)
         ) : error ? (
           <div className="col-span-full text-center py-12 w-full">
             <p className="text-lg text-red-500 font-geist">{error}</p>
@@ -81,14 +75,8 @@ export function OutstandingMentors() {
         ) : mentors.length === 0 ? (
           <div className="col-span-full text-center py-12 w-full">
             <p className="text-lg text-gray-500 font-geist">
-              No mentors match your search criteria.
+              No mentors found.
             </p>
-            <button
-              onClick={handleReset}
-              className="mt-4 px-6 py-2 bg-black text-white rounded-3xl font-geist text-sm font-medium hover:bg-gray-900 transition-colors"
-            >
-              Clear filters
-            </button>
           </div>
         ) : (
           mentors.map((mentor) => (

@@ -1,9 +1,10 @@
-"use client";
+'use client';
 import React, { useState, useEffect } from "react";
 import { JobCard } from "@/components/opportunities/JobCard";
 import { getOpportunities, getApplications } from "@/lib/api";
 import { Opportunity } from "@/lib/types/opportunity";
 import ApplicationModal from "@/components/ApplicationModal";
+import { JobCardSkeleton } from "./JobCardSkeleton";
 
 interface OpportunitiesListProps {
   limit?: number;
@@ -53,7 +54,13 @@ export function OpportunitiesList({ limit }: OpportunitiesListProps) {
   };
 
   if (loading) {
-    return <div>Loading opportunities...</div>;
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-9">
+        {[...Array(limit || 3)].map((_, i) => (
+          <JobCardSkeleton key={i} />
+        ))}
+      </div>
+    );
   }
 
   if (error) {
