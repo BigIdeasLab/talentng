@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { ChevronDown, Share2, Briefcase, Building, Search } from "lucide-react";
 import { getOpportunities, getMentors, getLearningResources } from "@/lib/api";
 import { OpportunitiesList } from "@/components/landing-page/OpportunitiesList";
@@ -30,7 +31,9 @@ const VerificationBadge = () => (
 const TalentShowcase = () => {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [mentors, setMentors] = useState<Mentor[]>([]);
-  const [learningResources, setLearningResources] = useState<LearningResource[]>([]);
+  const [learningResources, setLearningResources] = useState<
+    LearningResource[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,7 +41,7 @@ const TalentShowcase = () => {
       try {
         const opportunitiesData = await getOpportunities({});
         setOpportunities(opportunitiesData);
-        const mentorsData = await getMentors('');
+        const mentorsData = await getMentors("");
         setMentors(mentorsData);
         const learningResourcesData = await getLearningResources({});
         setLearningResources(learningResourcesData);
@@ -54,6 +57,7 @@ const TalentShowcase = () => {
 
   const findTalents = [
     {
+      id: "1",
       image:
         "https://api.builder.io/api/v1/image/assets/TEMP/7a7d06d2171bb91f364bf0e0d5ec52c05746b91c?width=748",
       profile: {
@@ -65,6 +69,7 @@ const TalentShowcase = () => {
       },
     },
     {
+      id: "2",
       image:
         "https://api.builder.io/api/v1/image/assets/TEMP/81a84f91e96e10ab18642d5f40839a2152540580?width=748",
       profile: {
@@ -76,6 +81,7 @@ const TalentShowcase = () => {
       },
     },
     {
+      id: "3",
       image:
         "https://api.builder.io/api/v1/image/assets/TEMP/2a3607311420aa86f0588b26f12fdbe95fc1a23c?width=748",
       profile: {
@@ -117,12 +123,20 @@ const TalentShowcase = () => {
                   </a>
                 </div>
               </div>
-              <OpportunitiesList initialOpportunities={opportunities} limit={3} isLoading={loading} />
+              <OpportunitiesList
+                initialOpportunities={opportunities}
+                limit={3}
+                isLoading={loading}
+              />
             </div>
 
             <OutstandingMentors initialMentors={mentors} isLoading={loading} />
 
-            <RecommendedLearningPaths resources={learningResources} loading={loading} error={null} />
+            <RecommendedLearningPaths
+              resources={learningResources}
+              loading={loading}
+              error={null}
+            />
           </div>
 
           <div className="w-full flex flex-col items-start gap-6">
@@ -144,12 +158,16 @@ const TalentShowcase = () => {
             </div>
 
             <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-              {findTalents.map((talent, index) => (
-                <div key={index} className="flex flex-col items-start gap-4">
+              {findTalents.map((talent) => (
+                <Link
+                  key={talent.id}
+                  href={`/talent/${talent.id}`}
+                  className="flex flex-col items-start gap-4 cursor-pointer group"
+                >
                   <img
                     src={talent.image}
                     alt="Talent work"
-                    className="w-full max-w-[374px] h-[280px] rounded-[32px] object-cover"
+                    className="w-full max-w-[374px] h-[280px] rounded-[32px] object-cover transition-transform group-hover:scale-[1.02]"
                   />
                   <div className="flex items-center gap-2">
                     <div className="relative">
@@ -160,7 +178,9 @@ const TalentShowcase = () => {
                       />
                       <div
                         className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-lg border-[2.682px] border-white ${
-                          talent.profile.isOnline ? "bg-[#3AB266]" : "bg-[#B1B1B1]"
+                          talent.profile.isOnline
+                            ? "bg-[#3AB266]"
+                            : "bg-[#B1B1B1]"
                         }`}
                       />
                     </div>
@@ -171,7 +191,7 @@ const TalentShowcase = () => {
                       {talent.profile.isVerified && <VerificationBadge />}
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
