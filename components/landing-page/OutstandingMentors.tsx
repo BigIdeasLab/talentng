@@ -1,15 +1,18 @@
-
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { MentorCard } from "@/components/mentorship/MentorCard";
+import { MentorCard, MentorCardSkeleton } from "@/components/mentorship";
 import { Mentor } from "@/lib/types/mentor";
 
 interface OutstandingMentorsProps {
   initialMentors: Mentor[];
+  isLoading?: boolean;
 }
 
-export function OutstandingMentors({ initialMentors }: OutstandingMentorsProps) {
+export function OutstandingMentors({
+  initialMentors,
+  isLoading,
+}: OutstandingMentorsProps) {
   const router = useRouter();
 
   const handleBookSession = (mentorId: string) => {
@@ -36,14 +39,18 @@ export function OutstandingMentors({ initialMentors }: OutstandingMentorsProps) 
 
       {/* Mentor Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {initialMentors.map((mentor) => (
-          <MentorCard
-            key={mentor.id}
-            mentor={mentor}
-            onBookSession={handleBookSession}
-            basePath="/mentorship"
-          />
-        ))}
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, index) => (
+              <MentorCardSkeleton key={index} />
+            ))
+          : initialMentors.map((mentor) => (
+              <MentorCard
+                key={mentor.id}
+                mentor={mentor}
+                onBookSession={handleBookSession}
+                basePath="/mentorship"
+              />
+            ))}
       </div>
     </div>
   );

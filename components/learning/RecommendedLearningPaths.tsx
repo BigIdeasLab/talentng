@@ -1,7 +1,7 @@
 import React from 'react';
-import { LearningResource } from '@/lib/types/learning';
-import { Skeleton } from '@/components/ui/skeleton';
 import { formatDuration } from '@/lib/utils';
+import { LearningPathCardSkeleton } from './LearningPathCardSkeleton';
+import { LearningResource } from '@/lib/types/learning';
 
 interface RecommendedLearningPathsProps {
   resources: LearningResource[];
@@ -13,9 +13,9 @@ export default function RecommendedLearningPaths({ resources, loading, error }: 
   const renderContent = () => {
     if (loading) {
       return (
-        <div className="flex gap-6 overflow-x-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(3)].map((_, index) => (
-            <Skeleton key={index} className="w-full h-[300px] rounded-[32px]" />
+            <LearningPathCardSkeleton key={index} />
           ))}
         </div>
       );

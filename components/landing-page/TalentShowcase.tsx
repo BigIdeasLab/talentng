@@ -31,6 +31,7 @@ const TalentShowcase = () => {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [mentors, setMentors] = useState<Mentor[]>([]);
   const [learningResources, setLearningResources] = useState<LearningResource[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,6 +44,8 @@ const TalentShowcase = () => {
         setLearningResources(learningResourcesData);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -114,12 +117,12 @@ const TalentShowcase = () => {
                   </a>
                 </div>
               </div>
-              <OpportunitiesList initialOpportunities={opportunities} limit={3} />
+              <OpportunitiesList initialOpportunities={opportunities} limit={3} isLoading={loading} />
             </div>
 
-            <OutstandingMentors initialMentors={mentors} />
+            <OutstandingMentors initialMentors={mentors} isLoading={loading} />
 
-            <RecommendedLearningPaths resources={learningResources} loading={false} error={null} />
+            <RecommendedLearningPaths resources={learningResources} loading={loading} error={null} />
           </div>
 
           <div className="w-full flex flex-col items-start gap-6">

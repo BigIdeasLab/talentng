@@ -2,15 +2,16 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { JobCard } from "@/components/opportunities/JobCard";
+import { JobCard, JobCardSkeleton } from "@/components/opportunities";
 import { Opportunity } from "@/lib/types/opportunity";
 
 interface OpportunitiesListProps {
   limit?: number;
   initialOpportunities: Opportunity[];
+  isLoading?: boolean;
 }
 
-export function OpportunitiesList({ limit, initialOpportunities }: OpportunitiesListProps) {
+export function OpportunitiesList({ limit, initialOpportunities, isLoading }: OpportunitiesListProps) {
   const opportunities = limit ? initialOpportunities.slice(0, limit) : initialOpportunities;
   const router = useRouter();
 
@@ -25,23 +26,29 @@ export function OpportunitiesList({ limit, initialOpportunities }: Opportunities
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-9">
-      {opportunities.map((job) => (
-        <JobCard
-          key={job.id}
-          id={job.id}
-          company={job.company}
-          logo={job.logo}
-          title={job.title}
-          location={job.location}
-          type={job.type}
-          talent={job.talent}
-          employmentType={job.employmentType}
-          onShare={handleShare}
-          onApply={handleApply}
-          hasApplied={false} // On landing page, we assume user has not applied
-          basePath="/opportunities"
-        />
-      ))}
+      {isLoading ? (
+        Array.from({ length: limit || 6 }).map((_, index) => (
+          <JobCardSkeleton key={index} />
+        ))
+      ) : (
+        opportunities.map((job) => (
+          <JobCard
+            key={job.id}
+            id={job.id}
+            company={job.company}
+            logo={job.logo}
+            title={job.title}
+            location={job.location}
+            type={job.type}
+            talent={job.talent}
+            employmentType={job.employmentType}
+            onShare={handleShare}
+            onApply={handleApply}
+            hasApplied={false} // On landing page, we assume user has not applied
+            basePath="/opportunities"
+          />
+        ))
+      )}
     </div>
   );
 }
