@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { ChevronDown, Share2, Briefcase, Building, Search } from "lucide-react";
 import { getOpportunities, getMentors, getLearningResources } from "@/lib/api";
 import { OpportunitiesList } from "@/components/landing-page/OpportunitiesList";
@@ -54,6 +55,7 @@ const TalentShowcase = () => {
 
   const findTalents = [
     {
+      id: "1",
       image:
         "https://api.builder.io/api/v1/image/assets/TEMP/7a7d06d2171bb91f364bf0e0d5ec52c05746b91c?width=748",
       profile: {
@@ -65,6 +67,7 @@ const TalentShowcase = () => {
       },
     },
     {
+      id: "2",
       image:
         "https://api.builder.io/api/v1/image/assets/TEMP/81a84f91e96e10ab18642d5f40839a2152540580?width=748",
       profile: {
@@ -76,6 +79,7 @@ const TalentShowcase = () => {
       },
     },
     {
+      id: "3",
       image:
         "https://api.builder.io/api/v1/image/assets/TEMP/2a3607311420aa86f0588b26f12fdbe95fc1a23c?width=748",
       profile: {
@@ -144,12 +148,12 @@ const TalentShowcase = () => {
             </div>
 
             <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-              {findTalents.map((talent, index) => (
-                <div key={index} className="flex flex-col items-start gap-4">
+              {findTalents.map((talent) => (
+                <Link key={talent.id} href={`/talent/${talent.id}`} className="flex flex-col items-start gap-4 cursor-pointer group">
                   <img
                     src={talent.image}
                     alt="Talent work"
-                    className="w-full max-w-[374px] h-[280px] rounded-[32px] object-cover"
+                    className="w-full max-w-[374px] h-[280px] rounded-[32px] object-cover transition-transform group-hover:scale-[1.02]"
                   />
                   <div className="flex items-center gap-2">
                     <div className="relative">
@@ -171,7 +175,7 @@ const TalentShowcase = () => {
                       {talent.profile.isVerified && <VerificationBadge />}
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
