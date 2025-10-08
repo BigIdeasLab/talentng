@@ -22,7 +22,7 @@ export const JobCard: React.FC<JobCardProps> = ({
   return (
     <div className="space-y-4">
       {/* Job Card */}
-      <div className="p-6 border border-gray-200 rounded-[32px] bg-white space-y-4">
+      <div className="p-6 border border-gray-200 rounded-[32px] bg-white space-y-4 shadow-sm">
         <div className="flex items-start gap-4">
           <img
             src={logo}
@@ -53,7 +53,7 @@ export const JobCard: React.FC<JobCardProps> = ({
             <div className="flex items-center gap-4">
               <button
                 onClick={() => onShare?.(id)}
-                className="flex items-center gap-2.5 px-3.5 py-3.5 border border-gray-200 rounded-3xl bg-white text-black font-geist text-base font-medium hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-2.5 px-3 py-2 md:px-3.5 md:py-3.5 border border-gray-200 rounded-3xl bg-white text-black font-geist text-sm md:text-base font-medium hover:bg-gray-50 transition-colors"
               >
                 Share
                 <svg
@@ -84,7 +84,7 @@ export const JobCard: React.FC<JobCardProps> = ({
               <button
                 onClick={() => onApply?.(id)}
                 disabled={hasApplied}
-                className="flex items-center gap-2.5 px-3.5 py-3.5 rounded-3xl bg-black text-white font-geist text-base font-medium hover:bg-gray-900 transition-colors disabled:bg-gray-400"
+                className="flex items-center gap-2.5 px-3 py-2 md:px-3.5 md:py-3.5 rounded-3xl bg-black text-white font-geist text-sm md:text-base font-medium hover:bg-gray-900 transition-colors disabled:bg-gray-400"
               >
                 {hasApplied ? "Applied" : "Apply"}
                 {!hasApplied && (

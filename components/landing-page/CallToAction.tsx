@@ -8,7 +8,7 @@ const CallToAction = () => {
         <div className="flex flex-col items-center gap-2 w-full max-w-[533px]">
           {/* Heading with inline Talent Badge */}
           <div className="relative w-full flex flex-col items-center mb-6">
-            <h2 className="text-white text-center font-geist text-3xl md:text-4xl lg:text-[48px] font-semibold leading-[140%]">
+            <h2 className="text-white text-center font-geist text-4xl md:text-5xl font-semibold leading-[140%]">
               Join 100k+{" "}
               <span className="relative inline-flex items-center">
                 <span className="inline-block px-6 md:px-8 py-2 rounded-[64px] bg-white transform rotate-[0.249deg]">
@@ -17,19 +17,19 @@ const CallToAction = () => {
                   </span>
                 </span>
               </span>
-              <br />
+              <br className="hidden md:inline" />
               and 1M+ Recruiters
             </h2>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 mt-2">
-            <button className="flex items-center justify-center h-12 min-w-[140px] px-6 py-1 rounded-3xl bg-gray-800 hover:bg-gray-700 transition-colors">
+          <div className="flex flex-col sm:flex-row items-center gap-4 md:gap-6 mt-2">
+            <button className="flex items-center justify-center h-12 px-6 py-1 rounded-3xl bg-gray-800 hover:bg-gray-700 transition-colors">
               <span className="text-white text-center font-geist text-base font-medium leading-6">
                 Hire creatives
               </span>
             </button>
-            <button className="flex items-center justify-center h-12 min-w-[100px] px-6 py-1 rounded-3xl border border-[#D0D4DC] bg-white hover:bg-gray-50 transition-colors">
+            <button className="flex items-center justify-center h-12 px-6 py-1 rounded-3xl border border-[#D0D4DC] bg-white hover:bg-gray-50 transition-colors">
               <span className="text-gray-600 text-center font-geist text-base font-medium leading-6">
                 Get hired
               </span>

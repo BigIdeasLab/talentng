@@ -15,7 +15,7 @@ export default function RecommendedLearningPaths({ resources, loading, error }: 
       return (
         <div className="flex gap-6 overflow-x-auto">
           {[...Array(3)].map((_, index) => (
-            <Skeleton key={index} className="w-[374px] h-[300px] rounded-[32px]" />
+            <Skeleton key={index} className="w-full h-[300px] rounded-[32px]" />
           ))}
         </div>
       );
@@ -26,11 +26,11 @@ export default function RecommendedLearningPaths({ resources, loading, error }: 
     }
 
     return (
-      <div className="flex gap-6 overflow-x-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {resources.map((resource) => (
           <a key={resource.id} href={resource.url} target="_blank" rel="noopener noreferrer">
             <div
-              className="relative flex-shrink-0 w-[374px] h-[300px] rounded-[32px] overflow-hidden"
+              className="relative flex-shrink-0 h-[300px] rounded-[32px] overflow-hidden"
             >
               <img
                 src={resource.backgroundImage}

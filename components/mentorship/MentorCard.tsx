@@ -31,11 +31,11 @@ export function MentorCard({
     <div
       role="button"
       onClick={() => router.push(`${basePath}/${id}`)}
-      className="flex w-full max-w-[374px] p-4 flex-col items-start gap-4 border border-gray-200 rounded-[32px] bg-white cursor-pointer"
+      className="flex p-4 flex-col items-start gap-4 border border-gray-200 rounded-[32px] bg-white cursor-pointer shadow-sm"
     >
       <div className="flex flex-col items-start gap-5 self-stretch">
         <img
-          src={profileImageUrl ?? ''}
+          src={profileImageUrl ?? ""}
           alt={fullName}
           className="w-16 h-16 rounded-full object-cover"
         />
