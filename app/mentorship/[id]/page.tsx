@@ -8,6 +8,7 @@ import { MentorCard } from "@/components/mentorship/MentorCard";
 import { CallToAction } from "@/components/landing-page";
 import Link from "next/link";
 import LandingPageLayout from "@/components/layouts/LandingPageLayout";
+import MentorDetailSkeleton from "@/components/mentorship/MentorDetailSkeleton";
 
 export default function MentorDetail() {
   const params = useParams();
@@ -43,15 +44,15 @@ export default function MentorDetail() {
     console.log("Sharing mentor:", mentor?.id);
   };
 
-  const handleBookSession = () => {
-    console.log("Booking session with mentor:", mentor?.id);
+  const handleBookSession = (mentorId: string) => {
+    router.push(`/talent/mentorship/${mentorId}`);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-gray-500">Loading...</div>
-      </div>
+      <LandingPageLayout>
+        <MentorDetailSkeleton />
+      </LandingPageLayout>
     );
   }
 

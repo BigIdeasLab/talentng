@@ -8,6 +8,7 @@ import { JobCard } from "@/components/opportunities/JobCard";
 import { CallToAction } from "@/components/landing-page";
 import Link from "next/link";
 import LandingPageLayout from "@/components/layouts/LandingPageLayout";
+import OpportunityDetailSkeleton from "@/components/opportunities/OpportunityDetailSkeleton";
 
 export default function OpportunityDetail() {
   const params = useParams();
@@ -47,11 +48,15 @@ export default function OpportunityDetail() {
     console.log("Sharing opportunity:", opportunity?.id);
   };
 
+  const handleApply = (jobId: string) => {
+    router.push(`/talent/opportunities/${jobId}`);
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-gray-500">Loading...</div>
-      </div>
+      <LandingPageLayout>
+        <OpportunityDetailSkeleton />
+      </LandingPageLayout>
     );
   }
 
@@ -254,6 +259,7 @@ export default function OpportunityDetail() {
                   employmentType={job.employmentType}
                   talent={job.talent}
                   onShare={handleShare}
+                  onApply={handleApply}
                   basePath="/opportunities"
                 />
               ))}

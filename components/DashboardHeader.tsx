@@ -54,6 +54,11 @@ export function DashboardHeader({
   const isOpportunitiesDetail =
     pathname.startsWith("/talent/opportunities/") &&
     pathname !== "/talent/opportunities";
+  const isMentorshipDetail =
+    pathname.startsWith("/talent/mentorship/") &&
+    pathname !== "/talent/mentorship";
+
+  const isDetailPage = isOpportunitiesDetail || isMentorshipDetail;
 
   const title = isOpportunitiesList
     ? "Opportunities"
@@ -89,10 +94,10 @@ export function DashboardHeader({
         {/* Header Content */}
         <div className="flex items-center justify-between mb-4 sm:mb-5">
           <div className="flex items-center gap-4">
-            {/* Mobile menu button or back button on opportunities detail */}
-            {isOpportunitiesDetail ? (
+            {/* Mobile menu button or back button on detail pages */}
+            {isDetailPage ? (
               <button
-                onClick={() => router.push("/opportunities")}
+                onClick={() => router.back()}
                 className="p-2 hover:bg-gray-100 rounded-lg flex items-center"
               >
                 <svg
