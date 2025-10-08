@@ -50,31 +50,33 @@ export function DashboardHeader({
 
   const unreadCount = notifications.filter((n) => !n.readAt).length;
 
-  const isOpportunitiesList = pathname === "/opportunities";
+  const isOpportunitiesList = pathname === "/talent/opportunities";
   const isOpportunitiesDetail =
-    pathname.startsWith("/opportunities/") && pathname !== "/opportunities";
+    pathname.startsWith("/talent/opportunities/") &&
+    pathname !== "/talent/opportunities";
 
   const title = isOpportunitiesList
     ? "Opportunities"
     : isOpportunitiesDetail
       ? "Opportunities"
-      : pathname.startsWith("/dashboard/complete-profile")
+      : pathname.startsWith("/talent/dashboard/complete-profile")
         ? "Complete Profile"
-        : pathname.startsWith("/my-profile") || pathname.startsWith("/profile")
+        : pathname.startsWith("/talent/my-profile") ||
+            pathname.startsWith("/talent/profile")
           ? "My Profile"
-          : pathname.startsWith("/mentorship")
+          : pathname.startsWith("/talent/mentorship")
             ? "Mentorship"
-            : pathname.startsWith("/learning-hub")
+            : pathname.startsWith("/talent/learning-hub")
               ? "Learning Hub"
-              : pathname.startsWith("/calendar")
+              : pathname.startsWith("/talent/calendar")
                 ? "Calendar"
-                : pathname.startsWith("/settings")
+                : pathname.startsWith("/talent/settings")
                   ? "Settings"
-                  : pathname.startsWith("/dashboard")
+                  : pathname.startsWith("/talent/dashboard")
                     ? "Dashboard"
-                    : pathname.startsWith("/login")
+                    : pathname.startsWith("/talent/login")
                       ? "Login"
-                      : pathname.startsWith("/signup")
+                      : pathname.startsWith("/talent/signup")
                         ? "Sign Up"
                         : "Dashboard";
 
