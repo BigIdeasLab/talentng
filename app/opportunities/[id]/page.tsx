@@ -6,9 +6,8 @@ import { getOpportunityById, getOpportunities } from "@/lib/api";
 import { Opportunity } from "@/lib/types/opportunity";
 import { JobCard } from "@/components/opportunities/JobCard";
 import { CallToAction } from "@/components/landing-page";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
 import Link from "next/link";
+import LandingPageLayout from "@/components/layouts/LandingPageLayout";
 
 export default function OpportunityDetail() {
   const params = useParams();
@@ -74,11 +73,7 @@ export default function OpportunityDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
-      <Header />
-
-      {/* Main Content */}
+    <LandingPageLayout>
       <div className="max-w-[1216px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 space-y-12">
         {/* Back Button */}
         <button
@@ -269,9 +264,6 @@ export default function OpportunityDetail() {
         {/* CTA Section */}
         <CallToAction />
       </div>
-
-      {/* Footer */}
-      <Footer />
-    </div>
+    </LandingPageLayout>
   );
 }
