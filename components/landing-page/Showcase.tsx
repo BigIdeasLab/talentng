@@ -2,13 +2,20 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { ChevronDown, Share2, Briefcase, Building, Search } from "lucide-react";
-import { getOpportunities, getMentors, getLearningResources } from "@/lib/api";
+import {
+  getOpportunities,
+  getMentors,
+  getLearningResources,
+  getTalents,
+} from "@/lib/api";
 import { OpportunitiesList } from "@/components/landing-page/OpportunitiesList";
 import { OutstandingMentors } from "@/components/landing-page/OutstandingMentors";
 import RecommendedLearningPaths from "@/components/learning/RecommendedLearningPaths";
 import { Opportunity } from "@/lib/types/opportunity";
 import { Mentor } from "@/lib/types/mentor";
 import { LearningResource } from "@/lib/types/learning";
+import { Talent } from "@/lib/types/talent";
+import TalentCard from "@/components/TalentCard";
 
 const VerificationBadge = () => (
   <svg
@@ -28,12 +35,13 @@ const VerificationBadge = () => (
   </svg>
 );
 
-const TalentShowcase = () => {
+const Showcase = () => {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [mentors, setMentors] = useState<Mentor[]>([]);
   const [learningResources, setLearningResources] = useState<
     LearningResource[]
   >([]);
+  const [talents, setTalents] = useState<Talent[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,6 +53,8 @@ const TalentShowcase = () => {
         setMentors(mentorsData);
         const learningResourcesData = await getLearningResources({});
         setLearningResources(learningResourcesData);
+        const talentsData = await getTalents({});
+        setTalents(talentsData);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -54,45 +64,6 @@ const TalentShowcase = () => {
 
     fetchData();
   }, []);
-
-  const findTalents = [
-    {
-      id: "1",
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/7a7d06d2171bb91f364bf0e0d5ec52c05746b91c?width=748",
-      profile: {
-        name: "Promise Olaifa",
-        image:
-          "https://api.builder.io/api/v1/image/assets/TEMP/b7a14a0aa489cb96b364bfa56de3bb04acfc0e08?width=64",
-        isOnline: true,
-        isVerified: true,
-      },
-    },
-    {
-      id: "2",
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/81a84f91e96e10ab18642d5f40839a2152540580?width=748",
-      profile: {
-        name: "Ebele Okafor",
-        image:
-          "https://api.builder.io/api/v1/image/assets/TEMP/187de602f27fe4361036da4edd6ff448b436f4d5?width=64",
-        isOnline: false,
-        isVerified: true,
-      },
-    },
-    {
-      id: "3",
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/2a3607311420aa86f0588b26f12fdbe95fc1a23c?width=748",
-      profile: {
-        name: "Zeenie Ejike",
-        image:
-          "https://api.builder.io/api/v1/image/assets/TEMP/8c82ca4b3d3616469ab02084bfa2fd4e1e2c0980?width=64",
-        isOnline: true,
-        isVerified: true,
-      },
-    },
-  ];
 
   return (
     <div className="w-full flex flex-col items-center gap-6 md:gap-11 py-8 md:py-12 px-4">
@@ -139,7 +110,7 @@ const TalentShowcase = () => {
             />
           </div>
 
-          <div className="w-full flex flex-col items-start gap-6">
+          {/* <div className="w-full flex flex-col items-start gap-6">
             <div className="w-full flex flex-col items-start gap-2.5">
               <h2 className="text-gray-900 font-geist text-2xl font-medium leading-[120%]">
                 Find Talents
@@ -158,43 +129,22 @@ const TalentShowcase = () => {
             </div>
 
             <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-              {findTalents.map((talent) => (
+              {talents.map((talent) => (
                 <Link
                   key={talent.id}
-                  href={`/talents/${talent.id}`}
-                  className="flex flex-col items-start gap-4 cursor-pointer group"
-                >
-                  <img
-                    src={talent.image}
-                    alt="Talent work"
-                    className="w-full max-w-[374px] h-[280px] rounded-[32px] object-cover transition-transform group-hover:scale-[1.02]"
+                  href={`/talents/${talent.id}`}>
+                  <TalentCard
+                    coverImage={talent.coverImageUrl || "/placeholder.svg"}
+                    coverAlt={talent.headline || "Talent work"}
+                    profileImage={talent.profileImageUrl || "/placeholder.svg"}
+                    name={talent.fullName || "Talent"}
+                    isOnline={talent.availability === "available"}
+                    isVerified={talent.user.isVerified}
                   />
-                  <div className="flex items-center gap-2">
-                    <div className="relative">
-                      <img
-                        src={talent.profile.image}
-                        alt={talent.profile.name}
-                        className="w-8 h-8 rounded-2xl"
-                      />
-                      <div
-                        className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-lg border-[2.682px] border-white ${
-                          talent.profile.isOnline
-                            ? "bg-[#3AB266]"
-                            : "bg-[#B1B1B1]"
-                        }`}
-                      />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[#677084] text-center font-geist text-xl font-medium leading-[120%]">
-                        {talent.profile.name}
-                      </span>
-                      {talent.profile.isVerified && <VerificationBadge />}
-                    </div>
-                  </div>
                 </Link>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
 
         <button className="flex py-3.5 px-3.5 justify-center items-center gap-2.5 rounded-3xl border border-gray-300 hover:bg-gray-50 transition-colors">
@@ -208,4 +158,4 @@ const TalentShowcase = () => {
   );
 };
 
-export default TalentShowcase;
+export default Showcase;

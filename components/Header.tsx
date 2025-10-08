@@ -51,7 +51,7 @@ const Header = () => {
           {user ? (
             <Link
               href="/talent/dashboard"
-              className="px-[14px] py-[14px] rounded-3xl bg-brand-primary text-white font-geist text-base font-medium hover:bg-brand-primary/90 transition-colors"
+              className="px-[14px] py-[14px] rounded-3xl bg-black text-white font-geist text-base font-medium hover:bg-gray-800 transition-colors"
             >
               Dashboard
             </Link>

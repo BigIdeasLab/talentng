@@ -4,6 +4,7 @@ import { Application } from "./types/application";
 import { Mentor } from "./types/mentor";
 import { Notification } from "./types/notification";
 import { LearningResource } from "./types/learning";
+import { Talent } from "./types/talent";
 
 const baseUrl = process.env.NODE_ENV === 'production' 
   ? process.env.NEXT_PUBLIC_TALENTNG_API_URL 
@@ -211,4 +212,30 @@ export const getLearningResources = async (
   const queryString = query.toString();
   const endpoint = `/learning-resources${queryString ? `?${queryString}` : ""}`;
   return apiClient<LearningResource[]>(endpoint);
+};
+
+interface GetTalentsParams {
+  isFeatured?: boolean;
+  visibility?: string;
+  location?: string;
+  skills?: string;
+  bio?: string;
+  headline?: string;
+}
+
+export const getTalents = async (
+  params?: GetTalentsParams,
+): Promise<Talent[]> => {
+  const query = new URLSearchParams();
+  if (params) {
+    for (const key in params) {
+      const value = params[key as keyof GetTalentsParams];
+      if (value !== undefined && value !== null) {
+        query.append(key, String(value));
+      }
+    }
+  }
+  const queryString = query.toString();
+  const endpoint = `/talent${queryString ? `?${queryString}` : ""}`;
+  return apiClient<Talent[]>(endpoint);
 };

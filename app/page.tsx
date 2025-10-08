@@ -2,7 +2,7 @@ import React from "react";
 import Header from "../components/Header";
 import { HeroSection, CallToAction } from "@/components/landing-page";
 import Footer from "../components/Footer";
-import TalentShowcase from "@/components/landing-page/TalentShowcase";
+import Showcase from "@/components/landing-page/Showcase";
 
 export default function Index() {
   return (
@@ -14,7 +14,7 @@ export default function Index() {
       <HeroSection />
 
       {/* Talent Showcase */}
-      <TalentShowcase />
+      <Showcase />
 
       {/* Call to Action */}
       <CallToAction />
