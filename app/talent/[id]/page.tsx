@@ -1,17 +1,9 @@
-"use client";
-
 import React from "react";
 import LandingPageLayout from "@/components/layouts/LandingPageLayout";
 import { Sparkles } from "lucide-react";
 
-interface TalentDetailPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function TalentDetailPage({ params }: TalentDetailPageProps) {
-  const { id } = params;
+export default async function TalentDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
 
   const talentData = {
     name: "Promise Olaifa",
