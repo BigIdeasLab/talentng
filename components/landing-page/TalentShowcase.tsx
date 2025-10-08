@@ -161,7 +161,7 @@ const TalentShowcase = () => {
               {findTalents.map((talent) => (
                 <Link
                   key={talent.id}
-                  href={`/talent/${talent.id}`}
+                  href={`/talents/${talent.id}`}
                   className="flex flex-col items-start gap-4 cursor-pointer group"
                 >
                   <img

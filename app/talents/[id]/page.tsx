@@ -12,27 +12,37 @@ export default async function TalentDetailPage({
   const talentData = {
     name: "Promise Olaifa",
     role: "Senior Product Designer",
+    location: "Lagos,Nigeria 🇳🇬",
     avatar:
       "https://api.builder.io/api/v1/image/assets/TEMP/62a092bd6bc517738cffbf8ef4fbcb6b9763da78?width=128",
     isOnline: true,
     isVerified: true,
+    about:
+      "Product Designer & Ux Consultant Product Designer Passionate about how people and technology can create a new and a better world",
+    skills: [
+      "Mentoring",
+      "Giving resume feedback",
+      "Conducting mock interviews",
+      "Improving interview skills",
+      "+4",
+    ],
     pastWork: [
       {
         id: 1,
         image:
-          "https://api.builder.io/api/v1/image/assets/TEMP/9d8baa0bd558d3282042599890d5cfcae36e3d5c?width=748",
+          "https://api.builder.io/api/v1/image/assets/TEMP/dfa102bc1401be52c2532282271f4c67ed19ebac?width=748",
         alt: "Cover image for Daylight Health Brand Identity & Web Design",
       },
       {
         id: 2,
         image:
-          "https://api.builder.io/api/v1/image/assets/TEMP/076beef786898c438df9c52256dd894037d34338?width=748",
+          "https://api.builder.io/api/v1/image/assets/TEMP/208fe1f018432f447630ee8707b8263d38567cd3?width=748",
         alt: "Cover image for Wack•A•Doo Hot Sauce Branding & Packaging",
       },
       {
         id: 3,
         image:
-          "https://api.builder.io/api/v1/image/assets/TEMP/88824e4331ec3cc75d48205a2928968e96bab1c2?width=748",
+          "https://api.builder.io/api/v1/image/assets/TEMP/2becd35ef0c9d177074c32cb91e5fa940f6a83b0?width=748",
         alt: "Cover image for Okrika Social Media",
       },
     ],
@@ -95,6 +105,9 @@ export default async function TalentDetailPage({
               <p className="text-gray-700 text-center font-geist text-base leading-[120%]">
                 {talentData.role}
               </p>
+              <p className="text-black text-center font-geist text-base leading-[120%]">
+                {talentData.location}
+              </p>
             </div>
           </div>
 
@@ -107,23 +120,59 @@ export default async function TalentDetailPage({
           </button>
         </div>
 
-        {/* Past Work Section */}
-        <div className="w-full max-w-[1216px] flex flex-col gap-8">
-          <h2 className="text-gray-800 font-geist text-xl font-medium leading-[120%]">
-            Past Work
-          </h2>
+        {/* About and Skills Section */}
+        <div className="w-full max-w-[1216px] flex flex-col gap-11">
+          {/* About Section */}
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4">
+              <h2 className="text-gray-800 font-geist text-xl font-medium leading-[120%]">
+                About
+              </h2>
+              <p className="text-gray-500 font-geist text-xl leading-[160%]">
+                {talentData.about}
+              </p>
+            </div>
 
-          {/* Portfolio Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-            {talentData.pastWork.map((work) => (
-              <div key={work.id} className="flex flex-col">
-                <img
-                  src={work.image}
-                  alt={work.alt}
-                  className="w-full h-[280px] rounded-[32px] object-cover"
-                />
+            {/* Skilled at Section */}
+            <div className="flex flex-col gap-4">
+              <h3 className="text-gray-800 font-geist text-xl font-medium leading-[120%]">
+                Skilled at
+              </h3>
+              <div className="flex flex-wrap items-center gap-3">
+                {talentData.skills.map((skill, index) => (
+                  <div
+                    key={index}
+                    className={`flex items-center justify-center px-3 py-3 rounded-3xl border border-gray-200 ${
+                      skill === "+4" ? "bg-gray-50" : ""
+                    }`}
+                  >
+                    <span className="text-gray-950 font-geist text-base leading-[120%]">
+                      {skill}
+                    </span>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+          </div>
+
+          {/* Past Work Section */}
+          <div className="flex flex-col gap-8">
+            <h2 className="text-gray-800 font-geist text-xl font-medium leading-[120%]">
+              Past Work
+            </h2>
+
+            {/* Portfolio Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+              {talentData.pastWork.map((work) => (
+                <div key={work.id} className="flex flex-col">
+                  <img
+                    src={work.image}
+                    alt={work.alt}
+                    className="w-full h-[280px] rounded-[32px] object-cover"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
